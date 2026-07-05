@@ -7,7 +7,7 @@
 //  - 막대 옆 텍스트는 absolute 배치(누락 방지), 도넛은 SVG 폴리곤
 //
 // 추천 결과 / 관심 국가 공용:
-//   ranked / countries / field / reportTitle / subtitle / showRanking
+//   ranked / countries / field / reportTitle / subtitle / showRanking / showMatchedField
 // ============================================================
 
 import {
@@ -31,16 +31,16 @@ Font.register({
 });
 Font.registerHyphenationCallback((word) => [word]);
 
-// ── 색상 토큰 ──
+// ── 색상 토큰 (index.css의 :root 팔레트와 동일하게 유지) ──
 const C = {
   green900: "#1f3324", green800: "#2d4a32", green700: "#3a5a40",
   green600: "#3a7a40", green500: "#5a7d5a", green300: "#9cb39c",
-  sage100: "#dfe6da", bone: "#f4f1e9", boneDark: "#e8e3d6",
-  paper: "#fbfaf6", ink: "#1a1a1a", inkSoft: "#4a4a44",
-  gold: "#cf6a3a", danger: "#c0573b",
+  sage100: "#f7f8fa", bone: "#ffffff", boneDark: "#e1e4e8",
+  paper: "#f7f8fa", ink: "#1b1f23", inkSoft: "#57606a",
+  danger: "#a8503a",
 };
-// 도넛 색상 (사이트 ui.jsx 와 동일)
-const DONUT_COLORS = ["#2d4a32", "#5a7d5a", "#8fae84", "#c9a227", "#b9c4a8", "#d9d2bf"];
+// 도넛 색상 — 이질적인 골드·베이지 톤 대신 그린 스케일 6단계로 통일 (색 종류 최소화)
+const DONUT_COLORS = [C.green900, C.green800, C.green700, C.green600, C.green500, C.green300];
 
 const TIER_COLOR = { strong: C.green800, good: C.green700, fair: C.inkSoft, weak: C.danger };
 const TIER_LABEL = { strong: "매우 적합", good: "적합", fair: "부분 적합", weak: "참고" };
@@ -64,7 +64,7 @@ const NOTICE_COPY = {
   recommend: {
     title: "다음 장부터 국가별 상세 분석이 이어집니다.",
     desc: [
-      "각 국가는 ① 국가 상세 정보 → ② 매칭 적합도·추천 근거 순으로 2개 면에 걸쳐 정리됩니다.",
+      "각 국가는 ① 국가 상세 정보 → ② 매칭 적합도·추천 근거 순으로 3개 면에 걸쳐 정리됩니다.",
       "① 국가 상세 정보에는 기후 취약도·중점협력국 여부·외교 친밀도 등 핵심 지표와 기초 국가 정보, 경제 및 ODA 규모, KOICA 지원 현황이 담겨 있습니다.",
       "② 매칭 페이지에는 7개 지표별 적합도 막대그래프와 이 국가를 추천하는 구체적인 근거가 정리되어 있어, 순위표의 점수가 어떻게 산정됐는지 바로 확인하실 수 있습니다.",
     ],
@@ -72,7 +72,7 @@ const NOTICE_COPY = {
   favorite: {
     title: "다음 장부터 관심 국가별 상세 설명이 이어집니다.",
     desc: [
-      "즐겨찾기하신 각 국가는 ① 국가 상세 정보 → ② 매칭 적합도·추천 근거 순으로 2개 면에 걸쳐 정리됩니다.",
+      "즐겨찾기하신 각 국가는 ① 국가 상세 정보 → ② 매칭 적합도·추천 근거 순으로 3개 면에 걸쳐 정리됩니다.",
       "① 국가 상세 정보에는 기후 취약도·중점협력국 여부·외교 친밀도 등 핵심 지표와 기초 국가 정보, 경제 및 ODA 규모, KOICA 지원 현황이 담겨 있습니다.",
       "② 매칭 페이지에는 선택하신 분야를 기준으로 한 7개 지표별 적합도와 근거가 정리되어 있어, 즐겨찾기하신 국가가 왜 이 점수·순위로 나왔는지 바로 확인하실 수 있습니다.",
     ],
@@ -90,7 +90,7 @@ const styles = StyleSheet.create({
   page: {
     fontFamily: "Pretendard", fontSize: 12, color: C.ink,
     backgroundColor: "#ffffff", paddingTop: 44, paddingBottom: 52,
-    paddingHorizontal: 50,
+    paddingHorizontal: 50, lineHeight: 1.6,
   },
 
   // 표지
@@ -130,28 +130,31 @@ const styles = StyleSheet.create({
   footerPage: { fontSize: 8.5, color: C.green800, fontWeight: 700, lineHeight: 1 },
 
   summaryBox: {
-    backgroundColor: C.bone, borderRadius: 8, borderLeftWidth: 3.5,
-    borderLeftColor: C.green700, padding: 18, marginBottom: 28,
+    backgroundColor: C.paper, borderRadius: 0,
+    padding: 18, marginBottom: 28,
   },
 
   // 순위 표
-  table: { borderWidth: 0.5, borderColor: C.boneDark, borderRadius: 6, marginBottom: 28, overflow: "hidden" },
+  table: { borderWidth: 0.5, borderColor: C.boneDark, borderRadius: 0, marginBottom: 28, overflow: "hidden" },
   trHead: { flexDirection: "row", backgroundColor: C.green800, alignItems: "center" },
   thCell: { color: "#ffffff", fontSize: 12, fontWeight: 700, paddingVertical: 10, paddingHorizontal: 10 },
   tr: { flexDirection: "row", borderTopWidth: 0.5, borderTopColor: C.boneDark, alignItems: "center" },
   trAlt: { backgroundColor: C.paper },
-  tdCell: { fontSize: 12.5, paddingVertical: 11, paddingHorizontal: 10, color: C.ink, lineHeight: 1.6 },
+  tdCell: { fontSize: 12.5, paddingVertical: 11, paddingHorizontal: 10, color: C.ink },
+  tdNameCell: { paddingVertical: 9, paddingHorizontal: 10 },
+  tdNameText: { fontSize: 12.5, color: C.ink },
+  tdFieldNote: { fontSize: 9.5, color: C.green600, fontWeight: 600, marginTop: 2 },
   colRank: { width: "12%" }, colName: { width: "46%" }, colScore: { width: "20%" }, colTier: { width: "22%" },
 
   // 평가 등급 범례 + 산정 기준 안내
   legendBox: {
     backgroundColor: C.paper, borderWidth: 0.5, borderColor: C.boneDark,
-    borderRadius: 8, padding: 18, marginBottom: 28,
+    borderRadius: 0, padding: 18, marginBottom: 28,
   },
   legendBoxTitle: { fontSize: 13, fontWeight: 700, color: C.green800, marginBottom: 11 },
   legendItemsRow: { flexDirection: "row", flexWrap: "wrap", marginBottom: 12 },
   legendItem: { flexDirection: "row", alignItems: "center", width: "50%", marginBottom: 8, paddingRight: 10 },
-  legendDot: { width: 8, height: 8, borderRadius: 4, marginRight: 6 },
+  legendDot: { width: 8, height: 8, borderRadius: 0, marginRight: 6 },
   legendItemLabel: { fontSize: 12.5, fontWeight: 700 },
   legendItemRange: { fontSize: 11, color: C.inkSoft, marginLeft: 5 },
   legendNote: {
@@ -160,20 +163,50 @@ const styles = StyleSheet.create({
   },
 
   // 목차 안내 박스
-  noticeBox: { backgroundColor: C.sage100, borderRadius: 8, padding: 18 },
+  noticeBox: { backgroundColor: C.sage100, borderRadius: 0, padding: 18 },
   noticeTitle: { fontSize: 15, fontWeight: 700, color: C.green800, marginBottom: 7 },
   noticeDesc: { fontSize: 12.5, color: C.inkSoft, lineHeight: 1.65 },
 
-  // 국가 헤더 띠
-  countryHeadRow: { flexDirection: "row", alignItems: "center", marginBottom: 16 },
+  // 국가 헤더 띠(2면 매칭 페이지용) — 1줄: 순위+국명 / 3줄(선택시): 분야뱃지
+  countryHeadRow: { flexDirection: "row", flexWrap: "wrap", alignItems: "flex-end", marginBottom: 6 },
+  countrySubRow: { flexDirection: "row", alignItems: "center", justifyContent: "space-between", marginBottom: 10 },
   rankPill: {
     fontSize: 12, fontWeight: 700, color: "#ffffff", backgroundColor: C.green700, lineHeight: 1,
-    paddingTop: 5, paddingBottom: 4, paddingHorizontal: 10, borderRadius: 6, marginRight: 12,
+    paddingTop: 5, paddingBottom: 4, paddingHorizontal: 10, borderRadius: 0, marginRight: 12,
   },
-  countryName: { fontSize: 26, fontWeight: 800, color: C.green900, lineHeight: 1 },
-  countryNameEn: { fontSize: 14, fontWeight: 600, color: C.green500, marginLeft: 9, lineHeight: 1 },
-  countryMatch: { marginLeft: "auto", fontSize: 18, fontWeight: 800, color: C.green700, lineHeight: 1 },
+  countryName: { fontSize: 26, fontWeight: 800, color: C.green900, lineHeight: 1.15, flexShrink: 1 },
+  countryNameEn: { flex: 1, fontSize: 14, fontWeight: 600, color: C.green500, lineHeight: 1 },
+  countryMatch: { flex: "none", textAlign: "right", fontSize: 18, fontWeight: 800, color: C.green700, lineHeight: 1 },
+  matchedFieldRow: { flexDirection: "row", flexWrap: "wrap", marginBottom: 12 },
+  matchedFieldTag: {
+    fontSize: 10, fontWeight: 700, color: C.green700, backgroundColor: C.sage100,
+    borderRadius: 0, paddingTop: 4, paddingBottom: 3, paddingHorizontal: 9, lineHeight: 1,
+  },
   headRule: { borderBottomWidth: 1.5, borderBottomColor: C.green700, marginBottom: 18 },
+
+  // 국가 상세 페이지(1면) 전용 헤더 카드
+  countryHeadCard: {
+    backgroundColor: C.green900, paddingVertical: 20, paddingHorizontal: 22, marginBottom: 18,
+  },
+  countryHeadMainRow: {
+    flexDirection: "row", alignItems: "center", justifyContent: "space-between", flexWrap: "wrap",
+  },
+  countryHeadNameGroup: {
+    flexDirection: "row", alignItems: "baseline", flexShrink: 1, flexWrap: "wrap", paddingRight: 14,
+  },
+  rankPillCard: {
+    fontSize: 11.5, fontWeight: 800, color: C.green900, backgroundColor: C.green300, lineHeight: 1,
+    paddingTop: 5, paddingBottom: 4, paddingHorizontal: 10, borderRadius: 0, marginRight: 10,
+  },
+  countryNameCard: { fontSize: 26, fontWeight: 800, color: "#ffffff", lineHeight: 1.15 },
+  countryNameEnCard: { fontSize: 13, fontWeight: 600, color: "rgba(255,255,255,0.72)", marginLeft: 8, lineHeight: 1.15 },
+  countryScoreCard: { flexShrink: 0, fontSize: 19, fontWeight: 800, color: "#ffffff", lineHeight: 1 },
+  countryScoreCardSuffix: { fontSize: 11, fontWeight: 700, color: "rgba(255,255,255,0.72)" },
+  matchedFieldRowCard: { marginTop: 10 },
+  matchedFieldTagCard: {
+    fontSize: 10, fontWeight: 700, color: "#ffffff", backgroundColor: "rgba(255,255,255,0.14)",
+    borderRadius: 0, paddingTop: 4, paddingBottom: 3, paddingHorizontal: 9, lineHeight: 1,
+  },
 
   // 스탯 5칸
   statStrip: { flexDirection: "row", marginBottom: 14 },
@@ -193,13 +226,13 @@ const styles = StyleSheet.create({
 
   // 기초 정보 세로 스택 (가독성 · 페이지 분리 방지)
   basicBox: {
-    flexDirection: "column", backgroundColor: C.paper, borderRadius: 7,
+    flexDirection: "column", backgroundColor: C.paper, borderRadius: 0,
     borderWidth: 0.5, borderColor: C.boneDark, paddingVertical: 6, paddingHorizontal: 16, marginBottom: 18,
   },
   basicCell: { paddingVertical: 8, borderBottomWidth: 0.5, borderBottomColor: C.boneDark },
   basicCellLast: { borderBottomWidth: 0 },
   basicKey: { fontSize: 11, fontWeight: 700, color: C.green700, marginBottom: 3 },
-  basicVal: { fontSize: 11.5, color: C.inkSoft, lineHeight: 1.6 },
+  basicVal: { fontSize: 11.5, color: C.inkSoft },
 
   // 경제·ODA 풀와이드 표
   ecoRow: { position: "relative", height: 48, marginBottom: 0 },
@@ -214,7 +247,7 @@ const styles = StyleSheet.create({
   // KOICA 누적
   koicaCumRow: { position: "relative", height: 24, marginBottom: 8 },
   koicaCumLabel: { position: "absolute", left: 0, top: 5, fontSize: 11, fontWeight: 700, color: C.green700, lineHeight: 1 },
-  koicaCumBig: { position: "absolute", left: 66, top: 0, fontSize: 16, fontWeight: 800, color: C.gold, lineHeight: 1 },
+  koicaCumBig: { position: "absolute", left: 66, top: 0, fontSize: 16, fontWeight: 800, color: C.green700, lineHeight: 1 },
   koicaCumMeta: { position: "absolute", right: 0, top: 5, fontSize: 9.5, color: C.inkSoft, lineHeight: 1 },
 
   // 도넛 영역 — 중앙 대형 배치 + 중앙 라벨 + 하단 2열 범례
@@ -229,21 +262,28 @@ const styles = StyleSheet.create({
     width: "50%", flexDirection: "row", alignItems: "center",
     paddingVertical: 9, paddingRight: 14, borderBottomWidth: 0.5, borderBottomColor: C.boneDark,
   },
-  legendSw: { width: 11, height: 11, borderRadius: 3 },
+  legendSw: { width: 11, height: 11, borderRadius: 0 },
   legendGridName: { flex: 1, fontSize: 12.5, color: C.inkSoft, marginLeft: 9, lineHeight: 1.2 },
   legendGridPct: { fontSize: 13.5, fontWeight: 800, color: C.green800, lineHeight: 1 },
+
+  // 섹션별 메모칸 — 기초 국가 정보 / 경제 및 ODA 규모 / KOICA 지원 규모 뒤에 각각 배치.
+  // 세 개가 같은 Page의 형제 요소로 flexGrow:1을 나눠 가져서, 페이지에 남는 여백을
+  // 세 칸이 똑같이 나눠 가지며 자동으로 늘어난다 (고정 높이 아님).
+  memoGroup: { flexGrow: 1, flexDirection: "column", marginTop: 4, marginBottom: 14 },
+  memoGroupLabel: { fontSize: 8.5, fontWeight: 700, color: C.green700, marginBottom: 4 },
+  memoGroupBox: { flexGrow: 1, minHeight: 26, borderWidth: 1, borderColor: C.green700, borderRadius: 0 },
 
   // ── 매칭 페이지 (막대 두껍게 + 글자 키움) ──
   matchTierNote: { fontSize: 13.5, fontWeight: 700, marginBottom: 20 },
   axisGroup: { marginBottom: 16 },
   axisRow: { position: "relative", height: 28, marginBottom: 9 },
   axisLabel: { position: "absolute", left: 0, top: 5, fontSize: 13, color: C.inkSoft, fontWeight: 600, lineHeight: 1 },
-  axisTrack: { position: "absolute", left: 150, top: 4, height: 17, backgroundColor: C.boneDark, borderRadius: 8 },
-  axisFill: { height: 17, borderRadius: 8 },
+  axisTrack: { position: "absolute", left: 150, top: 4, height: 17, backgroundColor: C.boneDark, borderRadius: 0 },
+  axisFill: { height: 17, borderRadius: 0 },
   axisVal: { position: "absolute", right: 0, top: 4, fontSize: 14, fontWeight: 800, color: C.green700, lineHeight: 1 },
 
   reasonItem: { flexDirection: "row", marginBottom: 12, paddingLeft: 2 },
-  reasonCheck: { width: 18, fontSize: 13, color: C.green700, fontWeight: 700 },
+  reasonCheck: { width: 20, fontSize: 12, color: C.green700, fontWeight: 700 },
   reasonText: { flex: 1, fontSize: 13, color: C.inkSoft, lineHeight: 1.65 },
   reasonEmpty: { fontSize: 13, color: C.inkSoft, opacity: 0.8 },
 
@@ -348,6 +388,16 @@ function SecHead({ title, src, warn }) {
   );
 }
 
+// 섹션 뒤에 붙는 메모칸 — 라벨 + 초록 테두리 박스 (flexGrow로 남는 공간만큼 자동 확장)
+function SectionMemo() {
+  return (
+    <View style={styles.memoGroup}>
+      <Text style={styles.memoGroupLabel}>메모</Text>
+      <View style={styles.memoGroupBox} />
+    </View>
+  );
+}
+
 // 경제·ODA 한 줄
 function EcoRow({ label, v, defaultSrc, isLast }) {
   let src = null;
@@ -390,10 +440,10 @@ function AxisBar({ label, score }) {
 }
 
 // ── 국가 상세 (페이지 1) ──
-function CountryDetailPage({ r, country, rankLabel, field }) {
+function CountryDetailPage({ r, country, rankLabel, field, showMatchedField }) {
   const eco = country?.economy || {};
   const cum = country?.koicaCumulative || {};
-  const sectors = (country?.koica && country.koica.sectors) || [];
+  const sectors = ((country?.koica && country.koica.sectors) || []).slice().sort((a, b) => b.percent - a.percent);
 
   const stats = [
     { value: country?.climateScore, label: "기후 취약도", suffix: "/100" },
@@ -424,14 +474,25 @@ function CountryDetailPage({ r, country, rankLabel, field }) {
         <Text>{field} 분야</Text>
       </View>
 
-      {/* 헤더 띠 */}
-      <View style={styles.countryHeadRow}>
-        {rankLabel ? <Text style={styles.rankPill}>{rankLabel}</Text> : null}
-        <Text style={styles.countryName}>{country.name}</Text>
-        {country.nameEn ? <Text style={styles.countryNameEn}>{country.nameEn}</Text> : null}
-        <Text style={styles.countryMatch}>매칭 {r.matchScore.toFixed(1)}점</Text>
+      {/* 헤더 카드 — 순위·국명·영문명·매칭점수를 한 줄에, 분야는 그 아래 줄에 표시 */}
+      <View style={styles.countryHeadCard}>
+        <View style={styles.countryHeadMainRow}>
+          <View style={styles.countryHeadNameGroup}>
+            {rankLabel ? <Text style={styles.rankPillCard}>{rankLabel}</Text> : null}
+            <Text style={styles.countryNameCard}>{country.name}</Text>
+            <Text style={styles.countryNameEnCard}>{country.nameEn || ""}</Text>
+          </View>
+          <Text style={styles.countryScoreCard}>
+            매칭 {r.matchScore.toFixed(1)}
+            <Text style={styles.countryScoreCardSuffix}>점</Text>
+          </Text>
+        </View>
+        {showMatchedField && r.matchedField ? (
+          <View style={styles.matchedFieldRowCard}>
+            <Text style={styles.matchedFieldTagCard}>{r.matchedField} 기준</Text>
+          </View>
+        ) : null}
       </View>
-      <View style={styles.headRule} />
 
       {/* 스탯 5칸 */}
       <View style={styles.statStrip}>
@@ -459,6 +520,7 @@ function CountryDetailPage({ r, country, rankLabel, field }) {
           ))}
         </View>
       </View>
+      <SectionMemo />
 
       {/* 경제·ODA — 풀와이드 표 */}
       <View wrap={false}>
@@ -469,6 +531,7 @@ function CountryDetailPage({ r, country, rankLabel, field }) {
           ))}
         </View>
       </View>
+      <SectionMemo />
 
       {/* KOICA — 누적 + 도넛 중앙 + 범례 (통째로 다음 페이지로 넘어가도록 wrap=false) */}
       <View wrap={false}>
@@ -509,6 +572,7 @@ function CountryDetailPage({ r, country, rankLabel, field }) {
           </>
         ) : null}
       </View>
+      <SectionMemo />
 
       <PageFooter />
     </Page>
@@ -516,7 +580,7 @@ function CountryDetailPage({ r, country, rankLabel, field }) {
 }
 
 // ── 매칭 (페이지 2) ──
-function MatchPage({ r, country, rankLabel, field, reportKind = "recommend" }) {
+function MatchPage({ r, country, rankLabel, field, reportKind = "recommend", showMatchedField }) {
   const axisEntries = Object.entries(r.axes || {}).filter(([, v]) => v && typeof v.score === "number");
   const tierNote = r.tier === "weak" ? WEAK_TIER_NOTE[reportKind] : r.tierNote;
   const reasonEmptyText = WEAK_REASON_EMPTY[reportKind];
@@ -531,6 +595,11 @@ function MatchPage({ r, country, rankLabel, field, reportKind = "recommend" }) {
         {rankLabel ? <Text style={styles.rankPill}>{rankLabel}</Text> : null}
         <Text style={[styles.countryName, { fontSize: 21 }]}>{country.name} — 매칭 분석</Text>
       </View>
+      {showMatchedField && r.matchedField ? (
+        <View style={styles.matchedFieldRow}>
+          <Text style={styles.matchedFieldTag}>{r.matchedField} 기준</Text>
+        </View>
+      ) : null}
       <View style={styles.headRule} />
 
       <SecHead title="매칭 적합도 분석" />
@@ -545,7 +614,7 @@ function MatchPage({ r, country, rankLabel, field, reportKind = "recommend" }) {
       {r.reasons && r.reasons.length > 0 ? (
         r.reasons.map((reason, idx) => (
           <View key={idx} style={styles.reasonItem}>
-            <Text style={styles.reasonCheck}>✓</Text>
+            <Text style={styles.reasonCheck}>{String(idx + 1).padStart(2, "0")}</Text>
             <Text style={styles.reasonText}>{reason}</Text>
           </View>
         ))
@@ -567,6 +636,7 @@ export default function MatchReportPDF({
   showRanking = true,
   rankingTitle = "추천 순위 요약",
   reportKind = "recommend", // "recommend" | "favorite" — 참고 등급 문구 분기용
+  showMatchedField = false, // 관심분야를 2개 이상 골랐을 때만 true — 국가별로 어떤 분야 기준인지 표시
 }) {
   console.log("🔵 MatchReportPDF 진입!", { ranked: ranked?.length, countries: !!countries });
   const shownField = field || "전체";
@@ -620,6 +690,7 @@ export default function MatchReportPDF({
             개발 필요도 등을 종합 분석한 결과입니다. 총 {ranked.length}개 국가를
             담았으며, 각 점수는 IMF·KOICA·World Bank CCKP·외교부 등 공신력 있는
             기관의 공개 데이터를 가공한 객관적 지표에 기반합니다.
+            {showMatchedField ? " 여러 분야를 선택하신 경우, 국가마다 가장 잘 맞는 분야를 함께 표시해 드립니다." : ""}
           </Text>
         </View>
 
@@ -646,9 +717,14 @@ export default function MatchReportPDF({
                 return (
                   <View key={r.id} wrap={false} style={[styles.tr, i % 2 === 1 && styles.trAlt]}>
                     <Text style={[styles.tdCell, styles.colRank]}>{i + 1}순위</Text>
-                    <Text style={[styles.tdCell, styles.colName]}>
-                      {cc.name} {cc.nameEn ? `(${cc.nameEn})` : ""}
-                    </Text>
+                    <View style={[styles.tdNameCell, styles.colName]}>
+                      <Text style={styles.tdNameText}>
+                        {cc.name} {cc.nameEn ? `(${cc.nameEn})` : ""}
+                      </Text>
+                      {showMatchedField && r.matchedField ? (
+                        <Text style={styles.tdFieldNote}>{r.matchedField} 기준</Text>
+                      ) : null}
+                    </View>
                     <Text style={[styles.tdCell, styles.colScore]}>{r.matchScore.toFixed(1)} / 100</Text>
                     <Text style={[styles.tdCell, styles.colTier, { color: TIER_COLOR[r.tier], fontWeight: 700 }]}>
                       {TIER_LABEL[r.tier] || "참고"}
@@ -683,8 +759,8 @@ export default function MatchReportPDF({
         const cc = countries[r.id];
         const rankLabel = showRanking ? `${i + 1}순위` : null;
         return [
-          <CountryDetailPage key={`${r.id}-d`} r={r} country={cc} rankLabel={rankLabel} field={shownField} />,
-          <MatchPage key={`${r.id}-m`} r={r} country={cc} rankLabel={rankLabel} field={shownField} reportKind={reportKind} />,
+          <CountryDetailPage key={`${r.id}-d`} r={r} country={cc} rankLabel={rankLabel} field={shownField} showMatchedField={showMatchedField} />,
+          <MatchPage key={`${r.id}-m`} r={r} country={cc} rankLabel={rankLabel} field={shownField} reportKind={reportKind} showMatchedField={showMatchedField} />,
         ];
       })}
 
@@ -704,10 +780,13 @@ export default function MatchReportPDF({
             포털 기준입니다. 데이터 기준연도는 각 항목에 별도 표기되어 있습니다.{"\n\n"}
             본 보고서의 매칭 점수는 공개 데이터를 가공한 규칙 기반 추천 결과로, 실제 협력
             의사결정 시 참고 자료로 활용하시기 바랍니다. 수치는 데이터 갱신 시점에 따라 달라질 수 있습니다.{"\n\n"}
-            점수 산정 기준이나 데이터에 대해 궁금한 점이 있으시면 아래 이메일로 문의해 주세요.
+            기후 취약도는 World Bank 기후 API(SSP3-7.0 시나리오, 2040~2059년 전망)의 기온 상승폭(40%)
+            ·강수 변화율(30%)·극한강수 지표(30%)를 가중합해 30~100점으로 환산한 값입니다. 
+            외교 친밀도는 외교부 기관 진출현황(40%)·외교관계(30%)·무역관계(30%)를 가중합하고, KOICA 중점협력국은 +20점을 가산한 값입니다.{"\n\n"}
+            점수 산정 기준이나 데이터에 대해 궁금한 점이 있으시면 아래 사이트로 문의해 주세요.
           </Text>
           <Text style={[styles.sourceText, { marginTop: 6, fontWeight: 700, color: C.green700 }]}>
-            contact@baobab-match.app
+            https://baobab-match.web.app/
           </Text>
         </View>
         <PageFooter />

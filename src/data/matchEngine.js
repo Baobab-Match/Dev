@@ -9,6 +9,8 @@
 //  - 순수 함수: 같은 입력 → 같은 출력 (재현성, 테스트 용이)
 //  - 데이터는 이미 프론트에 존재 (countries_base + countries_scores 병합본)
 //  - 사용자 유형(기업/공공기관/개인)별로 가중치를 다르게 적용
+//  - profile.field 는 문자열 1개 또는 배열(여러 개) 모두 허용.
+//    여러 개면 "그 나라와 가장 잘 맞는 분야 1개" 기준으로 점수를 매김(OR 방식).
 // ============================================================
 
 // ── 1. 분야(CATEGORIES) → 기후 이슈 적합도 매핑 ──────────────
@@ -108,7 +110,6 @@ function inferFieldsFromText(freeText) {
     .map(([field, hits]) => ({ field, hits }));
 }
 
-
 // "앞으로 기온이 1.38℃ 올라..."        → { tempRise: 1.38 }
 // "앞으로 강수량이 15.6% 늘어..."       → { precipRise: 15.6 }
 // "...폭염과 물 부족이 우려됩니다."      → { hazards: ["폭염","물부족"] }
@@ -153,6 +154,13 @@ function parseNum(str) {
 
 // 0~100 범위로 자르기
 const clamp = (v, lo = 0, hi = 100) => Math.max(lo, Math.min(hi, v));
+
+// profile.field 를 항상 배열로 정규화 ("" / null 등은 제거)
+function normalizeFields(profile) {
+  const raw = profile?.field ?? profile?.interest;
+  const arr = Array.isArray(raw) ? raw : [raw];
+  return arr.filter(Boolean);
+}
 
 // ── 유형별 가중치 (합 = 1.0) ────────────────────────────────
 // company : 사업성 — 분야·기술·수출경험 비중 ↑
@@ -242,6 +250,29 @@ function scoreClimateFit(country, field, freeText) {
   return { score, reason };
 }
 
+// 선택한 분야가 여러 개면, "field 축 + climateFit 축"을 합쳐서 그 나라와
+// 가장 잘 맞는 분야 1개를 고른다(matchedField). 이후 두 축 모두 같은
+// 분야를 기준으로 계산해서 "왜 이 분야로 뽑혔는지" 설명이 일관되게 한다.
+function pickBestField(country, fields, freeText, w) {
+  if (fields.length === 0) {
+    return {
+      matchedField: null,
+      fieldAxis: scoreField(country, ""),
+      climateFitAxis: scoreClimateFit(country, "", freeText),
+    };
+  }
+  let best = null;
+  for (const f of fields) {
+    const fieldAxis = scoreField(country, f);
+    const climateFitAxis = scoreClimateFit(country, f, freeText);
+    const combined = fieldAxis.score * w.field + climateFitAxis.score * w.climateFit;
+    if (!best || combined > best.combined) {
+      best = { matchedField: f, fieldAxis, climateFitAxis, combined };
+    }
+  }
+  return best;
+}
+
 // ── 축 ③: 기후 시급성 (climateScore + 기온/강수 정량 보정) ──
 // climateScore 가 기본. 거기에 climateReason 의 기온 상승폭(또는
 // 강수 증가율)이 크면 최대 +12점까지 가산해 "지금 더 급한 나라"를 띄운다.
@@ -325,8 +356,8 @@ function scoreExport(country, exportExp) {
 // ── 축 ⑦: 보유기술 적합도 (자유텍스트 → 분야 → 국가 협력채널) ─
 // 사용자가 입력한 보유기술/목적 텍스트에서 분야를 추론하고,
 // 그 분야가 이 국가의 KOICA 협력섹터 또는 기후이슈와 맞으면 가산한다.
-// 명시적으로 고른 field 와 다른 숨은 강점을 잡아내는 역할.
-function scoreTechMatch(country, freeText, selectedField) {
+// 명시적으로 고른 field(들)와 다른 숨은 강점을 잡아내는 역할.
+function scoreTechMatch(country, freeText, selectedFields) {
   const inferred = inferFieldsFromText(freeText);
   if (inferred.length === 0) return { score: 50, reason: null };
 
@@ -343,9 +374,9 @@ function scoreTechMatch(country, freeText, selectedField) {
     if (combined > best) { best = combined; bestField = field; }
   }
   const score = clamp(best);
-  // 사용자가 고른 분야와 다른 분야가 강하게 잡혔을 때만 근거로 노출
+  // 사용자가 고른 분야(들)와 다른 분야가 강하게 잡혔을 때만 근거로 노출
   let reason = null;
-  if (score >= 70 && bestField && bestField !== selectedField) {
+  if (score >= 70 && bestField && !selectedFields.includes(bestField)) {
     reason = `입력하신 보유기술이 '${bestField}' 영역과 맞아, 이 국가의 협력채널·기후수요와 연결됩니다.`;
   } else if (score >= 70 && bestField) {
     reason = `보유기술이 '${bestField}' 분야 수요와 직접 연결됩니다.`;
@@ -359,17 +390,20 @@ function scoreTechMatch(country, freeText, selectedField) {
 export function scoreCountry(country, profile) {
   const type = profile?.type || "general";
   const w = WEIGHTS[type] || WEIGHTS.general;
-  const field = profile?.field || profile?.interest || "";
+  const fields = normalizeFields(profile); // 항상 배열
   const freeText = [profile?.tech, profile?.purpose].filter(Boolean).join(" ");
 
+  // 선택한 분야가 여러 개면, 이 나라와 가장 잘 맞는 분야 1개를 결정
+  const { matchedField, fieldAxis, climateFitAxis } = pickBestField(country, fields, freeText, w);
+
   const axes = {
-    field:        scoreField(country, field),
-    climateFit:   scoreClimateFit(country, field, freeText),
+    field:        fieldAxis,
+    climateFit:   climateFitAxis,
     climateScore: scoreClimateUrgency(country),
     diplomacy:    scoreDiplomacy(country),
     develop:      scoreDevelopment(country),
     export:       scoreExport(country, profile?.exportExp),
-    techMatch:    scoreTechMatch(country, freeText, field),
+    techMatch:    scoreTechMatch(country, freeText, fields),
   };
 
   // 가중합
@@ -381,13 +415,21 @@ export function scoreCountry(country, profile) {
   // ── 결정적 부적합 감점 (penalty) ──────────────────────────
   // 분야가 국가 기후이슈와 명백히 안 맞으면(적합도 ≤ 0.2) 가중합으로
   // 묻히지 않도록 총점에 곱셈 패널티를 준다. (예: '홍수 인프라' ↔ 폭염국)
+  // 여러 분야를 골랐을 땐, 선택한 분야 "전부"가 안 맞을 때만 감점한다 —
+  // 하나라도 맞으면 그 강점을 살려주기 위함.
   let penalty = 1.0;
   let penaltyNote = null;
   const issue = country?.mainClimateIssue;
-  const fitMap = FIELD_CLIMATE_FIT[field] || {};
-  if (issue && fitMap[issue] != null && fitMap[issue] <= 0.2) {
-    penalty = 0.7;
-    penaltyNote = `선택 분야는 '${issue}' 위주인 이 국가와 직접적 연관은 낮습니다.`;
+  if (issue && fields.length > 0) {
+    const allBad = fields.every((f) => {
+      const fitMap = FIELD_CLIMATE_FIT[f] || {};
+      return fitMap[issue] != null && fitMap[issue] <= 0.2;
+    });
+    if (allBad) {
+      penalty = 0.7;
+      const label = fields.length > 1 ? `선택하신 분야(${fields.join(", ")})는` : "선택 분야는";
+      penaltyNote = `${label} '${issue}' 위주인 이 국가와 직접적 연관은 낮습니다.`;
+    }
   }
   total *= penalty;
 
@@ -397,6 +439,11 @@ export function scoreCountry(country, profile) {
     .sort((a, b) => axes[b].score - axes[a].score)
     .map((k) => axes[k].reason);
 
+  // 여러 분야를 골랐을 때만, "어떤 분야 기준으로 뽑혔는지" 맨 앞에 명시
+  if (fields.length > 1 && matchedField) {
+    reasons.unshift(`선택하신 분야 중 '${matchedField}' 기준으로 이 국가와 특히 잘 맞습니다.`);
+  }
+
   const matchScore = Math.round(total * 10) / 10; // 0~100, 소수 1자리
   const { tier, tierNote } = matchTier(matchScore);
 
@@ -404,10 +451,11 @@ export function scoreCountry(country, profile) {
     id: country.id,
     name: country.name,
     matchScore,
-    tier,       // "strong" | "good" | "fair" | "weak"
-    tierNote,   // 점수대별 안내 문구
-    penalty,    // 1.0(정상) 또는 0.7(결정적 부적합)
-    penaltyNote,// 감점 사유 (없으면 null)
+    tier,         // "strong" | "good" | "fair" | "weak"
+    tierNote,     // 점수대별 안내 문구
+    penalty,      // 1.0(정상) 또는 0.7(결정적 부적합)
+    penaltyNote,  // 감점 사유 (없으면 null)
+    matchedField, // 여러 분야 중 이 국가와 가장 잘 맞는 분야 (1개 선택 시 그 분야, 없으면 null)
     axes,
     reasons,
   };

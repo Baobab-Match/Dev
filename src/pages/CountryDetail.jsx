@@ -148,7 +148,7 @@ export default function CountryDetail({ id, go, from = "search", isFavorite, tog
   ];
 
   // KOICA 분기 판정
-  const sectors = (c.koica && c.koica.sectors) || [];
+  const sectors = ((c.koica && c.koica.sectors) || []).slice().sort((a, b) => b.percent - a.percent);
   const hasDonut = sectors.length > 0;
   const cum = c.koicaCumulative || null;
   const hasCum = !!(cum && cum.total);

@@ -93,7 +93,7 @@ export default function MyPage({ profile, favorites, isFavorite, toggleFavorite,
       <div className="page-head">
         <div className="page-eyebrow">My Page</div>
         <h1 className="page-title">내 정보</h1>
-        <p className="page-desc page-desc--lg">내 프로필과 관심국가 즐겨찾기를 확인하세요.</p>
+        <p className="page-desc page-desc--lg">내 프로필과 관심 국가 즐겨찾기를 확인하세요.</p>
       </div>
 
       <div className="profile-card">
@@ -187,7 +187,7 @@ export default function MyPage({ profile, favorites, isFavorite, toggleFavorite,
       )}
 
       <div className="fav-head">
-        <h2 className="about-subtitle">관심국가 즐겨찾기</h2>
+        <h2 className="about-subtitle">관심 국가 즐겨찾기</h2>
         {rankedFav.length > 1 && (
           <div className="sort-tabs" role="tablist" aria-label="즐겨찾기 정렬 기준">
             {SORT_OPTIONS.map((o) => (
@@ -207,12 +207,12 @@ export default function MyPage({ profile, favorites, isFavorite, toggleFavorite,
       </div>
 
       {rankedFav.length > 0 && (
-        <p className="fav-note">
-          이 순위는 <b> 관심 분야는 반영하지 않고</b>, 외교 친밀도와 기후 취약도 고려한 단순 비교 결과입니다.
+        <p className="fav-note" style={{ textIndent: "1em" }}>
+          이 순위는 <b>관심 분야는 반영하지 않고</b>, 외교 친밀도와 기후 취약도 고려한 단순 비교 결과입니다.
           분야 적합도·기후-기술 적합도·기후 시급성·외교 친밀도·개발 필요도·수출 연계성·보유기술
           적합도까지 총 7개 지표와 함께 회원님이 고른 관심 분야까지
           반영한 더 자세한 비교를 원한다면{" "}
-          <Link className="link-btn" to="/match">관심 분야·기술에 맞는 국가 추천 받기</Link>를 확인해 주세요.
+          <Link className="link-btn" to="/match">맞춤 국가 추천</Link>을 확인해 주세요.
         </p>
       )}
 

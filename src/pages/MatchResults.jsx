@@ -5,21 +5,27 @@ import { rankCountries, scoreCountry } from "../data/matchEngine";
 import { CountrySilhouette } from "../components/ui";
 import MatchReportPDF from "../components/MatchReportPDF";
 
+// field 를 항상 배열로 정규화 (문자열 1개 / 배열 / 빈값 모두 허용)
+function toFieldArray(field) {
+  return (Array.isArray(field) ? field : [field]).filter(Boolean);
+}
+
 // 프로필 해석: 로그인 유저 프로필 → 엔진 입력 형태로 정규화.
-// 사용자가 직접 고른 field가 있으면 항상 그것을 최우선으로 사용.
+// 사용자가 직접 고른 field(들)가 있으면 항상 그것을 최우선으로 사용.
 function buildProfile(profile, field) {
+  const chosen = toFieldArray(field);
   if (profile && profile.type) {
     return {
       type: profile.type,
-      field: field || profile.field || profile.interest || "",
-      interest: field || profile.interest,
+      field: chosen.length ? chosen : (profile.field || profile.interest || ""),
+      interest: chosen.length ? chosen : profile.interest,
       tech: profile.tech,
       purpose: profile.purpose,
       exportExp: profile.exportExp,
       region: profile.region,
     };
   }
-  return { type: "general", field: field || "", interest: field || "" };
+  return { type: "general", field: chosen.length ? chosen : "", interest: chosen.length ? chosen : "" };
 }
 
 // 타입별 결과 문구 (기업·공공기관·개인)
@@ -89,9 +95,11 @@ export default function MatchResults({ openCountry, field, profile, user, favori
 
   if (!ranked.length) return null;
 
-  // 사용자가 직접 고른 분야가 있으면 그것을 우선 표시
-  const shownField =
-    field || (profile && (profile.field || profile.interest)) || "선택하신";
+  // 사용자가 직접 고른 분야가 있으면 그것을 우선 표시 (여러 개면 · 로 이어붙임)
+  const chosenFields = toFieldArray(field);
+  const shownField = chosenFields.length
+    ? chosenFields.join(" · ")
+    : (profile && (profile.field || profile.interest)) || "선택하신";
 
   const copy = RESULT_COPY[profile?.type] ?? RESULT_COPY.general;
 
@@ -115,6 +123,7 @@ export default function MatchResults({ openCountry, field, profile, user, favori
           reportTitle={"아프리카 협력국가\n맞춤 추천 결과"}
           subtitle={"공공데이터 기반 객관적 지표와 AI 추천 모델을 통해\n가장 적합한 협력 국가를 분석한 결과입니다."}
           showRanking={true}
+          showMatchedField={chosenFields.length > 1}
         />,
         recFileName
       );
@@ -139,6 +148,7 @@ export default function MatchResults({ openCountry, field, profile, user, favori
           showRanking={true}
           rankingTitle={"관심 국가 요약"}
           reportKind="favorite"
+          showMatchedField={chosenFields.length > 1}
         />,
         favFileName
       );
@@ -169,7 +179,7 @@ export default function MatchResults({ openCountry, field, profile, user, favori
             onClick={handleDownloadRecommend}
             disabled={recLoading}
           >
-            {recLoading ? <span>보고서 준비 중…</span> : <span>📄 추천 결과 PDF 보고서</span>}
+            {recLoading ? <span>보고서 준비 중…</span> : <span>추천 결과 PDF 보고서 다운받기</span>}
           </button>
 
           {/* 관심 국가 PDF — 로그인 + 즐겨찾기 있을 때만 */}
@@ -180,7 +190,7 @@ export default function MatchResults({ openCountry, field, profile, user, favori
               onClick={handleDownloadFavorite}
               disabled={favLoading}
             >
-              {favLoading ? <span>보고서 준비 중…</span> : <span>⭐ 관심 국가 PDF 보고서</span>}
+              {favLoading ? <span>보고서 준비 중…</span> : <span>관심 국가 PDF 보고서 다운받기</span>}
             </button>
           )}
         </div>
@@ -201,6 +211,9 @@ export default function MatchResults({ openCountry, field, profile, user, favori
                 {c.name}
                 <span>{c.nameEn}</span>
               </div>
+              {chosenFields.length > 1 && r.matchedField && (
+                <div className="podium-field-badge">{r.matchedField}</div>
+              )}
               <div className="podium-score">
                 <b>
                   {r.matchScore.toFixed(1)}
@@ -223,6 +236,9 @@ export default function MatchResults({ openCountry, field, profile, user, favori
             <div key={r.id} className="match-reasons">
               <div className="block-tag">
                 {i + 1}순위 · {c.name} 추천 근거
+                {chosenFields.length > 1 && r.matchedField && (
+                  <span className="block-tag-field"> · {r.matchedField} 기준</span>
+                )}
               </div>
 
               {/* 점수대별 안내 — 등급에 따라 색이 달라짐 */}

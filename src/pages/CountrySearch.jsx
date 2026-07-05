@@ -6,6 +6,47 @@ import { Icons } from "../components/ui";
 
 // 국가명에서 id(한글명) 추출: "에티오피아 (Ethiopia)" -> "에티오피아"
 const idOf = (label) => label.split(" (")[0];
+// 국가명에서 영문명 추출: "에티오피아 (Ethiopia)" -> "Ethiopia"
+const enOf = (label) => label.match(/\(([^)]+)\)/)?.[1] || "";
+
+// ── 한글 초성 검색 ───────────────────────────────────────────
+// 완성형 한글 한 글자에서 초성(자음)만 뽑아냄. 한글이 아니면 원문 그대로 반환.
+const CHOSUNG = [
+  "ㄱ", "ㄲ", "ㄴ", "ㄷ", "ㄸ", "ㄹ", "ㅁ", "ㅂ", "ㅃ", "ㅅ",
+  "ㅆ", "ㅇ", "ㅈ", "ㅉ", "ㅊ", "ㅋ", "ㅌ", "ㅍ", "ㅎ",
+];
+function getChosung(str) {
+  return str
+    .split("")
+    .map((ch) => {
+      const code = ch.charCodeAt(0) - 0xac00;
+      if (code < 0 || code > 11171) return ch; // 완성형 한글이 아니면 그대로
+      return CHOSUNG[Math.floor(code / 588)];
+    })
+    .join("");
+}
+// 검색어가 자음(초성)으로만 이루어져 있는지 (예: "ㄱ", "ㄱㄴ")
+const isChosungOnly = (s) => /^[ㄱ-ㅎ]+$/.test(s);
+// 검색어에 영문이 포함되어 있는지
+const isLatin = (s) => /^[a-zA-Z]/.test(s);
+
+// "시작 문자" 기준 매칭 — 포함(includes) 대신 시작(startsWith)만 인정
+function matchesQuery(label, q) {
+  if (!q) return true;
+  const korean = idOf(label);
+  const english = enOf(label);
+
+  if (isChosungOnly(q)) {
+    // 자음만 입력 → 초성이 그 자음으로 시작하는 국가만
+    return getChosung(korean).startsWith(q);
+  }
+  if (isLatin(q)) {
+    // 영문 입력 → 대소문자 구분 없이 영문명이 그 글자로 시작하는 국가만
+    return english.toLowerCase().startsWith(q.toLowerCase());
+  }
+  // 완성형 한글 입력 → 한글명이 그 글자로 시작하는 국가만
+  return korean.startsWith(q);
+}
 
 export default function CountrySearch({ openCountry, user, profile }) {
   const [q, setQ] = useState("");
@@ -17,9 +58,7 @@ export default function CountrySearch({ openCountry, user, profile }) {
     [user, profile]
   );
 
-  const filtered = COUNTRY_LIST.filter((c) =>
-    c.toLowerCase().includes(q.toLowerCase())
-  );
+  const filtered = COUNTRY_LIST.filter((c) => matchesQuery(c, q));
 
   // id 선택 공통 처리: 상세 데이터 있으면 열고, 없으면 선택 표시
   const pick = (id) => (COUNTRIES[id] ? openCountry(id) : setSel(id));
@@ -60,19 +99,16 @@ export default function CountrySearch({ openCountry, user, profile }) {
           <div className="country-list">
             {filtered.map((label) => {
               const id = idOf(label);
-              const isRec = recIds.includes(id);
               const hasData = !!COUNTRIES[id];
               return (
                 <button
                   key={label}
-                  className={"country-row" + (isRec ? " is-rec" : "") + (hasData ? "" : " is-disabled")}
+                  className={"country-row" + (hasData ? "" : " is-disabled")}
                   onClick={() => hasData && pick(id)}
                   disabled={!hasData}
                 >
                   <span>{label}</span>
-                  {isRec
-                    ? <span className="rec-pill">추천</span>
-                    : !hasData ? <span className="soon-pill">준비중</span> : null}
+                  {!hasData && <span className="soon-pill">준비중</span>}
                 </button>
               );
             })}

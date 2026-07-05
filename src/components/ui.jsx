@@ -5,7 +5,6 @@ import { AFRICA_PATHS } from "../africaGeo";
 export function BaobabLogo({ light = false }) {
   const trunk = light ? "#fff" : "#2d4a32";
   const leaf = light ? "#dfe6da" : "#5a7d5a";
-  const sun = "#c9a227";
   return (
     <svg className="brand-mark" viewBox="0 0 48 48" fill="none" aria-hidden>
       <circle cx="34" cy="11" r="5" fill={sun} opacity="0.9" />
@@ -131,7 +130,7 @@ export function CountrySilhouette({ id, className }) {
 }
 
 // KOICA 도넛 차트
-const DONUT_COLORS = ["#2d4a32", "#5a7d5a", "#8fae84", "#c9a227", "#b9c4a8", "#d9d2bf"];
+const DONUT_COLORS = ["var(--green-900)", "var(--green-800)", "var(--green-700)", "var(--green-600)", "var(--green-500)", "var(--green-300)"];
 
 export function DonutChart({ sectors, total }) {
   const radius = 70, stroke = 26, cx = 95, cy = 95;

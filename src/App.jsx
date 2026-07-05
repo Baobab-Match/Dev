@@ -1,4 +1,4 @@
-import { useState, useEffect, lazy, Suspense } from "react";
+import { useState, useEffect, useRef, lazy, Suspense } from "react";
 import { Routes, Route, useNavigate, useLocation, useParams, Navigate } from "react-router-dom";
 import Nav from "./components/Nav";
 import Footer from "./components/Footer"; // 공통 하단 푸터 — 모든 페이지에 고정
@@ -48,27 +48,31 @@ export default function App() {
   const [signup, setSignup] = useState(false);
   const [matchConfirm, setMatchConfirm] = useState(false);
   const [fieldSelect, setFieldSelect] = useState(false);
-  const [matchField, setMatchField] = useState("");
+  const [matchField, setMatchField] = useState([]); 
   const [toast, setToast] = useState(null);
   const { user, profile, logOut, updateProfile } = useAuth();
   const { favorites, isFavorite, toggleFavorite } = useFavorites(user);
   const { recent, pushRecent } = useRecentCountries();
 
-  // 홈이면서 + 히어로 배너 영역 안에 있을 때만 nav 투명(흰 글씨) 처리.
-  // 스크롤이 배너를 지나 연한 배경으로 내려가면 일반 모드로 전환된다.
-  const isHome = location.pathname === "/";
-  const [scrolledPastHero, setScrolledPastHero] = useState(false);
+  // nav는 항상 흰 배경 고정. 대신 아래로 스크롤하면 숨고, 위로 스크롤하면 바로 다시 나타난다
+  // (SK하이닉스 사이트와 동일한 패턴). 페이지 맨 위 근처에서는 숨기지 않는다.
+  const [navHidden, setNavHidden] = useState(false);
+  const lastScrollY = useRef(0);
 
   useEffect(() => {
-    if (!isHome) { setScrolledPastHero(false); return; } // 홈이 아니면 항상 일반 모드
-    // 배너 높이의 약 70% 지점을 넘으면 nav를 일반 모드로 전환
-    const onScroll = () => setScrolledPastHero(window.scrollY > window.innerHeight * 0.7);
-    onScroll(); // 진입 시 현재 위치 기준으로 1회 계산
+    lastScrollY.current = window.scrollY;
+    const onScroll = () => {
+      const y = window.scrollY;
+      const goingDown = y > lastScrollY.current;
+      const pastNav = y > 88; // nav 높이 정도는 지나야 숨김 동작 시작
+      setNavHidden(goingDown && pastNav);
+      lastScrollY.current = y;
+    };
     window.addEventListener("scroll", onScroll, { passive: true });
     return () => window.removeEventListener("scroll", onScroll);
-  }, [isHome]);
+  }, []);
 
-  const onHero = isHome && !scrolledPastHero;
+  useEffect(() => { setNavHidden(false); }, [location.pathname]);
 
   // 비로그인이면 로그인 모달, 로그인이면 즐겨찾기 토글
   const handleToggleFavorite = (id) => {
@@ -79,12 +83,12 @@ export default function App() {
   // 로그인 프로필에서 매칭 기본 분야 뽑기 (기업=field, 공공기관/일반=interest)
   const myField = (profile?.type === "company" ? profile?.field : profile?.interest) || "";
 
-  // 기존 go(p) 시그니처 유지 — 내부에서 navigate로 이동
-  const go = (p, direct = false) => {
+  // 기존 go(p) 시그니처 유지 — 내부에서 navigate로 이동. state는 About 페이지 탭 지정 등에 사용
+  const go = (p, direct = false, state) => {
     if ((p === "mypage" || p === "match") && !user) { setSignup(true); return; } // 로그인 필요
     if (p === "match" && !direct) { setMatchConfirm(true); return; }
     window.scrollTo(0, 0);
-    navigate(PATHS[p] || "/");
+    navigate(PATHS[p] || "/", state ? { state } : undefined);
   };
 
   // 국가 상세로 이동 — URL에 id를 넣음 (/country/ETH)
@@ -110,11 +114,12 @@ export default function App() {
   return (
     <div className="app">
       <Nav
-        onHero={onHero}
+        hidden={navHidden}
         go={go}
+        openCountry={(id) => openCountry(id, "nav-search")}
         user={user}
         onLogin={() => setSignup(true)}
-        onLogout={async () => { await logOut(); navigate("/"); showToast("로그아웃되었습니다."); }}
+        onLogout={async () => { await logOut(); navigate("/"); }}
       />
 
       {/* lazy 페이지 로딩 중 잠깐 보일 폴백 */}
@@ -133,7 +138,7 @@ export default function App() {
             )}
           />
           <Route path="/notice" element={<NoticePage />} />
-          <Route path="/about" element={<AboutPage />} />
+          <Route path="/about" element={<AboutPage go={go} />} />
           <Route
             path="/mypage"
             element={guard(
@@ -158,14 +163,14 @@ export default function App() {
         {signup && (
           <SignupModal
             onClose={() => setSignup(false)}
-            onDone={() => { setSignup(false); showToast("환영합니다 🌳"); }}
+            onDone={() => { setSignup(false); }}
           />
         )}
         {matchConfirm && (
           <MatchConfirm
             profile={profile}
             onClose={() => setMatchConfirm(false)}
-            onYes={() => { if (profile) runMatch(myField); }}
+            onYes={() => { if (profile) runMatch(myField ? [myField] : []); }}
             onNo={() => { setMatchConfirm(false); setFieldSelect(true); }}
           />
         )}

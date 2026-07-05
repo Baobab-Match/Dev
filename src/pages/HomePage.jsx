@@ -33,7 +33,6 @@ const IMPACT_CARDS = [
     lead: "기온·강수·홍수·ODA 등\n다양한 지표",
     body: "흩어진 공공데이터를 가공해\n비교 가능한 점수로 정리",
     source: "IMF · KOICA · World Bank CCKP · 외교부",
-    highlight: true,
   },
   {
     title: "활용 데이터 기관",
@@ -51,8 +50,8 @@ const IMPACT_CARDS = [
 
 // 우리가 하는 일 — 사진 카드
 const FEATURES = [
-  { img: featureMatch, imgAlt: "국가 정보 살펴보기 일러스트", label: "국가 정보 이미지", title: "국가 정보 살펴보기", desc: "아프리카 54개국의 경제·환경·ODA 지표 가공해 한눈에 볼 수 있게 만듭니다." },
-  { img: featureRecommend, imgAlt: "맞춤형 협력 국가 추천 일러스트", label: "맞춤 추천 이미지", title: "맞춤형 협력 국가 추천", desc: "관심 분야와 보유 기술을 바탕으로, 머신러닝 기반 추천 모델이 54개국 데이터를 분석해 가장 적합한 협력 국가를 찾아냅니다." },
+  { img: featureMatch, imgAlt: "국가 정보 살펴보기 일러스트", label: "국가 정보 이미지", title: "국가 정보 살펴보기", desc: "아프리카 54개국의 경제·환경·ODA 지표 가공해 한눈에 볼 수 있게 만듭니다.", page: "search" },
+  { img: featureRecommend, imgAlt: "맞춤형 협력 국가 추천 일러스트", label: "맞춤 추천 이미지", title: "맞춤형 협력 국가 추천", desc: "관심 분야와 보유 기술을 바탕으로, 데이터 기반 AI 매칭 엔진이 54개국 데이터를 분석해 가장 적합한 협력 국가를 찾아냅니다.", page: "match" },
 ];
 
 // 개발자 소개 데이터 — 사진은 추후 /assets 에 추가 후 photo 경로만 채우면 됨
@@ -81,6 +80,10 @@ export default function HomePage({ go }) {
 
   // 슬라이드 이동 (음수=이전, 양수=다음 / 순환 처리)
   const moveSlide = (dir) => setSlide((p) => (p + dir + HERO_SLIDES.length) % HERO_SLIDES.length);
+
+  // 히어로 아래 스크롤 버튼 — 다음 섹션(서비스 소개)으로 부드럽게 이동
+  const introRef = useRef(null);
+  const scrollToContent = () => introRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
 
   const handleTouchStart = (e) => { touchStartX.current = e.touches[0].clientX; touchEndX.current = null; };
   const handleTouchMove = (e) => { touchEndX.current = e.touches[0].clientX; };
@@ -119,7 +122,25 @@ export default function HomePage({ go }) {
             </div>
           ))}
 
-          {/* 하단 인디케이터 (점) — 클릭 시 해당 슬라이드로 이동 */}
+          {/* 좌우 호버 넘김 존 — 마우스가 올라가면 그 방향으로 자동 전환, 모바일에선 CSS로 숨김 */}
+          <div
+            className="hero-nav-zone left"
+            onMouseEnter={() => moveSlide(-1)}
+            onClick={() => moveSlide(-1)}
+            aria-label="이전 배너"
+          >
+            <span className="hero-nav-arrow">‹</span>
+          </div>
+          <div
+            className="hero-nav-zone right"
+            onMouseEnter={() => moveSlide(1)}
+            onClick={() => moveSlide(1)}
+            aria-label="다음 배너"
+          >
+            <span className="hero-nav-arrow">›</span>
+          </div>
+
+          {/* 배너 전환 점 — 데스크탑에선 숨기고 모바일에서만 보임(CSS) */}
           <div className="hero-dots">
             {HERO_SLIDES.map((_, i) => (
               <button
@@ -130,27 +151,25 @@ export default function HomePage({ go }) {
               />
             ))}
           </div>
-        </div>
 
-        <div className="hero-actions">
-          <button className="hero-box" onClick={() => go("search")}>
-            알고 싶은 국가 정보 찾기
-          </button>
-          <button className="hero-box" onClick={() => go("match")}>
-            관심 분야·기술에 맞는 국가 추천 받기
+          {/* 스크롤 유도 버튼 — 데스크탑 전용(CSS), 모바일에선 점 인디케이터로 대체 */}
+          <button className="hero-scroll" onClick={scrollToContent} aria-label="아래로 스크롤">
+            <span className="hero-scroll-chevron">⌄</span>
           </button>
         </div>
       </header>
 
       {/* 서비스 소개 — 바오밥매치란? */}
-      <section className="home-section intro-section">
+      <section className="home-section intro-section" ref={introRef}>
         <div className="section-text">
           <span className="section-tag">ABOUT</span>
           <h2>바오밥매치란?</h2>
           <p style={INDENT}>
             바오밥매치는 한국의 공공기관·기업·개인을 아프리카 54개국과
             연결하는 매칭 플랫폼입니다. 공공데이터에 기반한 객관적 지표와
-            AI 추천을 통해, 가장 잘 맞는 협력 국가를 찾아드립니다.
+            AI 추천을 통해, 가장 잘 맞는 협력 국가를 찾아드립니다. 매칭
+            결과는 PDF 보고서로 정리되어, 다운로드 후 필요한 곳에 바로
+            공유할 수 있습니다.
           </p>
           <button className="section-btn" onClick={() => go("about")}>
             더 알아보기
@@ -170,7 +189,14 @@ export default function HomePage({ go }) {
         </div>
         <div className="feature-cards">
           {FEATURES.map((f) => (
-            <article className="feature-card" key={f.title}>
+            <article
+              className="feature-card"
+              key={f.title}
+              onClick={() => go(f.page)}
+              role="button"
+              tabIndex={0}
+              onKeyDown={(e) => { if (e.key === "Enter") go(f.page); }}
+            >
               <div className="card-photo" aria-label={f.label}>
                 <img src={f.img} alt={f.imgAlt} />
               </div>
@@ -179,6 +205,7 @@ export default function HomePage({ go }) {
             </article>
           ))}
         </div>
+        <p className="feature-hint">클릭하시면 바로 해당 페이지로 이동합니다.</p>
       </section>
 
       {/* 숫자로 보는 바오밥매치 — 숫자 강조 카드 */}
@@ -194,7 +221,7 @@ export default function HomePage({ go }) {
 
         <div className="impact-cards">
           {IMPACT_CARDS.map((c) => (
-            <article className={`impact-card ${c.highlight ? "is-highlight" : ""}`} key={c.title}>
+            <article className="impact-card" key={c.title}>
               <h3 className="impact-title">{c.title}</h3>
               <p className="impact-num">
                 {c.num}<span className="impact-unit">{c.unit}</span>
