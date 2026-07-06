@@ -50,7 +50,10 @@ export default function App() {
   const [fieldSelect, setFieldSelect] = useState(false);
   const [matchField, setMatchField] = useState([]); 
   const [toast, setToast] = useState(null);
-  const { user, profile, logOut, updateProfile } = useAuth();
+  // ready: Firebase 로그인 세션 복원(onAuthStateChanged 첫 콜백)이 끝났는지 여부.
+  // 새로고침 직후엔 아직 false라서, 이 값을 확인하지 않고 guard를 걸면
+  // 로그인된 사용자도 잠깐 "비로그인"으로 오인되어 /mypage, /match에서 홈으로 튕겨나감.
+  const { user, profile, ready, logOut, updateProfile } = useAuth();
   const { favorites, isFavorite, toggleFavorite } = useFavorites(user);
   const { recent, pushRecent } = useRecentCountries();
 
@@ -73,6 +76,12 @@ export default function App() {
   }, []);
 
   useEffect(() => { setNavHidden(false); }, [location.pathname]);
+
+  // 라우트가 실제로 바뀐 뒤(=새 페이지가 렌더링된 뒤) 스크롤을 맨 위로.
+  // go()/openCountry() 안의 scrollTo(0,0)는 navigate() 호출 "이전"이라 아직 이전 페이지 기준이고,
+  // 모바일에서는 스크롤 관성이나 브라우저의 scroll anchoring 때문에 새 페이지가
+  // 중간 스크롤 상태로 열리는 경우가 있어 이렇게 한 번 더 보정한다.
+  useEffect(() => { window.scrollTo(0, 0); }, [location.pathname]);
 
   // 비로그인이면 로그인 모달, 로그인이면 즐겨찾기 토글
   const handleToggleFavorite = (id) => {
@@ -108,8 +117,11 @@ export default function App() {
 
   const showToast = (msg) => { setToast(msg); setTimeout(() => setToast(null), 2800); };
 
-  // 로그인 필요한 라우트용 가드: 비로그인이면 홈으로
-  const guard = (el) => (user ? el : <Navigate to="/" replace />);
+  // 로그인 필요한 라우트용 가드: 인증 확인이 끝나기 전엔 대기, 끝난 뒤 비로그인이면 홈으로
+  const guard = (el) => {
+    if (!ready) return <div className="route-loading">불러오는 중…</div>;
+    return user ? el : <Navigate to="/" replace />;
+  };
 
   return (
     <div className="app">

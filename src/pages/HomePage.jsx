@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef } from "react";
-import baobabHero from "../assets/mainbaobab.jpg";
-import heroAgriculture from "../assets/hero-agriculture.jpg";
-import heroWater from "../assets/hero-water.jpg";
+import hero1 from "../assets/hero1.jpg";
+import hero2 from "../assets/hero2.jpg";
+import hero3 from "../assets/hero3.jpg";
 import introImage from "../assets/intro.jpg";
 import featureMatch from "../assets/feature1.jpg";
 import featureRecommend from "../assets/feature2.jpg";
@@ -11,11 +11,67 @@ import teamYeonhwa from "../assets/team-yeonhwa.jpg";
 
 const INDENT = { textIndent: "1em" };
 
+// 화면에 들어올 때마다(스크롤을 위로 올렸다가 다시 내려도) 매번 0부터 재생됨
+function CountUpStat({ value, className }) {
+  const ref = useRef(null);
+  const [display, setDisplay] = useState(null);
+  const match = String(value).match(/^(\d+)(.*)$/);
+  const target = match ? parseInt(match[1], 10) : null;
+  const suffix = match ? match[2] : "";
+
+  useEffect(() => {
+    if (target === null) {
+      setDisplay(value);
+      return;
+    }
+    const el = ref.current;
+    if (!el) return;
+
+    let rafId = null;
+
+    const play = () => {
+      if (rafId) cancelAnimationFrame(rafId);
+      const duration = 900;
+      const start = performance.now();
+      const tick = (now) => {
+        const progress = Math.min((now - start) / duration, 1);
+        const eased = 1 - Math.pow(1 - progress, 3);
+        setDisplay(Math.round(eased * target) + suffix);
+        if (progress < 1) rafId = requestAnimationFrame(tick);
+      };
+      rafId = requestAnimationFrame(tick);
+    };
+
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          play(); // 화면에 들어올 때마다 재생
+        } else {
+          if (rafId) cancelAnimationFrame(rafId);
+          setDisplay("0" + suffix); // 벗어나면 리셋 — 다음에 들어올 때 다시 0부터 시작
+        }
+      },
+      { threshold: 0.4 }
+    );
+    observer.observe(el);
+    return () => {
+      observer.disconnect();
+      if (rafId) cancelAnimationFrame(rafId);
+    };
+  }, [value, target, suffix]);
+
+  return (
+    <span className={className} ref={ref}>
+      {display ?? (target !== null ? "0" + suffix : value)}
+    </span>
+  );
+}
+
 // 배너 슬라이드 이미지 (가로로 자동 전환)
 const HERO_SLIDES = [
-  { img: baobabHero, title1: "우리는 바오밥처럼", title2: "뿌리깊게 연결됩니다", sub: "We are deeply rooted like baobabs." },
-  { img: heroAgriculture, title1: "함께 일구는", title2: "지속가능한 미래", sub: "Growing a sustainable future together." },
-  { img: heroWater, title1: "기후 위기에 맞서", title2: "함께 만드는 변화", sub: "Building change together against the climate crisis." },
+  { img: hero1, title1: "우리는 바오밥처럼", title2: "뿌리깊게 연결됩니다", sub: "We are deeply rooted like baobabs." },
+  { img: hero2, title1: "함께 일구는", title2: "지속가능한 미래", sub: "Growing a sustainable future together." },
+  { img: hero3, title1: "기후 위기에 맞서", title2: "함께 만드는 변화", sub: "Building change together against the climate crisis." },
 ];
 
 // 숫자로 보는 바오밥매치 — 숫자 강조 카드
@@ -205,7 +261,7 @@ export default function HomePage({ go }) {
             </article>
           ))}
         </div>
-        <p className="feature-hint">클릭하시면 바로 해당 페이지로 이동합니다.</p>
+        <p className="feature-hint">클릭하면 바로 해당 페이지로 이동하실 수 있습니다.</p>
       </section>
 
       {/* 숫자로 보는 바오밥매치 — 숫자 강조 카드 */}
@@ -224,7 +280,7 @@ export default function HomePage({ go }) {
             <article className="impact-card" key={c.title}>
               <h3 className="impact-title">{c.title}</h3>
               <p className="impact-num">
-                {c.num}<span className="impact-unit">{c.unit}</span>
+                <CountUpStat value={c.num} /><span className="impact-unit">{c.unit}</span>
               </p>
               <p className="impact-lead">{lines(c.lead)}</p>
               <span className="impact-divider" />

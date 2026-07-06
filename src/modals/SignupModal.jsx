@@ -328,68 +328,73 @@ const TYPE_LABEL = { gov: "공공기관", company: "기업", general: "개인" }
 
 export default function SignupModal({ onClose, onDone }) {
   const [view, setView] = useState("login");
+  const showBack = view && view !== "login";
 
   return (
     <div className="overlay" onClick={onClose}>
-      <div className="modal" onClick={(e) => e.stopPropagation()}>
+      <div className="modal modal--signup" onClick={(e) => e.stopPropagation()}>
         <button className="modal-x" onClick={onClose} aria-label="닫기">✕</button>
 
-        {view === "login" && (
-          <>
-            <h2 className="modal-title">로그인</h2>
-            <p className="modal-sub">바오밥매치에 오신 것을 환영합니다.</p>
-            <div className="modal-rule" />
-            <LoginForm onDone={onDone} onGoSignup={() => setView(null)} />
-          </>
+        {showBack && (
+          <button
+            type="button"
+            className="modal-back"
+            onClick={() => setView(null)}
+            aria-label="회원 유형 다시 선택"
+          >
+            ← 뒤로
+          </button>
         )}
 
-        {view === null && (
-          <>
-            <h2 className="modal-title">회원가입</h2>
-            <p className="modal-sub">
-              <b>바오밥매치(Baobab Match)</b>에 오신 것을 환영합니다.<br />
-              회원이 되시면 녹색기술 정보를 한눈에, 맞춤형 국가 매칭까지 다양한 혜택을 누려보세요.<br />
-              아래 중 회원타입을 선택하신 후 회원가입을 진행해주시기 바랍니다.
-            </p>
-            <div className="type-grid">
-              <button className="type-card" onClick={() => setView("gov")}>
-                <Icons.gov /><b>공공기관</b>
-              </button>
-              <button className="type-card" onClick={() => setView("company")}>
-                <Icons.company /><b>기업</b>
-              </button>
-              <button className="type-card" onClick={() => setView("general")}>
-                <Icons.people /><b>개인</b>
-              </button>
-            </div>
-            <p className="modal-switch">
-              이미 계정이 있으신가요?{" "}
-              <button type="button" className="link-btn" onClick={() => setView("login")}>로그인</button>
-            </p>
-          </>
-        )}
+        <div className={"modal-body" + (showBack ? " has-back" : "")}>
+          {view === "login" && (
+            <>
+              <h2 className="modal-title">로그인</h2>
+              <p className="modal-sub">바오밥매치에 오신 것을 환영합니다.</p>
+              <div className="modal-rule" />
+              <LoginForm onDone={onDone} onGoSignup={() => setView(null)} />
+            </>
+          )}
 
-        {view && view !== "login" && (
-          <>
-            {/* 유형 선택으로 돌아가기 — 잘못 선택했을 때 */}
-            <button
-              type="button"
-              className="modal-back"
-              onClick={() => setView(null)}
-              aria-label="회원 유형 다시 선택"
-            >
-              ← 뒤로
-            </button>
-            <h2 className="modal-title">회원가입</h2>
-            <p className="modal-sub">
-              <b>{TYPE_LABEL[view]}</b> 회원 정보를 기입해 주세요.
-            </p>
-            <div className="modal-rule" />
-            {view === "gov" && <GovForm onDone={onDone} />}
-            {view === "company" && <CompanyForm onDone={onDone} />}
-            {view === "general" && <GeneralForm onDone={onDone} />}
-          </>
-        )}
+          {view === null && (
+            <>
+              <h2 className="modal-title">회원가입</h2>
+              <p className="modal-sub">
+                <b>바오밥매치(Baobab Match)</b>에 오신 것을 환영합니다.<br />
+                회원이 되시면 녹색기술 정보를 한눈에, 맞춤형 국가 매칭까지 다양한 혜택을 누려보세요.<br />
+                아래 중 회원타입을 선택하신 후 회원가입을 진행해주시기 바랍니다.
+              </p>
+              <div className="type-grid">
+                <button className="type-card" onClick={() => setView("gov")}>
+                  <Icons.gov /><b>공공기관</b>
+                </button>
+                <button className="type-card" onClick={() => setView("company")}>
+                  <Icons.company /><b>기업</b>
+                </button>
+                <button className="type-card" onClick={() => setView("general")}>
+                  <Icons.people /><b>개인</b>
+                </button>
+              </div>
+              <p className="modal-switch">
+                이미 계정이 있으신가요?{" "}
+                <button type="button" className="link-btn" onClick={() => setView("login")}>로그인</button>
+              </p>
+            </>
+          )}
+
+          {showBack && (
+            <>
+              <h2 className="modal-title">회원가입</h2>
+              <p className="modal-sub">
+                <b>{TYPE_LABEL[view]}</b> 회원 정보를 기입해 주세요.
+              </p>
+              <div className="modal-rule" />
+              {view === "gov" && <GovForm onDone={onDone} />}
+              {view === "company" && <CompanyForm onDone={onDone} />}
+              {view === "general" && <GeneralForm onDone={onDone} />}
+            </>
+          )}
+        </div>
       </div>
     </div>
   );

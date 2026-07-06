@@ -91,7 +91,7 @@ export default function CountrySearch({ openCountry, user, profile }) {
           <div className="search-box">
             <Icons.search />
             <input
-              placeholder="국가명 찾기 (예: 에티오피아)"
+              placeholder="국가명 찾기 (ex: 에티오피아)"
               value={q}
               onChange={(e) => setQ(e.target.value)}
             />

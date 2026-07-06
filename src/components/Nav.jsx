@@ -34,11 +34,13 @@ function matchesQuery(label, q) {
   return korean.startsWith(q);
 }
 
-// 사이트 소개 서브메뉴 — AboutPage.jsx의 TABS와 동일한 목록 (연락처 제외)
+// 사이트 소개 서브메뉴 — AboutPage.jsx의 TABS와 동일한 목록 
 const ABOUT_ITEMS = [
   { id: "intro", label: "신념" },
-  { id: "why",   label: "핵심 기능" },
-  { id: "how",   label: "이용 방법" },
+  { id: "for-whom", label: "이런 분들께" },
+  { id: "why", label: "핵심 기능" },
+  { id: "how", label: "이용 방법" },
+  { id: "faq", label: "자주 묻는 질문" },
 ];
 
 export default function Nav({ hidden, go, openCountry, user, onLogin, onLogout }) {

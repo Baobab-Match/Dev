@@ -270,7 +270,7 @@ const styles = StyleSheet.create({
   // 세 개가 같은 Page의 형제 요소로 flexGrow:1을 나눠 가져서, 페이지에 남는 여백을
   // 세 칸이 똑같이 나눠 가지며 자동으로 늘어난다 (고정 높이 아님).
   memoGroup: { flexGrow: 1, flexDirection: "column", marginTop: 4, marginBottom: 14 },
-  memoGroupLabel: { fontSize: 8.5, fontWeight: 700, color: C.green700, marginBottom: 4 },
+  memoGroupLabel: { fontSize: 10.5, fontWeight: 700, letterSpacing: 2, color: C.green500, marginBottom: 6 },
   memoGroupBox: { flexGrow: 1, minHeight: 26, borderWidth: 1, borderColor: C.green700, borderRadius: 0 },
 
   // ── 매칭 페이지 (막대 두껍게 + 글자 키움) ──
@@ -392,7 +392,7 @@ function SecHead({ title, src, warn }) {
 function SectionMemo() {
   return (
     <View style={styles.memoGroup}>
-      <Text style={styles.memoGroupLabel}>메모</Text>
+      <Text style={styles.memoGroupLabel}>NOTES</Text>
       <View style={styles.memoGroupBox} />
     </View>
   );
@@ -541,7 +541,7 @@ function CountryDetailPage({ r, country, rankLabel, field, showMatchedField }) {
             <Text style={styles.koicaCumLabel}>누적 지원</Text>
             <Text style={styles.koicaCumBig}>{cum.total}</Text>
             <Text style={styles.koicaCumMeta}>
-              {cum.startYear}~{cum.latestYear} · 최근 약 {cum.latest}
+              {cum.startYear}~{cum.latestYear} 누적금액 · {cum.latestYear}년 한 해 지원액은 {cum.latest}
             </Text>
           </View>
         ) : null}
@@ -572,7 +572,9 @@ function CountryDetailPage({ r, country, rankLabel, field, showMatchedField }) {
           </>
         ) : null}
       </View>
-      <SectionMemo />
+      <View style={{ marginTop: 14, flexGrow: 1 }}>
+        <SectionMemo />
+      </View>
 
       <PageFooter />
     </Page>
