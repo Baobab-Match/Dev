@@ -20,7 +20,8 @@
    17. 홈 랜딩 (섹션·임팩트)
    18. 사이트 공통 푸터
    19. 라우트 로딩 폴백
-   20. 반응형 (태블릿·모바일) — 전 섹션 공통
+   20. AI 매칭 로딩 오버레이
+   21. 반응형 (태블릿·모바일) — 전 섹션 공통
    ============================================================ */
 
 
@@ -415,14 +416,6 @@ textarea.field { resize: vertical; min-height: 64px; }
 .about-landing-audience-title { font-family: var(--font-display); font-weight: 900; font-size: clamp(26px, 3.4vw, 38px); color: var(--green-900); line-height: 1.45; letter-spacing: -0.02em; margin-bottom: 20px; }
 .about-landing-audience-sub { font-size: var(--fs-lg); color: var(--ink-soft); line-height: 1.8; margin-bottom: 32px; word-break: keep-all; }
 
-@media (max-width: 768px) {
-  /* "당신의 필요를 이해하는 데이터로,"가 한 줄에 들어가도록 축소 — <br/>로 나눠둔 2줄 그대로 유지 */
-  .about-landing-hero:not(.about-landing-hero--how) .about-landing-hero-title { font-size: 21px; line-height: 1.5; }
-
-  /* "누구에게 필요한 서비스일까요?"가 한 줄에 들어가도록 축소 — "요?"만 다음 줄로 밀리는 것 방지 */
-  .about-landing-audience-title { font-size: 22px; line-height: 1.4; }
-}
-
 .about-landing-hero--how {
   width: auto;
   margin-left: 0;
@@ -621,7 +614,43 @@ textarea.field { resize: vertical; min-height: 64px; }
 .footer-copy { margin-top: 22px; padding-top: 18px; border-top: 1px solid rgba(255, 255, 255, 0.12); font-family: var(--font-mono); font-size: var(--fs-xs); color: rgba(255, 255, 255, 0.6); }
 /* 19. 라우트 로딩 폴백 (코드 스플리팅 lazy 로딩 중 표시) */
 .route-loading { min-height: 60vh; display: flex; align-items: center; justify-content: center; font-family: var(--font-body); font-size: var(--fs-md); color: var(--green-500); letter-spacing: 0.02em; }
-/* 20. 반응형 (태블릿·모바일) — 전 섹션 공통 */
+
+/* 20. AI 매칭 로딩 오버레이 (FastAPI 응답 대기 중 표시) */
+.ai-loading-overlay {
+  position: fixed; inset: 0; z-index: 300;
+  background: rgba(247, 248, 250, 0.94);
+  backdrop-filter: blur(4px);
+  display: flex; align-items: center; justify-content: center;
+  padding: 20px;
+  animation: fade 0.2s;
+}
+.ai-loading-card {
+  display: flex; flex-direction: column; align-items: center;
+  gap: 20px;
+  width: min(320px, 100%);
+  text-align: center;
+}
+.ai-loading-ring-wrap { position: relative; width: 180px; height: 180px; }
+.ai-loading-ring { transition: stroke-dashoffset 0.2s linear; }
+.ai-loading-ring-center {
+  position: absolute; inset: 0;
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  gap: 8px;
+}
+.ai-loading-logo { width: 64px; height: auto; display: block; }
+.ai-loading-pct {
+  font-family: var(--font-display); font-weight: 900; font-size: 26px;
+  color: var(--green-900); line-height: 1;
+}
+.ai-loading-msg {
+  font-family: var(--font-body); font-size: var(--fs-md); color: var(--ink-soft);
+  min-height: 22px; margin: 0;
+  opacity: 0; transform: translateY(4px);
+  transition: opacity 0.26s ease, transform 0.26s ease;
+}
+.ai-loading-msg.is-visible { opacity: 1; transform: translateY(0); }
+
+/* 21. 반응형 (태블릿·모바일) — 전 섹션 공통 */
 
 @media (max-width: 900px) {
   .search-layout, .detail-grid, .koica-wrap { grid-template-columns: 1fr; }
@@ -657,9 +686,11 @@ textarea.field { resize: vertical; min-height: 64px; }
   .how-stage { display: flex; align-items: flex-start; gap: 16px; text-align: left; padding: 0; }
   .how-stage-num { flex: none; margin-bottom: 0; width: 46px; height: 46px; font-size: 19px; }
   .how-stage-body p { margin-inline: 0; max-width: none; }
-}
-@media (max-width: 768px) {
   .home-how-wrap { padding: 0 20px; }
+  /* "당신의 필요를 이해하는 데이터로,"가 한 줄에 들어가도록 축소 — <br/>로 나눠둔 2줄 그대로 유지 */
+  .about-landing-hero:not(.about-landing-hero--how) .about-landing-hero-title { font-size: 21px; line-height: 1.5; }
+  /* "누구에게 필요한 서비스일까요?"가 한 줄에 들어가도록 축소 — "요?"만 다음 줄로 밀리는 것 방지 */
+  .about-landing-audience-title { font-size: 22px; line-height: 1.4; }
 }
 @media (max-width: 760px) {
   :root {
@@ -751,6 +782,11 @@ textarea.field { resize: vertical; min-height: 64px; }
   .type-card { padding: 20px 12px 14px; }
   .modal-title { font-size: 24px; }
   .confirm-q .big { font-size: 24px; }
+
+  /* AI 매칭 로딩 — 좁은 화면에서 링 크기 축소 */
+  .ai-loading-ring-wrap { width: 150px; height: 150px; }
+  .ai-loading-logo { width: 52px; }
+  .ai-loading-pct { font-size: 22px; }
 }
 @media (max-width: 640px) {
   .footer-info p { display: flex; flex-direction: column; gap: 3px; line-height: 1.6; }
