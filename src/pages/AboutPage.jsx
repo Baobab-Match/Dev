@@ -2,11 +2,6 @@ import { useState, useEffect, useRef } from "react";
 import { useLocation } from "react-router-dom";
 import introBanner from "../assets/about-intro-banner.jpg";
 import landingBanner from "../assets/about-landing-banner.jpg";
-import howBanner from "../assets/about-how-banner.jpg"
-import aboutFeature1 from "../assets/about-feature1.jpg";
-import aboutFeature2 from "../assets/about-feature2.jpg";
-import aboutFeature3 from "../assets/about-feature3.jpg";
-import aboutFeature4 from "../assets/about-feature4.jpg";
 
 const INDENT = { textIndent: "1em" };
 const INDENT_TOP = { textIndent: "1em", marginTop: "1.2em" };
@@ -39,13 +34,28 @@ const MISSION = [
 ];
 
 // 왜 아프리카인가 — 다크 섹션 2x2 카드용 데이터
-// 출처: IEA(Africa Energy Outlook 2022, 온실가스·태양광), IMF F&D 2023(인구, UN 인구전망 기반), World Bank(노동가능인구)
+// 출처: World Bank(노동가능인구) · AU/World Bank(AfCFTA) · Forest Declaration Assessment(콩고분지 탄소흡수) · ND-GAIN 기후적응지수(기후 취약국)
 const WHY_AFRICA = [
-  { title: "온실가스 배출량", val: "4%↓", desc: "아프리카는 전 세계 온실가스 배출량의 4%도 채 되지 않지만, 기후변화로 매년 GDP의 최대 15%까지 손실을 입고 있습니다." },
-  { title: "태양광 잠재력", val: "60%↑", desc: "전 세계 최고 수준 태양광 자원의 60%를 아프리카가 보유하고 있습니다." },
-  { title: "인구 비중", val: "25%↑", desc: "2050년, 전 세계 인구 중 아프리카가 차지할 것으로 전망되는 비중입니다." },
-  { title: "노동가능인구", val: "70%↑", desc: "2035년까지 아프리카 노동가능인구가 이만큼 증가할 것으로 전망됩니다." },
+  { title: "노동가능인구", val: "70%", trend: "up", desc: "2035년까지 아프리카 노동가능인구가 이만큼 증가할 것으로 전망됩니다. 세계에서 가장 젊고 빠르게 성장하는 노동시장인 만큼, 협력을 시작하기에 지금이 최적의 시점입니다." },
+  { title: "아프리카대륙자유무역지대(AfCFTA)", val: "13억 명", desc: "55개국이 참여하는 단일 무역권으로, 결합 GDP는 약 3조 4천억 달러 규모입니다. 한 국가와의 협력이 55개국 시장 전체로 확장될 수 있는 기회입니다." },
+  { title: "탄소흡수 잠재력", val: "6억 톤", desc: "콩고분지는 아마존보다 많은 탄소를 흡수하는 열대 지역 최대의 탄소흡수원으로, 매년 순 6억 톤의 이산화탄소를 흡수합니다. 아프리카가 지닌 세계 최대 수준의 탄소흡수 잠재력을 보여줍니다." },
+  { title: "기후 취약국 비중", val: "85%", desc: "전 세계 기후변화 취약국 상위 20개국 중 17개국이 아프리카에 있습니다. 가뭄·홍수 등 기후재난 대응 기술이 그 어느 곳보다 절실합니다." },
 ];
+
+function TrendArrow({ direction }) {
+  const isUp = direction === "up";
+  return (
+    <span className={`awa-trend awa-trend--${direction}`}>
+      <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
+        {isUp ? (
+          <path d="M3 10L10 3M10 3H4.5M10 3V8.5" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+        ) : (
+          <path d="M3 4L10 11M10 11H4.5M10 11V5.5" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+        )}
+      </svg>
+    </span>
+  );
+}
 
 // 화면에 들어올 때마다(스크롤을 위로 올렸다가 다시 내려도) 매번 0부터 재생됨
 function CountUpStat({ value, className = "stat-val" }) {
@@ -72,7 +82,7 @@ function CountUpStat({ value, className = "stat-val" }) {
       const tick = (now) => {
         const progress = Math.min((now - start) / duration, 1);
         const eased = 1 - Math.pow(1 - progress, 3);
-        setDisplay(Math.round(eased * target) + suffix);
+        setDisplay(Math.round(eased * target));
         if (progress < 1) rafId = requestAnimationFrame(tick);
       };
       rafId = requestAnimationFrame(tick);
@@ -84,7 +94,7 @@ function CountUpStat({ value, className = "stat-val" }) {
           play();
         } else {
           if (rafId) cancelAnimationFrame(rafId);
-          setDisplay("0" + suffix);
+          setDisplay(0);
         }
       },
       { threshold: 0.4 }
@@ -98,18 +108,16 @@ function CountUpStat({ value, className = "stat-val" }) {
 
   return (
     <div className={className} ref={ref}>
-      {display ?? (target !== null ? "0" + suffix : value)}
+      <span
+        className="awa-num-digits"
+        style={{ minWidth: `${String(target).length}ch` }}
+      >
+        {display ?? 0}
+      </span>
+      <span className="awa-num-suffix">{suffix}</span>
     </div>
   );
 }
-
-// 핵심 기능 — 랜딩 스크롤 섹션용 짧은 티저 (한 줄 요약)
-const WHY_TEASER = [
-  { title: "흩어진 아프리카 54개국 데이터를 한곳에", desc: "외교부·KOICA 등 공공데이터를 가공해, 54개국을 하나의 기준으로 정리했습니다." },
-  { title: "복잡한 지표를 점수로 한눈에 확인", desc: "기후·경제·외교 지표를 점수로 환산해, 국가 간 차이를 한눈에 비교합니다." },
-  { title: "AI가 협력하기 적합한 국가 추천", desc: "관심 분야와 보유 기술만 입력하면, AI가 근거와 함께 협력 국가를 추천합니다." },
-  { title: "한 번에 정리되는 보고서", desc: "매칭 결과를 PDF 보고서로 정리해, 다운로드해서 바로 공유할 수 있습니다." },
-];
 
 // 핵심 기능(why) 탭 — 상세 설명 (탭 페이지 전용, 티저보다 자세하고 다른 문구)
 const WHY_DETAIL = [
@@ -130,142 +138,6 @@ const WHY_DETAIL = [
     desc: "매칭 순위와 국가별 추천 근거, 핵심 지표를 하나의 PDF 보고서로 정리해 다운로드할 수 있습니다. 별도로 편집하거나 자료를 재구성할 필요 없이, 협력 제안서나 내부 보고 자료에 바로 첨부해 활용할 수 있는 형태로 제공합니다. 여러 국가를 검토했다면 국가별로 각각 보고서를 받아 비교 자료로 쌓아둘 수도 있습니다.",
   },
 ];
-
-const FEATURE_PHOTOS = [aboutFeature1, aboutFeature2, aboutFeature3, aboutFeature4];
-
-function ScrollFeatureList({ items, photos, onMore }) {
-  const SLOT_VH = 140;
-  const HOLD = 0.34;
-  const FOLD = 0.28;
-  const ROW_H = 68; // 접힌 헤더 한 줄 높이 — 더 존재감 있게 키움
-  const LERP = 0.08; // 값이 작을수록 더 묵직하고 부드럽게 쫓아감 (0.05~0.15 권장)
-
-  const wrapRef = useRef(null);
-  const panelRefs = useRef([]);
-  const headerRefs = useRef([]);
-  const total = items.length + 1;
-  const smoothedP = useRef(0);
-  const running = useRef(false);
-
-  useEffect(() => {
-    // 모바일에선 CSS가 세로 목록으로 강제 표시하므로(스크롤 연출 없음),
-    // 이 애니메이션 루프를 아예 돌리지 않는다 — 안 그러면 inline pointer-events/opacity가
-    // 모바일 레이아웃과 충돌해서 CTA 버튼이 눌리지 않는 문제가 생김.
-    if (window.matchMedia("(max-width: 768px)").matches) return;
-
-    const applyFrame = (p) => {
-      panelRefs.current.forEach((el, i) => {
-        if (!el) return;
-        const t = p - i;
-        let opacity, translateY, scaleY, origin;
-
-        if (t <= -(HOLD + FOLD)) {
-          opacity = 0; translateY = 40; scaleY = 1; origin = "center";
-        } else if (t <= -HOLD) {
-          const k = (t + HOLD + FOLD) / FOLD;
-          opacity = k; translateY = (1 - k) * 40; scaleY = 1; origin = "center";
-        } else if (t <= HOLD) {
-          opacity = 1; translateY = 0; scaleY = 1; origin = "center";
-        } else if (t <= HOLD + FOLD) {
-          const k = (t - HOLD) / FOLD;
-          opacity = 1 - k; translateY = -k * 30; scaleY = 1 - k; origin = "top center";
-        } else {
-          opacity = 0; translateY = -30; scaleY = 0; origin = "top center";
-        }
-
-        el.style.opacity = String(opacity);
-        el.style.transform = `translateY(${translateY}px) scaleY(${scaleY})`;
-        el.style.transformOrigin = origin;
-        el.style.pointerEvents = opacity > 0.5 ? "auto" : "none";
-      });
-
-      headerRefs.current.forEach((el, i) => {
-        if (!el) return;
-        const t = p - i;
-        let raw;
-        if (t <= HOLD) raw = 0;
-        else if (t <= HOLD + FOLD) raw = (t - HOLD) / FOLD;
-        else raw = 1;
-        const foldT = 1 - Math.pow(1 - raw, 2);
-
-        el.style.height = `${foldT * ROW_H}px`;
-        el.style.opacity = String(foldT);
-        el.classList.toggle("is-current", t > -HOLD && t <= HOLD + FOLD);
-      });
-    };
-
-    const loop = () => {
-      const wrap = wrapRef.current;
-      if (!wrap) { running.current = false; return; }
-      const vh = window.innerHeight;
-      const slotPx = (SLOT_VH / 100) * vh;
-      const rect = wrap.getBoundingClientRect();
-      const scrolled = Math.min(Math.max(-rect.top, 0), slotPx * (total - 1));
-      const targetP = scrolled / slotPx;
-
-      // lerp — 실제 스크롤값을 즉시 반영하지 않고, 매 프레임 목표치를 조금씩 쫓아가게 해서
-      // 뚝뚝 끊기는 휠 스크롤도 부드럽게 흐르는 느낌으로 바뀜
-      smoothedP.current += (targetP - smoothedP.current) * LERP;
-
-      applyFrame(smoothedP.current);
-
-      // 목표값에 충분히 가까워지면 루프를 멈춰 불필요한 렌더링을 줄임
-      if (Math.abs(targetP - smoothedP.current) > 0.0008) {
-        requestAnimationFrame(loop);
-      } else {
-        smoothedP.current = targetP;
-        applyFrame(targetP);
-        running.current = false;
-      }
-    };
-
-    const onScroll = () => {
-      if (!running.current) {
-        running.current = true;
-        requestAnimationFrame(loop);
-      }
-    };
-
-    window.addEventListener("scroll", onScroll, { passive: true });
-    onScroll();
-    return () => window.removeEventListener("scroll", onScroll);
-  }, [total]);
-
-  return (
-    <div className="ftl-wrap" ref={wrapRef} style={{ height: `${total * SLOT_VH}vh` }}>
-      <div className="ftl-stage">
-        <div className="ftl-headers">
-          {items.map((it, i) => (
-            <div className="ftl-header-row" key={it.title} ref={(el) => (headerRefs.current[i] = el)}>
-              <span className="ftl-num">{String(i + 1).padStart(2, "0")}</span>
-              <span className="ftl-title">{it.title}</span>
-            </div>
-          ))}
-        </div>
-
-        <div className="ftl-panels">
-          {items.map((it, i) => (
-            <div className="ftl-panel" key={it.title} ref={(el) => (panelRefs.current[i] = el)}>
-              <div className="ftl-photo">
-                <img src={photos[i]} alt={it.title} />
-              </div>
-              <div className="ftl-text">
-                <h3>{it.title}</h3>
-                <p style={INDENT}>{it.desc}</p>
-              </div>
-            </div>
-          ))}
-
-          <div className="ftl-panel ftl-panel--cta" ref={(el) => (panelRefs.current[items.length] = el)}>
-            <button className="about-next-link" onClick={onMore}>
-              핵심 기능 자세히 보기 <span className="arrow">→</span>
-            </button>
-          </div>
-        </div>
-      </div>
-    </div>
-  );
-}
 
 // 이런 분들께 추천합니다 — 정부·공공기관 / 기업이 메인 타겟, 개인은 부가 설명
 const AUDIENCE = [
@@ -342,26 +214,7 @@ export function AboutPage({ go }) {
               자세히 보기 <span className="arrow">→</span>
             </button>
           </section>
-
-          {/* 핵심 기능 — 스크롤 스토리텔링 (지나간 항목은 목록으로 접힘) */}
-          <section className="about-landing-feature">
-            <ScrollFeatureList items={WHY_TEASER} photos={FEATURE_PHOTOS} onMore={() => setTab("why")} />
-          </section>
-
-          {/* 이용 방법 — SK하이닉스 배너 참고, 버튼 호버 시 사진에 초록 틴트 */}
-          <section className="about-landing-hero about-landing-hero--how">
-            <img src={howBanner} className="about-landing-hero-img" alt="데이터를 분석하는 모습" />
-            <div className="about-landing-hero-tint" />
-            <div className="about-landing-hero-overlay">
-              <h1 className="about-landing-hero-title">
-                나라를 찾고, 비교하고, 추천받고,<br />
-                지금 시작해보세요.
-              </h1>
-              <button className="about-landing-hero-btn" onClick={() => setTab("how")}>
-                이용 방법 더보기 <span className="arrow">→</span>
-              </button>
-            </div>
-          </section>
+          
         </>
       ) : (
         <nav className="breadcrumb" aria-label="이동 경로">
@@ -412,14 +265,17 @@ export function AboutPage({ go }) {
                   {WHY_AFRICA.map((s, i) => (
                     <div className="awa-card" key={i}>
                       <p className="awa-card-label">{s.title}</p>
-                      <CountUpStat value={s.val} className="awa-num" />
+                      <div className="awa-num-row">
+                        <CountUpStat value={s.val} className="awa-num" />
+                        {s.trend && <TrendArrow direction={s.trend} />}
+                      </div>
                       <p className="awa-card-desc">{s.desc}</p>
                     </div>
                   ))}
                 </div>
               </div>
               <p className="eco-foot" style={{ marginTop: "20px" }}>
-                출처: IEA 「Africa Energy Outlook 2022」 · IMF 「Finance & Development」(2023) · World Bank · 아프리카개발은행(AfDB, 2022)
+                출처: World Bank(노동가능인구) · 아프리카연합·World Bank(AfCFTA) · Forest Declaration Assessment(콩고분지) · ND-GAIN 기후적응지수(기후취약국)
               </p>
             </section>
           </section>

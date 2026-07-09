@@ -5,9 +5,7 @@ import hero3 from "../assets/hero3.jpg";
 import introImage from "../assets/intro.jpg";
 import featureMatch from "../assets/feature1.jpg";
 import featureRecommend from "../assets/feature2.jpg";
-import teamChaeyeon from "../assets/team-chaeyeon.jpg";
-import teamHamin from "../assets/team-hamin.jpg";
-import teamYeonhwa from "../assets/team-yeonhwa.jpg";
+import howBanner from "../assets/about-how-banner.jpg"
 
 const INDENT = { textIndent: "1em" };
 
@@ -108,13 +106,6 @@ const IMPACT_CARDS = [
 const FEATURES = [
   { img: featureMatch, imgAlt: "국가 정보 살펴보기 일러스트", label: "국가 정보 이미지", title: "국가 정보 살펴보기", desc: "아프리카 54개국의 경제·환경·ODA 지표 가공해 한눈에 볼 수 있게 만듭니다.", page: "search" },
   { img: featureRecommend, imgAlt: "맞춤형 협력 국가 추천 일러스트", label: "맞춤 추천 이미지", title: "맞춤형 협력 국가 추천", desc: "관심 분야와 보유 기술을 바탕으로, 데이터 기반 AI 매칭 엔진이 54개국 데이터를 분석해 가장 적합한 협력 국가를 찾아냅니다.", page: "match" },
-];
-
-// 개발자 소개 데이터 — 사진은 추후 /assets 에 추가 후 photo 경로만 채우면 됨
-const DEVELOPERS = [
-  { name: "강채연", role: "기획 & PM", desc: "서비스 비즈니스 모델 설계", photo: teamChaeyeon },
-  { name: "오하민", role: "Full stack Developer", desc: "시스템 개발 및 AI 모델 설계", photo: teamHamin },
-  { name: "이연화", role: "Data Analyst", desc: "공공데이터 분석 및 시각화", photo: teamYeonhwa },
 ];
 
 // "\n"으로 나눈 텍스트를 <span> 줄들로 렌더
@@ -291,29 +282,22 @@ export default function HomePage({ go }) {
         </div>
       </section>
 
-      {/* 개발자 소개 — 세로 카드, 카드 내 텍스트는 가로 배치 */}
-      <section className="home-section team-section">
-        <div className="section-head">
-          <span className="section-tag">TEAM</span>
-          <h2>BAOBAB</h2>
-        </div>
-        <div className="team-cards">
-          {DEVELOPERS.map((dev) => (
-            <article className="team-card" key={dev.name}>
-              <div className="team-photo" aria-label={`${dev.name} 프로필`}>
-                {dev.photo
-                  ? <img src={dev.photo} alt={dev.name} />
-                  : <span className="photo-placeholder">사진 자리</span>}
-              </div>
-              <div className="team-info-row">
-                <h3>{dev.name}</h3>
-                <p className="team-role">{dev.role}</p>
-                <p className="team-desc">{dev.desc}</p>
-              </div>
-            </article>
-          ))}
-        </div>
-      </section>
-    </div>
+      {/* 이용 방법 유도 배너 — AboutPage 랜딩에서 옮겨옴 */}
+      <div className="home-how-wrap">
+        <section className="about-landing-hero about-landing-hero--how">
+          <img src={howBanner} className="about-landing-hero-img" alt="데이터를 분석하는 모습" />
+          <div className="about-landing-hero-tint" />
+          <div className="about-landing-hero-overlay">
+            <h1 className="about-landing-hero-title">
+              나라를 찾고, 비교하고, 추천받고,<br />
+              지금 시작해보세요.
+            </h1>
+            <button className="about-landing-hero-btn" onClick={() => go("about", false, { tab: "how" })}>
+              이용 방법 더보기 <span className="arrow">→</span>
+            </button>
+          </div>
+        </section>
+      </div>
++    </div>
   );
 }
