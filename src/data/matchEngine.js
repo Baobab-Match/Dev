@@ -175,7 +175,7 @@ const WEIGHTS = {
 
 // ── 점수대별 등급 + 안내 문구 ───────────────────────────────
 // 상위 3개를 모두 보여주되, 점수가 낮으면 솔직하게 알려준다.
-function matchTier(score) {
+export function matchTier(score) {
   if (score >= 75) return { tier: "strong", tierNote: "조건에 매우 잘 맞는 국가입니다." };
   if (score >= 60) return { tier: "good",   tierNote: "여러 조건에서 적합한 국가입니다." };
   if (score >= 45) return { tier: "fair",   tierNote: "일부 조건에서 적합한 국가입니다." };
