@@ -10,7 +10,8 @@
 - **프론트엔드** — Vite + React (컴포넌트 기반 구조), CSS 변수 디자인 토큰
 - **인증·데이터** — Firebase Authentication / Firestore
 - **호스팅** — Firebase Hosting (보안 헤더·정적 자산 장기 캐싱 적용, 아래 [배포](#배포-firebase-hosting) 참고)
-- **AI 추천(진행 중)** — scikit-learn K-Means 모델 → FastAPI(`baobab-api`) / Render 서빙
+- **AI 추천** — scikit-learn K-Means + 코사인 유사도 모델(`baobab_matcher.pkl`) → FastAPI(`baobab-api`) 서빙, Render 배포
+- **데이터 파이프라인** — Google Colab 4단계 노트북으로 공공데이터 12종 수집·가공 ([baobab-match-data-pipeline](레포링크) 참고)
 
 ## 사전 준비
 로컬에서 처음 실행하기 전에 아래가 준비돼 있어야 합니다.
