@@ -10,7 +10,8 @@
 - **프론트엔드** — Vite + React (컴포넌트 기반 구조), CSS 변수 디자인 토큰
 - **인증·데이터** — Firebase Authentication / Firestore
 - **호스팅** — Firebase Hosting (보안 헤더·정적 자산 장기 캐싱 적용, 아래 [배포](#배포-firebase-hosting) 참고)
-- **AI 추천(진행 중)** — scikit-learn K-Means 모델 → FastAPI(`baobab-api`) / Render 서빙
+- **AI 추천** — scikit-learn K-Means + 코사인 유사도 모델(`baobab_matcher.pkl`) → FastAPI(`baobab-api`) 서빙, Render 배포
+- **데이터 파이프라인** — Google Colab 4단계 노트북으로 공공데이터 12종 수집·가공 ([baobab-match-data-pipeline](레포링크) 참고)
 
 ## 사전 준비
 로컬에서 처음 실행하기 전에 아래가 준비돼 있어야 합니다.
@@ -119,11 +120,16 @@ Firebase Hosting 설정에 아래 헤더/캐싱 규칙이 적용되어 있습니
 - **기술 매칭 결과** — 분야 기반 추천국 순위 + 선정 요소
 - **마이페이지** — 즐겨찾기 국가 관리 (로그인 필요)
 
-### 🚧 진행 중 — AI 추천 매칭
-관심 분야·기술 기반으로 협력 국가를 추천하는 AI 파이프라인을 구축하고 있습니다.
-- **모델** — Google Colab에서 학습한 scikit-learn K-Means 클러스터링 (`.pkl`)
-- **서빙** — FastAPI 백엔드 `baobab-api`를 별도 API로 분리, Render 배포
-- 현재 모델 서빙 연동 및 국가 데이터 Firestore 이관 작업 진행 중
+### ✅ AI 추천 매칭
+관심 분야·보유 기술을 입력하면 규칙 기반 엔진과 AI 모델을 결합한 하이브리드 방식으로 협력 국가를 추천합니다.
+- **모델** — Google Colab에서 학습한 scikit-learn K-Means 군집화 + 코사인 유사도 (`baobab_matcher.pkl`)
+- **서빙** — FastAPI 백엔드 `baobab-api`를 Render에 배포 (`https://baobab-api-di7o.onrender.com`)
+- **응답 흐름** — 화면 진입 즉시 클라이언트에서 규칙 기반 결과(`matchEngine.js`)를 먼저 보여주고, AI 서버 응답이 도착하면 결과를 교체합니다. 25초 내 응답이 없거나 실패하면 규칙 기반 결과를 그대로 유지하는 폴백을 적용해, Render 무료 티어의 콜드 스타트 지연에도 서비스가 끊기지 않습니다.
+- **로딩 UI** — `AiMatchLoading.jsx`에서 원형 진행률 애니메이션과 한국어 안내 문구를 순환 표시해 대기 시간의 체감을 줄였습니다.
+- **추천 근거** — `explain()` 함수가 KOICA 분야 비중·GDP·외교 점수·기후 취약도 등 실제 수치를 인용한 문장을 생성하고, `headline()` 함수가 가중 기여도가 가장 높은 축을 골라 한 줄 요약을 만듭니다.
+- **매칭 축** — 분야 적합도·기후기술 적합도·기후 취약도·외교 친밀도·개발 필요도·수출 연계성 6개 축(기업 사용자는 시장 진입 용이도 축 추가)을 fit·need·coop·entry 4개 상위 축으로 집약해, 규칙 기반 엔진과 AI 모델이 동일한 기준으로 결과를 산출합니다.
+
+> ⚠️ 모델 로딩 시 `scikit-learn` 버전은 학습 환경(Colab)과 동일하게 **`1.6.1`로 고정**해야 합니다. 버전 불일치 시 모델 로드가 실패합니다.
 
 > ⚠️ 모델 로딩 시 `scikit-learn` 버전은 학습 환경(Colab)과 동일하게 **`1.6.1`로 고정**해야 합니다. 버전 불일치 시 모델 로드가 실패합니다.
 
@@ -146,44 +152,32 @@ src/
 
 ## 📊 데이터
 
-`data.js`의 `COUNTRIES`는 아프리카 54개국을 담으며, 값의 출처는 두 갈래입니다.
+`countries_base.js`(기초정보)와 `countries_scores.js`(외교·기후·매칭 점수)가 아프리카 54개국의 전체 데이터를 담고 있으며, 두 파일 모두 공공데이터 파이프라인의 산출물입니다.
 
-| 키 | 출처 | 상태 |
+| 파일 | 내용 | 출처 |
 |---|---|---|
-| `nameEn`, `flag`, `population`, `economy.gdpPerCapita` | **World Bank Open Data API** | 실값 (자동 수집) |
-| `language`, `climateScore`, `mainClimateIssue`, `diplomacyScore`, `matchScore`, `koica.sectors`, ODA 4종 | KOICA / OECD / 수동 | `null` 또는 빈 배열 (채워나가는 중) |
-
-화면 컴포넌트는 `null`·빈 배열을 만나도 깨지지 않도록 되어 있어, 데이터를 점진적으로 채울 수 있습니다.
-
-> 향후 국가 데이터는 Colab/AI 파이프라인이 준비되는 대로 Firestore로 일괄 이관할 예정입니다. (현재는 `data.js` 정적 파일 사용)
+| `countries_base.js` | 인구·언어·수도·GDP, KOICA 지원 현황, ODA 4종 | 외교부 일반현황·경제현황, KOICA 통합개발지표·지원실적 |
+| `countries_scores.js` | diplomacyScore, climateScore·mainClimateIssue, matchScore | 외교부 기관 진출현황·외교관계·무역관계, World Bank CCKP, K-Means+코사인 유사도 |
 
 ### 데이터 갱신 워크플로우 (Colab)
-실데이터는 Colab 노트북(`baobab_match_data.ipynb`)에서 생성합니다.
-1. `baobab_match_data.ipynb`를 [Google Colab](https://colab.research.google.com)에서 엽니다. (`파일 → 노트 업로드`)
-2. 셀을 순서대로 실행합니다. (World Bank API 호출 — API 키 불필요)
-3. 마지막 셀에서 생성된 `data.js`를 `src/data.js`에 붙여넣습니다.
+실데이터는 4단계 Colab 노트북에서 생성하며, 전체 코드와 원본 CSV는 별도 레포에 공개되어 있습니다.
+👉 [baobab-match-data-pipeline](레포링크)
+
+각 단계 결과물(`countries.base.js`, `countries.scores.js`, `baobab_matcher.pkl`)을 이 레포의 `src/data/`, FastAPI 서버(`baobab-api`)로 반영합니다.
 
 ### 데이터 출처
-- **경제 (인구·1인당 GDP)** — World Bank Open Data API
-- **기후 취약성** — ND-GAIN Country Index (직접 다운로드 후 가공 예정)
-- **ODA (한국→해당국)** — OECD CRS / KOICA 통계 (직접 다운로드 후 가공 예정)
-- **활용 데이터 기관** — IMF · KOICA · World Bank CCKP · 외교부 · 한국산업기술진흥원 · 한아프리카재단
+- **기초·경제·ODA** — 외교부 일반현황·경제현황, KOICA 통합개발지표·지원실적
+- **외교 친밀도** — 외교부 기관 진출현황·외교관계·무역관계
+- **기후 취약도** — World Bank Climate Change Knowledge Portal API
+- **시장 진입 용이도** — 한아프리카재단 250대기업·스타트업 디렉터리
+- **활용 데이터 기관** — 외교부 · KOICA · 한아프리카재단 · World Bank CCKP
 
 ## 확장 포인트
-1. **AI 매칭 완성** — `baobab-api` Render 배포 마무리 및 프론트엔드 연동.
-2. **데이터 이관** — 국가 데이터를 Firestore로 일괄 이관 (Colab/AI 파이프라인 연계).
-3. **데이터 보강** — `koica.sectors`, ODA, 외교/기후 점수를 KOICA·OECD 자료로 채워 `null` 제거.
+1. **가중치 재조정** — 실사용 데이터 기반으로 축별 가중치를 주기적으로 재조정하는 루프 구축.
+2. **하이브리드 매칭 고도화** — 현재 키워드 사전 방식에 임베딩 기반 유사도를 병행 적용.
+3. **사업자 인증 강화** — 국세청 사업자등록정보 진위확인 API 연동 (현재는 10자리 형식 검증만 지원).
 4. **실제 지도** — `AfricaMap.jsx`를 `react-simple-maps` + 아프리카 GeoJSON으로 교체.
 
 ## 디자인 토큰
 - 딥 바오밥그린 `#2d4a32` · 세이지 `#5a7d5a` · 본 화이트 `#f4f1e9` · 에티오피아 골드 `#c9a227`
 - 디스플레이: Noto Serif KR / 본문: Gothic A1 / 데이터: JetBrains Mono
-
-## 팀 BAOBAB
-- **강채연** — 기획 & PM · 서비스 비즈니스 모델 설계
-- **오하민** — Developer · 시스템 개발
-<<<<<<< HEAD
-- **이연화** — Data Analyst · 공공데이터 분석
-=======
-- **이연화** — Data Analyst · 공공데이터 분석
->>>>>>> 1031d4d (검색창 수정)

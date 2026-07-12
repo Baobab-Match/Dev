@@ -83,20 +83,20 @@ const IMPACT_CARDS = [
   },
   {
     title: "가공한 데이터",
-    num: "10", unit: "여 개",
+    num: "12", unit: "개",
     lead: "기온·강수·홍수·ODA 등\n다양한 지표",
     body: "흩어진 공공데이터를 가공해\n비교 가능한 점수로 정리",
-    source: "IMF · KOICA · World Bank CCKP · 외교부",
+    source: "KOICA · World Bank CCKP · 외교부",
   },
   {
     title: "활용 데이터 기관",
-    num: "6", unit: "곳",
+    num: "4", unit: "곳",
     lead: "정부·국제기구가\n공개한 신뢰 데이터",
     body: "공신력 있는 기관의\n공개 데이터만 활용",
     source: (
       <>
-        IMF · KOICA · World Bank CCKP<br />
-        외교부 · 한국산업기술진흥원 · 한아프리카재단
+        KOICA · World Bank CCKP<br />
+        외교부 · 한아프리카재단
       </>
     ),
   },
