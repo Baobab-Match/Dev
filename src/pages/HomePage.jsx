@@ -83,7 +83,7 @@ const IMPACT_CARDS = [
   },
   {
     title: "가공한 데이터",
-    num: "12", unit: "개",
+    num: "11", unit: "개",
     lead: "기온·강수·홍수·ODA 등\n다양한 지표",
     body: "흩어진 공공데이터를 가공해\n비교 가능한 점수로 정리",
     source: "KOICA · World Bank CCKP · 외교부",
