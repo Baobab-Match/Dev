@@ -192,20 +192,16 @@ export default function MatchResults({ openCountry, field, profile, user, favori
     fetchAiRanked(effectiveFields, profile?.type || "general")
       .then((result) => {
         if (!cancelled) {
-          aiCache.set(key, result);
-          setAiRanked(result);
+          // PDF 막대그래프용 — AI가 고른 국가들에 규칙 기반 축 점수(axes)를 보조로 붙여줌
+          const enriched = result.map((r) => {
+            const c = COUNTRIES[r.id];
+            const axes = c ? scoreCountry(c, resolvedProfile).axes : undefined;
+            return { ...r, axes };
+          });
+          aiCache.set(key, enriched);
+          setAiRanked(enriched);
         }
       })
-      .catch((err) => {
-        console.warn("AI 매칭 실패 — 규칙 기반 결과로 대체합니다:", err);
-      })
-      .finally(() => {
-        clearTimeout(coldTimer);
-        if (!cancelled) {
-          setAiLoading(false);
-          setColdStart(false); // 결과가 나왔든 완전히 실패했든, "부팅 중" 안내는 내린다
-        }
-      });
 
     return () => { cancelled = true; clearTimeout(coldTimer); };
     // eslint-disable-next-line react-hooks/exhaustive-deps
