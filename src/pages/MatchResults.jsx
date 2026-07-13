@@ -44,16 +44,31 @@ const AI_TIMEOUT_MS = 65000;
 // 이 시간 넘게 응답이 없으면 "서버 부팅 중" 안내 + 규칙 기반 임시 결과로 전환한다.
 // (fetch 자체는 취소하지 않고 AI_TIMEOUT_MS까지 계속 기다림 — 도착하면 조용히 교체)
 const COLD_START_MS = 30000;
+// 즐겨찾기 채점용 — AI가 "이 분야 상위 N개국"만 돌려주는 구조라, 즐겨찾기한 나라가
+// 상위권 밖에 있어도 점수를 받아오려면 사실상 전체 국가 수만큼 넉넉히 요청해야 한다.
+const FAVORITE_TOPN = 60;
 
 const aiCache = new Map();
 function aiCacheKey(fields, userType) {
   return `${userType}|${[...fields].sort().join(",")}`;
 }
+// 즐겨찾기 캐시 — 메인 캐시 키에 즐겨찾기 국가 목록을 더해서 구분 (즐겨찾기가 바뀌면 재요청)
+const favAiCache = new Map();
 
 // 선택한 분야(들) 각각으로 /recommend 를 병렬 호출한 뒤, 국가별로 가장 점수가
 // 높은 결과만 남겨 합친다 — matchEngine.js의 pickBestField("그 나라와 가장
 // 잘 맞는 분야 1개 고르기")와 같은 개념을 AI 서버 응답에도 그대로 적용.
-async function fetchAiRanked(fields, userType) {
+//
+// options.topN: 분야별로 AI에 요청할 상위 개수 (기본 5 — 메인 추천용).
+//   즐겨찾기 채점처럼 특정 국가들의 점수가 꼭 필요할 땐 훨씬 크게 줘야 한다.
+// options.limit: 최종적으로 남길 개수 (기본 3).
+// options.filterIds: 지정하면 이 국가 id들만 결과에 남긴다 (즐겨찾기 필터링용).
+// options.diversify: false로 주면 서버 쪽 클러스터 다양성 제한(MAX_PER_CLUSTER) 없이
+//   점수 순으로 topN개를 그대로 받는다. 즐겨찾기 채점처럼 "이 나라들 점수를 놓치면 안 되는"
+//   경우에 false로 줘야 한다 — 기본(true)이면 topN을 아무리 크게 줘도 클러스터당 개수 제한 때문에
+//   실제로는 훨씬 적게 돌아올 수 있다 (다양성 있는 추천을 위해 서버가 의도적으로 그렇게 동작함).
+async function fetchAiRanked(fields, userType, options = {}) {
+  const { topN = 5, limit = 3, filterIds = null, diversify = true } = options;
   const controller = new AbortController();
   const timer = setTimeout(() => controller.abort(), AI_TIMEOUT_MS);
   try {
@@ -62,7 +77,7 @@ async function fetchAiRanked(fields, userType) {
         fetch(`${AI_API_BASE}/recommend`, {
           method: "POST",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ field, userType, topN: 5 }),
+          body: JSON.stringify({ field, userType, topN, diversify }),
           signal: controller.signal,
         }).then((res) => {
           if (!res.ok) throw new Error(`AI 서버 응답 오류: ${res.status}`);
@@ -82,10 +97,16 @@ async function fetchAiRanked(fields, userType) {
       });
     });
 
+    let entries = Object.values(byCountry);
+    if (filterIds) {
+      const idSet = new Set(filterIds);
+      entries = entries.filter((item) => idSet.has(item.country));
+    }
+
     // AI matchScore는 0~10 스케일 → matchEngine.js와 같은 0~100 스케일로 변환
-    return Object.values(byCountry)
+    return entries
       .sort((a, b) => b.matchScore - a.matchScore)
-      .slice(0, 3)
+      .slice(0, limit)
       .map((item) => {
         const scaled = Number((item.matchScore * 10).toFixed(1));
         const { tier, tierNote } = matchTier(scaled);
@@ -108,9 +129,7 @@ async function fetchAiRanked(fields, userType) {
 // 변경에 대해 예전 blob을 재사용하는 캐싱 버그가 있어, 매 클릭마다
 // 완전히 새로 렌더링하는 이 방식으로 대체함.
 async function downloadPdf(documentElement, fileName) {
-  console.log("🟣 downloadPdf 호출됨", fileName);
   const blob = await pdf(documentElement).toBlob();
-  console.log("🟡 blob 생성 완료", blob.size, "bytes");
   const url = URL.createObjectURL(blob);
   const a = document.createElement("a");
   a.href = url;
@@ -192,7 +211,8 @@ export default function MatchResults({ openCountry, field, profile, user, favori
     fetchAiRanked(effectiveFields, profile?.type || "general")
       .then((result) => {
         if (!cancelled) {
-          // PDF 막대그래프용 — AI가 고른 국가들에 규칙 기반 축 점수(axes)를 보조로 붙여줌
+          // PDF 막대그래프용 — AI가 고른 국가들에 규칙 기반 축 점수(axes)를 보조로 붙여준다.
+          // (최종 순위·점수는 AI 것을 그대로 쓰고, 6개 축 분해는 matchEngine.js 걸 시각화용으로 재사용)
           const enriched = result.map((r) => {
             const c = COUNTRIES[r.id];
             const axes = c ? scoreCountry(c, resolvedProfile).axes : undefined;
@@ -202,6 +222,16 @@ export default function MatchResults({ openCountry, field, profile, user, favori
           setAiRanked(enriched);
         }
       })
+      .catch((err) => {
+        console.warn("AI 매칭 실패 — 규칙 기반 결과로 대체합니다:", err);
+      })
+      .finally(() => {
+        clearTimeout(coldTimer);
+        if (!cancelled) {
+          setAiLoading(false);
+          setColdStart(false); // 결과가 나왔든 완전히 실패했든, "부팅 중" 안내는 내린다
+        }
+      });
 
     return () => { cancelled = true; clearTimeout(coldTimer); };
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -210,16 +240,6 @@ export default function MatchResults({ openCountry, field, profile, user, favori
   // 최종 표시 결과 — AI 결과가 있으면 그것을 최우선 사용.
   // 없고 콜드스타트 상태면 규칙 기반 임시 결과, 그 전(30초 이내)엔 아예 null(로딩 화면만 보여줌).
   const displayRanked = aiRanked ?? (coldStart ? ranked : null);
-
-  // 관심 국가(즐겨찾기) — 같은 프로필 기준으로 점수화해서 상세까지 동일 포맷
-  // (즐겨찾기는 AI 서버에 매번 물어보기엔 비용이 커서 규칙 기반 엔진만 사용)
-  const favRanked = useMemo(() => {
-    if (!favorites || favorites.length === 0) return [];
-    return favorites
-      .filter((id) => COUNTRIES[id])
-      .map((id) => scoreCountry(COUNTRIES[id], resolvedProfile))
-      .sort((a, b) => b.matchScore - a.matchScore);
-  }, [favorites, resolvedProfile]);
 
   if (!ranked.length) return null;
 
@@ -236,7 +256,7 @@ export default function MatchResults({ openCountry, field, profile, user, favori
   const recFileName = `바오밥매치_추천보고서_${shownField}_${dateTag}.pdf`;
   const favFileName = `바오밥매치_관심국가보고서_${dateTag}.pdf`;
 
-  const showFavBtn = user && favRanked.length > 0;
+  const showFavBtn = user && favorites && favorites.length > 0;
 
   async function handleDownloadRecommend() {
     if (recLoading || !displayRanked) return;
@@ -261,13 +281,56 @@ export default function MatchResults({ openCountry, field, profile, user, favori
     }
   }
 
+  // 즐겨찾기 PDF는 상시 계산해두지 않고, 버튼 누른 시점에 AI에 물어봐서 만든다
+  // (페이지 로드마다 자동으로 부를 필요는 없는 기능이라 비용을 아낌).
+  // diversify: false로 요청해서 서버 쪽 클러스터 다양성 제한 없이 점수 순으로 받아오고,
+  // 그래도 혹시 즐겨찾기한 나라가 응답에 없으면(edge case) 그 나라만 규칙 기반으로 개별 보완한다.
+  // AI 서버 자체가 실패하면 전체를 규칙 기반으로 대체한다.
   async function handleDownloadFavorite() {
     if (favLoading) return;
+    const favIds = (favorites || []).filter((id) => COUNTRIES[id]);
+    if (favIds.length === 0) return;
+
     setFavLoading(true);
     try {
+      const key =
+        aiCacheKey(effectiveFields, profile?.type || "general") +
+        "|fav:" + [...favIds].sort().join(",");
+
+      let favResult = favAiCache.get(key);
+      if (!favResult) {
+        try {
+          const raw = await fetchAiRanked(effectiveFields, profile?.type || "general", {
+            topN: FAVORITE_TOPN,
+            limit: favIds.length,
+            filterIds: favIds,
+            diversify: false,
+          });
+
+          // AI 응답에 없는 즐겨찾기 국가(있어선 안 되지만 만약을 위한 안전장치)는 규칙 기반으로 개별 보완
+          const gotIds = new Set(raw.map((r) => r.id));
+          const missingIds = favIds.filter((id) => !gotIds.has(id));
+          const fallbackForMissing = missingIds.map((id) => scoreCountry(COUNTRIES[id], resolvedProfile));
+
+          favResult = [...raw, ...fallbackForMissing]
+            .map((r) => {
+              const c = COUNTRIES[r.id];
+              const axes = r.axes ?? (c ? scoreCountry(c, resolvedProfile).axes : undefined);
+              return { ...r, axes };
+            })
+            .sort((a, b) => b.matchScore - a.matchScore);
+        } catch (aiErr) {
+          console.warn("관심 국가 AI 매칭 실패 — 규칙 기반으로 대체합니다:", aiErr);
+          favResult = favIds
+            .map((id) => scoreCountry(COUNTRIES[id], resolvedProfile))
+            .sort((a, b) => b.matchScore - a.matchScore);
+        }
+        favAiCache.set(key, favResult);
+      }
+
       await downloadPdf(
         <MatchReportPDF
-          ranked={favRanked}
+          ranked={favResult}
           countries={COUNTRIES}
           field={shownField}
           reportTitle={"관심 국가\n분석 보고서"}
