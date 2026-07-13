@@ -20,7 +20,7 @@ export default function AiMatchLoading({ messages = DEFAULT_MESSAGES, interval =
   const [idx, setIdx] = useState(0);
   const [visible, setVisible] = useState(true);
   const [pct, setPct] = useState(0);
-  const [done, setDone] = useState(false);
+  const [done, setDone] = useState(!active);
 
   const pctRef = useRef(0);          // 프레임 사이에도 진행률을 이어서 유지 (0으로 리셋되지 않음)
   const shownAtRef = useRef(null);   // 로딩창이 처음 뜬 시각 (최소 표시시간 계산용)

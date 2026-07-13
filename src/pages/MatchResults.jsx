@@ -43,6 +43,11 @@ const AI_API_BASE = "https://baobab-api-di7o.onrender.com";
 // 규칙 기반(matchEngine.js) 결과로 조용히 대체한다.
 const AI_TIMEOUT_MS = 25000;
 
+const aiCache = new Map();
+function aiCacheKey(fields, userType) {
+  return `${userType}|${[...fields].sort().join(",")}`;
+}
+
 // 선택한 분야(들) 각각으로 /recommend 를 병렬 호출한 뒤, 국가별로 가장 점수가
 // 높은 결과만 남겨 합친다 — matchEngine.js의 pickBestField("그 나라와 가장
 // 잘 맞는 분야 1개 고르기")와 같은 개념을 AI 서버 응답에도 그대로 적용.
@@ -159,13 +164,26 @@ export default function MatchResults({ openCountry, field, profile, user, favori
   }, [field, profile?.field, profile?.interest]);
 
   // AI 매칭 호출 — 성공하면 aiRanked를 채워 화면을 교체, 실패/타임아웃이면 규칙 기반 결과 유지
+// AI 매칭 호출 — 성공하면 aiRanked를 채워 화면을 교체, 실패/타임아웃이면 규칙 기반 결과 유지
   useEffect(() => {
     if (effectiveFields.length === 0) return;
+
+    const key = aiCacheKey(effectiveFields, profile?.type || "general");
+    const cached = aiCache.get(key);
+    if (cached) {
+      // 이미 같은 조건으로 받아온 결과가 있으면 로딩 없이 바로 재사용
+      setAiRanked(cached);
+      return;
+    }
+
     let cancelled = false;
     setAiLoading(true);
     fetchAiRanked(effectiveFields, profile?.type || "general")
       .then((result) => {
-        if (!cancelled) setAiRanked(result);
+        if (!cancelled) {
+          aiCache.set(key, result);
+          setAiRanked(result);
+        }
       })
       .catch((err) => {
         console.warn("AI 매칭 실패 — 규칙 기반 결과로 대체합니다:", err);
