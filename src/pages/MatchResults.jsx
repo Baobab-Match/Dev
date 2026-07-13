@@ -40,7 +40,7 @@ const RESULT_COPY = {
 // baobab-api(FastAPI, Render) 주소. 재배포로 URL이 바뀌면 여기만 고치면 됨.
 const AI_API_BASE = "https://baobab-api-di7o.onrender.com";
 // fetch 자체를 완전히 포기하는 최종 한계 — 이보다 오래 걸리면 규칙 기반 결과로 완전히 대체한다.
-const AI_TIMEOUT_MS = 45000;
+const AI_TIMEOUT_MS = 65000;
 // 이 시간 넘게 응답이 없으면 "서버 부팅 중" 안내 + 규칙 기반 임시 결과로 전환한다.
 // (fetch 자체는 취소하지 않고 AI_TIMEOUT_MS까지 계속 기다림 — 도착하면 조용히 교체)
 const COLD_START_MS = 30000;
@@ -308,7 +308,7 @@ export default function MatchResults({ openCountry, field, profile, user, favori
         {/* AI 서버 부팅 중 안내 — 30초 넘게 응답이 없어서 임시로 규칙 기반 결과를 보여주는 중일 때만 표시 */}
         {coldStart && !aiRanked && (
           <p className="cold-start-notice">
-            AI 서버가 잠시 깨어나는 중이에요. 우선 미리 계산해둔 추천 결과를 보여드릴게요 —
+            로딩 속도가 오래 걸려서 우선 규칙 기반 머신러닝 결과를 보여드릴게요 -
             AI 분석이 끝나면 자동으로 최신 결과로 바뀝니다.
           </p>
         )}
