@@ -818,3 +818,13 @@ textarea.field { resize: vertical; min-height: 64px; }
 .country-row { word-break: keep-all; }
 .confirm-yes, .confirm-no, .form-actions .confirm-yes { word-break: keep-all; }
 .fav-note { word-break: keep-all; }
+
+.cold-start-notice {
+  background: var(--bone);
+  border: 1px solid var(--bone-dark);
+  color: var(--ink-soft);
+  font-size: var(--fs-sm);
+  padding: 12px 16px;
+  border-radius: 10px;
+  margin-bottom: 20px;
+}

@@ -39,9 +39,11 @@ const RESULT_COPY = {
 // ── AI 매칭 서버 연동 ────────────────────────────────────────
 // baobab-api(FastAPI, Render) 주소. 재배포로 URL이 바뀌면 여기만 고치면 됨.
 const AI_API_BASE = "https://baobab-api-di7o.onrender.com";
-// 콜드스타트 대기 상한선 — 이보다 오래 걸리면 "느린 것"이 아니라 "문제"로 보고
-// 규칙 기반(matchEngine.js) 결과로 조용히 대체한다.
-const AI_TIMEOUT_MS = 25000;
+// fetch 자체를 완전히 포기하는 최종 한계 — 이보다 오래 걸리면 규칙 기반 결과로 완전히 대체한다.
+const AI_TIMEOUT_MS = 45000;
+// 이 시간 넘게 응답이 없으면 "서버 부팅 중" 안내 + 규칙 기반 임시 결과로 전환한다.
+// (fetch 자체는 취소하지 않고 AI_TIMEOUT_MS까지 계속 기다림 — 도착하면 조용히 교체)
+const COLD_START_MS = 30000;
 
 const aiCache = new Map();
 function aiCacheKey(fields, userType) {
@@ -130,9 +132,11 @@ export default function MatchResults({ openCountry, field, profile, user, favori
   const [recLoading, setRecLoading] = useState(false);
   const [favLoading, setFavLoading] = useState(false);
 
-  // AI 매칭 결과 — null이면 아직 없음(또는 실패) → 이 경우 규칙 기반 결과를 그대로 사용
+  // AI 매칭 결과 — null이면 아직 없음(또는 실패) → 이 경우 화면에 아무 결과도 안 보여줌(콜드스타트 전) 또는 규칙 기반(콜드스타트 후)
   const [aiRanked, setAiRanked] = useState(null);
   const [aiLoading, setAiLoading] = useState(false);
+  // 30초 넘게 AI 응답이 없어서 "서버 부팅 중" 안내로 전환된 상태
+  const [coldStart, setColdStart] = useState(false);
 
   // buildProfile 결과를 따로 보관 (PDF에도 그대로 전달)
   const resolvedProfile = useMemo(
@@ -149,7 +153,7 @@ export default function MatchResults({ openCountry, field, profile, user, favori
     ]
   );
 
-  // 규칙 기반 결과 — 항상 즉시 계산됨. AI가 실패하거나 늦으면 이걸로 화면을 채운다.
+  // 규칙 기반 결과 — 항상 즉시 계산됨. AI가 오래 걸리거나(콜드스타트) 실패하면 이걸로 화면을 채운다.
   const ranked = useMemo(
     () => rankCountries(COUNTRIES, resolvedProfile, 3),
     [resolvedProfile]
@@ -163,21 +167,28 @@ export default function MatchResults({ openCountry, field, profile, user, favori
     return single ? [single] : [];
   }, [field, profile?.field, profile?.interest]);
 
-  // AI 매칭 호출 — 성공하면 aiRanked를 채워 화면을 교체, 실패/타임아웃이면 규칙 기반 결과 유지
-// AI 매칭 호출 — 성공하면 aiRanked를 채워 화면을 교체, 실패/타임아웃이면 규칙 기반 결과 유지
+  // AI 매칭 호출 — 성공하면 aiRanked를 채워 화면을 채운다.
+  // 30초 넘게 응답이 없으면(콜드스타트) coldStart=true로 전환해 규칙 기반 임시 결과를 보여주되,
+  // fetch 자체는 계속 대기하다가 도착하면 조용히 진짜 AI 결과로 교체한다.
   useEffect(() => {
     if (effectiveFields.length === 0) return;
 
     const key = aiCacheKey(effectiveFields, profile?.type || "general");
     const cached = aiCache.get(key);
     if (cached) {
-      // 이미 같은 조건으로 받아온 결과가 있으면 로딩 없이 바로 재사용
+      // 이미 같은 조건으로 받아온 결과가 있으면 로딩/안내 없이 바로 재사용
       setAiRanked(cached);
       return;
     }
 
     let cancelled = false;
     setAiLoading(true);
+    setColdStart(false);
+
+    const coldTimer = setTimeout(() => {
+      if (!cancelled) setColdStart(true);
+    }, COLD_START_MS);
+
     fetchAiRanked(effectiveFields, profile?.type || "general")
       .then((result) => {
         if (!cancelled) {
@@ -189,14 +200,20 @@ export default function MatchResults({ openCountry, field, profile, user, favori
         console.warn("AI 매칭 실패 — 규칙 기반 결과로 대체합니다:", err);
       })
       .finally(() => {
-        if (!cancelled) setAiLoading(false);
+        clearTimeout(coldTimer);
+        if (!cancelled) {
+          setAiLoading(false);
+          setColdStart(false); // 결과가 나왔든 완전히 실패했든, "부팅 중" 안내는 내린다
+        }
       });
-    return () => { cancelled = true; };
+
+    return () => { cancelled = true; clearTimeout(coldTimer); };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [effectiveFields, profile?.type]);
 
-  // 최종 표시 결과 — AI 결과가 있으면 그것을, 없으면(아직 로딩 중이거나 실패) 규칙 기반 결과를 사용
-  const displayRanked = aiRanked ?? ranked;
+  // 최종 표시 결과 — AI 결과가 있으면 그것을 최우선 사용.
+  // 없고 콜드스타트 상태면 규칙 기반 임시 결과, 그 전(30초 이내)엔 아예 null(로딩 화면만 보여줌).
+  const displayRanked = aiRanked ?? (coldStart ? ranked : null);
 
   // 관심 국가(즐겨찾기) — 같은 프로필 기준으로 점수화해서 상세까지 동일 포맷
   // (즐겨찾기는 AI 서버에 매번 물어보기엔 비용이 커서 규칙 기반 엔진만 사용)
@@ -226,7 +243,7 @@ export default function MatchResults({ openCountry, field, profile, user, favori
   const showFavBtn = user && favRanked.length > 0;
 
   async function handleDownloadRecommend() {
-    if (recLoading) return;
+    if (recLoading || !displayRanked) return;
     setRecLoading(true);
     try {
       await downloadPdf(
@@ -275,9 +292,9 @@ export default function MatchResults({ openCountry, field, profile, user, favori
 
   return (
     <main className="page">
-      {/* AI 서버 응답 대기 중 표시. 뒤에는 규칙 기반 결과가 이미 떠 있어서
-          완전히 빈 화면이 되지 않는다 — 응답 오면 자연스럽게 교체됨. */}
-      <AiMatchLoading active={aiLoading} />
+      {/* AI 서버 응답 대기 중 표시. 결과가 하나도 없을 때(콜드스타트 전)만 로딩을 보여준다.
+          콜드스타트 안내로 전환된 뒤에는 로딩 오버레이 대신 아래 안내 문구 + 임시 결과를 보여준다. */}
+      <AiMatchLoading active={aiLoading && !coldStart} />
 
       <div className="page-head">
         <h1 className="page-title">추천 국가</h1>
@@ -288,6 +305,14 @@ export default function MatchResults({ openCountry, field, profile, user, favori
           {copy.verb} 상위 3개 국가를 추천해 드립니다.
         </p>
 
+        {/* AI 서버 부팅 중 안내 — 30초 넘게 응답이 없어서 임시로 규칙 기반 결과를 보여주는 중일 때만 표시 */}
+        {coldStart && !aiRanked && (
+          <p className="cold-start-notice">
+            AI 서버가 잠시 깨어나는 중이에요. 우선 미리 계산해둔 추천 결과를 보여드릴게요 —
+            AI 분석이 끝나면 자동으로 최신 결과로 바뀝니다.
+          </p>
+        )}
+
         {/* PDF 보고서 다운로드 버튼들 */}
         <div className="report-actions">
           {/* 추천 결과 PDF */}
@@ -295,7 +320,7 @@ export default function MatchResults({ openCountry, field, profile, user, favori
             type="button"
             className="report-btn"
             onClick={handleDownloadRecommend}
-            disabled={recLoading}
+            disabled={recLoading || !displayRanked}
           >
             {recLoading ? <span>보고서 준비 중…</span> : <span>추천 결과 PDF 보고서 다운받기</span>}
           </button>
@@ -315,7 +340,7 @@ export default function MatchResults({ openCountry, field, profile, user, favori
       </div>
 
       <div className="match-podium">
-        {displayRanked.map((r, i) => {
+        {(displayRanked || []).map((r, i) => {
           const c = COUNTRIES[r.id];
           if (!c) return null;
           return (
@@ -349,7 +374,7 @@ export default function MatchResults({ openCountry, field, profile, user, favori
 
       {/* 순위별 AI 추천 근거 — 1·2·3순위 각각 */}
       <div className="reasons-stack">
-        {displayRanked.map((r, i) => {
+        {(displayRanked || []).map((r, i) => {
           const c = COUNTRIES[r.id];
           if (!c) return null;
           return (
