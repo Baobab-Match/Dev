@@ -4,6 +4,41 @@ import { CountrySilhouette, DonutChart, DONUT_COLORS, Icons } from "../component
 const EMPTY = "아직 정보가 없습니다";
 const isNil = (v) => v === null || v === undefined;
 
+// 인프라 지표별 아프리카 54개국 평균 계산 (모듈 로드 시 1회만 계산)
+const INFRA_FIELDS = ["hospitalBeds", "physicians", "electricityAccess", "internetPenetration"];
+const AFRICA_INFRA_AVG = (() => {
+  const sums = {}, counts = {};
+  INFRA_FIELDS.forEach((f) => { sums[f] = 0; counts[f] = 0; });
+
+  Object.values(COUNTRIES).forEach((c) => {
+    const infra = c.infrastructure || {};
+    INFRA_FIELDS.forEach((f) => {
+      const raw = infra[f] && infra[f].value;
+      const num = raw != null ? parseFloat(raw) : null;
+      if (num != null && !isNaN(num)) {
+        sums[f] += num;
+        counts[f] += 1;
+      }
+    });
+  });
+
+  const avg = {};
+  INFRA_FIELDS.forEach((f) => { avg[f] = counts[f] ? sums[f] / counts[f] : null; });
+  return avg;
+})();
+
+// 인프라 값 vs 아프리카 평균 비교 문구 생성 (±5% 이내는 "평균 수준"으로 처리)
+function infraCompareText(fieldKey, valueStr) {
+  const avg = AFRICA_INFRA_AVG[fieldKey];
+  const val = valueStr != null ? parseFloat(valueStr) : null;
+  if (avg == null || val == null || isNaN(val)) return null;
+
+  const diff = (val - avg) / avg;
+  const avgLabel = `아프리카 평균 ${avg.toFixed(1)}`;
+  if (Math.abs(diff) < 0.05) return `${avgLabel} · 평균 수준입니다`;
+  return diff > 0 ? `${avgLabel} · 평균보다 높습니다` : `${avgLabel} · 평균보다 낮습니다`;
+}
+
 // 상세 페이지 전용 — 히어로 스탯 한 칸
 function StatItem({ value, label, suffix, yes }) {
   return (
@@ -111,12 +146,44 @@ function EcoItem({ label, v, defaultSource }) {
   );
 }
 
+// 인프라 항목 한 줄 — v: { value, unit, year?, source? }, compare: 아프리카 평균 비교 문구
+function InfraItem({ label, v, compare }) {
+  if (!v) return (
+    <div className="eco-item">
+      <div className="eco-label">{label}</div>
+      <div className="eco-empty">{EMPTY}</div>
+    </div>
+  );
+
+  const src = v.year && v.source ? `(${v.year} · ${v.source})` : v.year ? `(${v.year})` : v.source ? `(${v.source})` : null;
+  // %는 붙여서, 그 외 단위(병상 / 1,000명 등)는 띄어서 값과 한 줄에 표시
+  const valueLine = v.value ? (v.unit === "%" ? `${v.value}%` : `${v.value}${v.unit ? ` ${v.unit}` : ""}`) : null;
+
+  return (
+    <div className="eco-item">
+      <div className="eco-label">
+        {label}
+        {src && <span className="eco-src">{src}</span>}
+      </div>
+      {valueLine ? (
+        <div className="eco-val">
+          <span className="krw-main">{valueLine}</span>
+          {compare && <span className="usd-sub">{compare}</span>}
+        </div>
+      ) : (
+        <div className="eco-empty">{EMPTY}</div>
+      )}
+    </div>
+  );
+}
+
 export default function CountryDetail({ id, go, from = "search", isFavorite, toggleFavorite }) {
   const c = COUNTRIES[id];
   if (!c) return null;
 
   const fav = isFavorite ? isFavorite(id) : false;
   const eco = c.economy || {};
+  const infra = c.infrastructure || {};
 
   // 경제 항목 목록 (라벨 ↔ 데이터 ↔ 기본 출처)
   // GDP는 데이터에 source(IMF) 포함 / ODA 4종은 출처 미포함이라 KOICA 통합개발지표를 기본값으로 보충
@@ -130,6 +197,14 @@ export default function CountryDetail({ id, go, from = "search", isFavorite, tog
     ["한국 ODA 규모", eco.koreaOda, ODA_SRC],
   ];
   const hasNet = ecoRows.some(([, v]) => v && v.isNet);
+
+  // 인프라 항목 목록 (라벨 ↔ 데이터 ↔ 평균 비교용 필드키) — 경제/ODA와 성격이 달라 별도 블록으로 분리
+  const infraRows = [
+    ["병상 수", infra.hospitalBeds, "hospitalBeds"],
+    ["의사 수", infra.physicians, "physicians"],
+    ["전력 접근률", infra.electricityAccess, "electricityAccess"],
+    ["인터넷 이용률", infra.internetPenetration, "internetPenetration"],
+  ];
 
   // 기초 정보 행 (라벨 ↔ 값) — GDP는 우측 '경제 및 ODA'에서 다루므로 제외
   const infoRows = [
@@ -192,7 +267,7 @@ export default function CountryDetail({ id, go, from = "search", isFavorite, tog
             ))}
           </div>
 
-          {/* 2. KOICA 지원 규모 — 누적(위) + 도넛(아래) */}
+          {/* 2. KOICA 지원 규모 — 도넛(위) + 범례(아래) */}
           <div className="info-block">
             <div className="block-tag">한국국제협력단(KOICA) 지원 규모</div>
 
@@ -253,17 +328,30 @@ export default function CountryDetail({ id, go, from = "search", isFavorite, tog
               <div>※ 금액은 소수점 반올림 처리된 값입니다.</div>
             </div>
           </div>
+
+          {/* 4. 인프라 정보 — 경제/ODA와 성격이 달라 별도 블록으로 분리 */}
+          <div className="info-block">
+            <div className="block-tag">인프라 정보</div>
+            {infraRows.map(([label, v, fieldKey]) => (
+              <InfraItem
+                key={label}
+                label={label}
+                v={v}
+                compare={v ? infraCompareText(fieldKey, v.value) : null}
+              />
+            ))}
+          </div>
         </div>
       </div>
 
       {/* 데이터 출처 안내 — 전 국가 공통 (각주형) */}
       <p className="source-footnote">
         <span className="source-footnote-mark">출처</span>
-        인구·언어·수도 외교부 「국가(지역)별 일반현황」(2025.12 갱신) · GDP·1인당 GDP 외교부 「국가(지역)별 경제현황」(2025.09 갱신) · ODA 규모(순수원액·수원국·양자·한국) KOICA 「협력국 통합개발지표」(2025.07 갱신) · KOICA 분야별·누적 지원 KOICA 「국가별 지원실적」(2025.11 갱신). 모든 데이터는 공공데이터포털(data.go.kr) 공개 자료이며, 갱신일은 포털 기준입니다. 데이터 기준연도는 각 항목에 별도 표기되어 있습니다.
+        인구·언어·수도 외교부 「국가(지역)별 일반현황」(2025.12 갱신) · GDP·1인당 GDP 외교부 「국가(지역)별 경제현황」(2025.09 갱신) · ODA 규모(순수원액·수원국·양자·한국) KOICA 「협력국 통합개발지표」(2025.07 갱신) · KOICA 분야별·누적 지원 KOICA 「국가별 지원실적」(2025.11 갱신) · 병상 수·의사 수·전력 접근률·인터넷 이용률 World Bank Open Data. 모든 데이터는 공공데이터포털(data.go.kr) 또는 World Bank 공개 자료이며, 갱신일은 각 포털 기준입니다. 데이터 기준연도는 각 항목에 별도 표기되어 있습니다.
       </p>
       <p className="source-footnote" style={{ marginTop: 10 }}>
         <span className="source-footnote-mark">산정기준</span>
-        기후 취약도는 World Bank 기후 API(SSP3-7.0 시나리오, 2040~2059년 전망)의 기온 상승폭(40%)·강수 변화율(30%)·극한강수 지표(30%)를 가중합해 30~100점으로 환산한 값입니다. 외교 친밀도는 외교부 기관 진출현황(40%)·외교관계(30%)·무역관계(30%)를 가중합하고, KOICA 중점협력국은 +20점을 가산한 값입니다.
+        기후 취약도는 World Bank 기후 API(SSP3-7.0 시나리오, 2040~2059년 전망)의 기온 상승폭(40%)·강수 변화율(30%)·극한강수 지표(30%)를 가중합해 30~100점으로 환산한 값입니다. 외교 친밀도는 외교부 기관 진출현황(40%)·외교관계(30%)·무역관계(30%)를 가중합하고, KOICA 중점협력국은 +20점을 가산한 값입니다. 인프라 지표의 평균 비교는 데이터가 확인된 아프리카 국가들의 산술 평균 대비 ±5% 이내를 "평균 수준"으로 판정한 값입니다.
       </p>
     </main>
   );

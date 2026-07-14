@@ -133,7 +133,7 @@ export function CountrySilhouette({ id, className }) {
 const DONUT_COLORS = ["var(--green-900)", "var(--green-800)", "var(--green-700)", "var(--green-600)", "var(--green-500)", "var(--green-300)"];
 
 export function DonutChart({ sectors, total }) {
-  const radius = 70, stroke = 26, cx = 95, cy = 95;
+  const radius = 68, stroke = 38, cx = 95, cy = 95;
   const circ = 2 * Math.PI * radius;
   let offset = 0;
 

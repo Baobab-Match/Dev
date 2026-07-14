@@ -95,6 +95,32 @@ export const COUNTRIES_BASE = {
         }
       ]
     },
+    "infrastructure": {
+      "hospitalBeds": {
+        "value": "0.7",
+        "unit": "병상 / 1,000명",
+        "year": "2015",
+        "source": "World Bank"
+      },
+      "physicians": {
+        "value": "0.3",
+        "unit": "의사 / 1,000명",
+        "year": "2023",
+        "source": "World Bank"
+      },
+      "electricityAccess": {
+        "value": "91.9",
+        "unit": "%",
+        "year": "2024",
+        "source": "World Bank"
+      },
+      "internetPenetration": {
+        "value": "72.2",
+        "unit": "%",
+        "year": "2024",
+        "source": "World Bank"
+      }
+    },
     "koicaCumulative": {
       "total": "약 1,309억 8,947만 원",
       "latest": "약 152억 1,239만 원",
@@ -194,6 +220,32 @@ export const COUNTRIES_BASE = {
         }
       ]
     },
+    "infrastructure": {
+      "hospitalBeds": {
+        "value": "1.9",
+        "unit": "병상 / 1,000명",
+        "year": "2011",
+        "source": "World Bank"
+      },
+      "physicians": {
+        "value": "0.5",
+        "unit": "의사 / 1,000명",
+        "year": "2022",
+        "source": "World Bank"
+      },
+      "electricityAccess": {
+        "value": "95.1",
+        "unit": "%",
+        "year": "2024",
+        "source": "World Bank"
+      },
+      "internetPenetration": {
+        "value": "68.7",
+        "unit": "%",
+        "year": "2024",
+        "source": "World Bank"
+      }
+    },
     "koicaCumulative": {
       "total": "약 21억 3,606만 원",
       "latest": null,
@@ -277,6 +329,32 @@ export const COUNTRIES_BASE = {
           "amount": "2,532,633 원"
         }
       ]
+    },
+    "infrastructure": {
+      "hospitalBeds": {
+        "value": "1.1",
+        "unit": "병상 / 1,000명",
+        "year": "2023",
+        "source": "World Bank"
+      },
+      "physicians": {
+        "value": "0.1",
+        "unit": "의사 / 1,000명",
+        "year": "2023",
+        "source": "World Bank"
+      },
+      "electricityAccess": {
+        "value": "69",
+        "unit": "%",
+        "year": "2024",
+        "source": "World Bank"
+      },
+      "internetPenetration": {
+        "value": "49.5",
+        "unit": "%",
+        "year": "2024",
+        "source": "World Bank"
+      }
     },
     "koicaCumulative": {
       "total": "약 63억 1,116만 원",
@@ -377,6 +455,32 @@ export const COUNTRIES_BASE = {
         }
       ]
     },
+    "infrastructure": {
+      "hospitalBeds": {
+        "value": "0.3",
+        "unit": "병상 / 1,000명",
+        "year": "2011",
+        "source": "World Bank"
+      },
+      "physicians": {
+        "value": "0.2",
+        "unit": "의사 / 1,000명",
+        "year": "2022",
+        "source": "World Bank"
+      },
+      "electricityAccess": {
+        "value": "51.1",
+        "unit": "%",
+        "year": "2023",
+        "source": "World Bank"
+      },
+      "internetPenetration": {
+        "value": "33.3",
+        "unit": "%",
+        "year": "2024",
+        "source": "World Bank"
+      }
+    },
     "koicaCumulative": {
       "total": "약 77억 5,438만 원",
       "latest": "약 7억 3,616만 원",
@@ -470,6 +574,32 @@ export const COUNTRIES_BASE = {
           "amount": "10,147 원"
         }
       ]
+    },
+    "infrastructure": {
+      "hospitalBeds": {
+        "value": "1",
+        "unit": "병상 / 1,000명",
+        "year": "2009",
+        "source": "World Bank"
+      },
+      "physicians": {
+        "value": "0.3",
+        "unit": "의사 / 1,000명",
+        "year": "2022",
+        "source": "World Bank"
+      },
+      "electricityAccess": {
+        "value": "43.7",
+        "unit": "%",
+        "year": "2024",
+        "source": "World Bank"
+      },
+      "internetPenetration": {
+        "value": "29.8",
+        "unit": "%",
+        "year": "2024",
+        "source": "World Bank"
+      }
     },
     "koicaCumulative": {
       "total": "약 22억 7,460만 원",
@@ -570,6 +700,32 @@ export const COUNTRIES_BASE = {
         }
       ]
     },
+    "infrastructure": {
+      "hospitalBeds": {
+        "value": "2.7",
+        "unit": "병상 / 1,000명",
+        "year": "2009",
+        "source": "World Bank"
+      },
+      "physicians": {
+        "value": "0.6",
+        "unit": "의사 / 1,000명",
+        "year": "2022",
+        "source": "World Bank"
+      },
+      "electricityAccess": {
+        "value": "59.3",
+        "unit": "%",
+        "year": "2024",
+        "source": "World Bank"
+      },
+      "internetPenetration": {
+        "value": "64.9",
+        "unit": "%",
+        "year": "2024",
+        "source": "World Bank"
+      }
+    },
     "koicaCumulative": {
       "total": "약 19억 4,944만 원",
       "latest": "약 1억 6,449만 원",
@@ -669,6 +825,32 @@ export const COUNTRIES_BASE = {
         }
       ]
     },
+    "infrastructure": {
+      "hospitalBeds": {
+        "value": "0.5",
+        "unit": "병상 / 1,000명",
+        "year": "2004",
+        "source": "World Bank"
+      },
+      "physicians": {
+        "value": "0.4",
+        "unit": "의사 / 1,000명",
+        "year": "2023",
+        "source": "World Bank"
+      },
+      "electricityAccess": {
+        "value": "62.5",
+        "unit": "%",
+        "year": "2024",
+        "source": "World Bank"
+      },
+      "internetPenetration": {
+        "value": "41.2",
+        "unit": "%",
+        "year": "2024",
+        "source": "World Bank"
+      }
+    },
     "koicaCumulative": {
       "total": "약 748억 5,966만 원",
       "latest": "약 79억 4,892만 원",
@@ -757,6 +939,32 @@ export const COUNTRIES_BASE = {
           "amount": "2,857,843 원"
         }
       ]
+    },
+    "infrastructure": {
+      "hospitalBeds": {
+        "value": null,
+        "unit": "병상 / 1,000명",
+        "year": null,
+        "source": null
+      },
+      "physicians": {
+        "value": "0.0",
+        "unit": "의사 / 1,000명",
+        "year": "2022",
+        "source": "World Bank"
+      },
+      "electricityAccess": {
+        "value": "5.4",
+        "unit": "%",
+        "year": "2023",
+        "source": "World Bank"
+      },
+      "internetPenetration": {
+        "value": "6.7",
+        "unit": "%",
+        "year": "2019",
+        "source": "World Bank"
+      }
     },
     "koicaCumulative": {
       "total": "약 161억 1,522만 원",
@@ -852,6 +1060,32 @@ export const COUNTRIES_BASE = {
         }
       ]
     },
+    "infrastructure": {
+      "hospitalBeds": {
+        "value": "2.2",
+        "unit": "병상 / 1,000명",
+        "year": "2010",
+        "source": "World Bank"
+      },
+      "physicians": {
+        "value": "0.8",
+        "unit": "의사 / 1,000명",
+        "year": "2022",
+        "source": "World Bank"
+      },
+      "electricityAccess": {
+        "value": "90.2",
+        "unit": "%",
+        "year": "2024",
+        "source": "World Bank"
+      },
+      "internetPenetration": {
+        "value": "78.4",
+        "unit": "%",
+        "year": "2024",
+        "source": "World Bank"
+      }
+    },
     "koicaCumulative": {
       "total": "약 80억 3,688만 원",
       "latest": "약 10억 3,021만 원",
@@ -945,6 +1179,32 @@ export const COUNTRIES_BASE = {
           "amount": "95,069 원"
         }
       ]
+    },
+    "infrastructure": {
+      "hospitalBeds": {
+        "value": "0.3",
+        "unit": "병상 / 1,000명",
+        "year": "2020",
+        "source": "World Bank"
+      },
+      "physicians": {
+        "value": "0.0",
+        "unit": "의사 / 1,000명",
+        "year": "2023",
+        "source": "World Bank"
+      },
+      "electricityAccess": {
+        "value": "21.3",
+        "unit": "%",
+        "year": "2024",
+        "source": "World Bank"
+      },
+      "internetPenetration": {
+        "value": "15.6",
+        "unit": "%",
+        "year": "2024",
+        "source": "World Bank"
+      }
     },
     "koicaCumulative": {
       "total": "약 69억 8,447만 원",
@@ -1040,6 +1300,32 @@ export const COUNTRIES_BASE = {
         }
       ]
     },
+    "infrastructure": {
+      "hospitalBeds": {
+        "value": "1.6",
+        "unit": "병상 / 1,000명",
+        "year": "2021",
+        "source": "World Bank"
+      },
+      "physicians": {
+        "value": "0.2",
+        "unit": "의사 / 1,000명",
+        "year": "2022",
+        "source": "World Bank"
+      },
+      "electricityAccess": {
+        "value": "34.9",
+        "unit": "%",
+        "year": "2024",
+        "source": "World Bank"
+      },
+      "internetPenetration": {
+        "value": "32.2",
+        "unit": "%",
+        "year": "2024",
+        "source": "World Bank"
+      }
+    },
     "koicaCumulative": {
       "total": "약 40억 6,227만 원",
       "latest": "약 4억 9,047만 원",
@@ -1133,6 +1419,32 @@ export const COUNTRIES_BASE = {
           "amount": "19,970 원"
         }
       ]
+    },
+    "infrastructure": {
+      "hospitalBeds": {
+        "value": "1.3",
+        "unit": "병상 / 1,000명",
+        "year": "2006",
+        "source": "World Bank"
+      },
+      "physicians": {
+        "value": "0.2",
+        "unit": "의사 / 1,000명",
+        "year": "2022",
+        "source": "World Bank"
+      },
+      "electricityAccess": {
+        "value": "60.6",
+        "unit": "%",
+        "year": "2024",
+        "source": "World Bank"
+      },
+      "internetPenetration": {
+        "value": "51.8",
+        "unit": "%",
+        "year": "2024",
+        "source": "World Bank"
+      }
     },
     "koicaCumulative": {
       "total": "약 35억 2,081만 원",
@@ -1233,6 +1545,32 @@ export const COUNTRIES_BASE = {
         }
       ]
     },
+    "infrastructure": {
+      "hospitalBeds": {
+        "value": "0.8",
+        "unit": "병상 / 1,000명",
+        "year": "2023",
+        "source": "World Bank"
+      },
+      "physicians": {
+        "value": "0.1",
+        "unit": "의사 / 1,000명",
+        "year": "2022",
+        "source": "World Bank"
+      },
+      "electricityAccess": {
+        "value": "72",
+        "unit": "%",
+        "year": "2024",
+        "source": "World Bank"
+      },
+      "internetPenetration": {
+        "value": "31.7",
+        "unit": "%",
+        "year": "2024",
+        "source": "World Bank"
+      }
+    },
     "koicaCumulative": {
       "total": "약 1,839억 3,017만 원",
       "latest": "약 203억 5,478만 원",
@@ -1332,6 +1670,32 @@ export const COUNTRIES_BASE = {
         }
       ]
     },
+    "infrastructure": {
+      "hospitalBeds": {
+        "value": "3.5",
+        "unit": "병상 / 1,000명",
+        "year": "2022",
+        "source": "World Bank"
+      },
+      "physicians": {
+        "value": "2.0",
+        "unit": "의사 / 1,000명",
+        "year": "2017",
+        "source": "World Bank"
+      },
+      "electricityAccess": {
+        "value": "77.4",
+        "unit": "%",
+        "year": "2024",
+        "source": "World Bank"
+      },
+      "internetPenetration": {
+        "value": "82.0",
+        "unit": "%",
+        "year": "2024",
+        "source": "World Bank"
+      }
+    },
     "koicaCumulative": {
       "total": "약 73억 5,501만 원",
       "latest": "약 4억 4,169만 원",
@@ -1425,6 +1789,32 @@ export const COUNTRIES_BASE = {
           "amount": "447,302 원"
         }
       ]
+    },
+    "infrastructure": {
+      "hospitalBeds": {
+        "value": "0.3",
+        "unit": "병상 / 1,000명",
+        "year": "2014",
+        "source": "World Bank"
+      },
+      "physicians": {
+        "value": "0.2",
+        "unit": "의사 / 1,000명",
+        "year": "2022",
+        "source": "World Bank"
+      },
+      "electricityAccess": {
+        "value": "42.5",
+        "unit": "%",
+        "year": "2024",
+        "source": "World Bank"
+      },
+      "internetPenetration": {
+        "value": "18.7",
+        "unit": "%",
+        "year": "2024",
+        "source": "World Bank"
+      }
     },
     "koicaCumulative": {
       "total": "약 233억 132만 원",
@@ -1525,6 +1915,32 @@ export const COUNTRIES_BASE = {
         }
       ]
     },
+    "infrastructure": {
+      "hospitalBeds": {
+        "value": "1.3",
+        "unit": "병상 / 1,000명",
+        "year": "2011",
+        "source": "World Bank"
+      },
+      "physicians": {
+        "value": "0.1",
+        "unit": "의사 / 1,000명",
+        "year": "2022",
+        "source": "World Bank"
+      },
+      "electricityAccess": {
+        "value": "15.6",
+        "unit": "%",
+        "year": "2024",
+        "source": "World Bank"
+      },
+      "internetPenetration": {
+        "value": "19.0",
+        "unit": "%",
+        "year": "2024",
+        "source": "World Bank"
+      }
+    },
     "koicaCumulative": {
       "total": "약 297억 3,640만 원",
       "latest": "약 49억 3,645만 원",
@@ -1623,6 +2039,32 @@ export const COUNTRIES_BASE = {
           "amount": "5,040 원"
         }
       ]
+    },
+    "infrastructure": {
+      "hospitalBeds": {
+        "value": "0.2",
+        "unit": "병상 / 1,000명",
+        "year": "2018",
+        "source": "World Bank"
+      },
+      "physicians": {
+        "value": "0.2",
+        "unit": "의사 / 1,000명",
+        "year": "2023",
+        "source": "World Bank"
+      },
+      "electricityAccess": {
+        "value": "49.5",
+        "unit": "%",
+        "year": "2024",
+        "source": "World Bank"
+      },
+      "internetPenetration": {
+        "value": "36.8",
+        "unit": "%",
+        "year": "2024",
+        "source": "World Bank"
+      }
     },
     "koicaCumulative": {
       "total": "약 83억 4,416만 원",
@@ -1723,6 +2165,32 @@ export const COUNTRIES_BASE = {
         }
       ]
     },
+    "infrastructure": {
+      "hospitalBeds": {
+        "value": "0.7",
+        "unit": "병상 / 1,000명",
+        "year": "2023",
+        "source": "World Bank"
+      },
+      "physicians": {
+        "value": "0.7",
+        "unit": "의사 / 1,000명",
+        "year": "2021",
+        "source": "World Bank"
+      },
+      "electricityAccess": {
+        "value": "100",
+        "unit": "%",
+        "year": "2024",
+        "source": "World Bank"
+      },
+      "internetPenetration": {
+        "value": "91.2",
+        "unit": "%",
+        "year": "2024",
+        "source": "World Bank"
+      }
+    },
     "koicaCumulative": {
       "total": "약 960억 8,043만 원",
       "latest": "약 57억 1,129만 원",
@@ -1821,6 +2289,32 @@ export const COUNTRIES_BASE = {
           "amount": "6,212 원"
         }
       ]
+    },
+    "infrastructure": {
+      "hospitalBeds": {
+        "value": "3.8",
+        "unit": "병상 / 1,000명",
+        "year": "2023",
+        "source": "World Bank"
+      },
+      "physicians": {
+        "value": "1.4",
+        "unit": "의사 / 1,000명",
+        "year": "2022",
+        "source": "World Bank"
+      },
+      "electricityAccess": {
+        "value": "100",
+        "unit": "%",
+        "year": "2024",
+        "source": "World Bank"
+      },
+      "internetPenetration": {
+        "value": "73.3",
+        "unit": "%",
+        "year": "2024",
+        "source": "World Bank"
+      }
     },
     "koicaCumulative": {
       "total": "약 9억 8,319만 원",
@@ -1921,6 +2415,32 @@ export const COUNTRIES_BASE = {
         }
       ]
     },
+    "infrastructure": {
+      "hospitalBeds": {
+        "value": "0.4",
+        "unit": "병상 / 1,000명",
+        "year": "2006",
+        "source": "World Bank"
+      },
+      "physicians": {
+        "value": "0.3",
+        "unit": "의사 / 1,000명",
+        "year": "2022",
+        "source": "World Bank"
+      },
+      "electricityAccess": {
+        "value": "52.2",
+        "unit": "%",
+        "year": "2024",
+        "source": "World Bank"
+      },
+      "internetPenetration": {
+        "value": "45.8",
+        "unit": "%",
+        "year": "2024",
+        "source": "World Bank"
+      }
+    },
     "koicaCumulative": {
       "total": "약 44억 9,343만 원",
       "latest": "약 5억 7,154만 원",
@@ -2020,6 +2540,32 @@ export const COUNTRIES_BASE = {
         }
       ]
     },
+    "infrastructure": {
+      "hospitalBeds": {
+        "value": "0.7",
+        "unit": "병상 / 1,000명",
+        "year": "2021",
+        "source": "World Bank"
+      },
+      "physicians": {
+        "value": "0.2",
+        "unit": "의사 / 1,000명",
+        "year": "2022",
+        "source": "World Bank"
+      },
+      "electricityAccess": {
+        "value": "36.9",
+        "unit": "%",
+        "year": "2024",
+        "source": "World Bank"
+      },
+      "internetPenetration": {
+        "value": "20.5",
+        "unit": "%",
+        "year": "2024",
+        "source": "World Bank"
+      }
+    },
     "koicaCumulative": {
       "total": "약 647억 9,511만 원",
       "latest": "약 104억 4,320만 원",
@@ -2113,6 +2659,32 @@ export const COUNTRIES_BASE = {
           "amount": "143,050 원"
         }
       ]
+    },
+    "infrastructure": {
+      "hospitalBeds": {
+        "value": "0.4",
+        "unit": "병상 / 1,000명",
+        "year": "2021",
+        "source": "World Bank"
+      },
+      "physicians": {
+        "value": "0.2",
+        "unit": "의사 / 1,000명",
+        "year": "2023",
+        "source": "World Bank"
+      },
+      "electricityAccess": {
+        "value": "57",
+        "unit": "%",
+        "year": "2023",
+        "source": "World Bank"
+      },
+      "internetPenetration": {
+        "value": "34.0",
+        "unit": "%",
+        "year": "2024",
+        "source": "World Bank"
+      }
     },
     "koicaCumulative": {
       "total": "약 62억 6,061만 원",
@@ -2208,6 +2780,32 @@ export const COUNTRIES_BASE = {
         }
       ]
     },
+    "infrastructure": {
+      "hospitalBeds": {
+        "value": "2.4",
+        "unit": "병상 / 1,000명",
+        "year": "2022",
+        "source": "World Bank"
+      },
+      "physicians": {
+        "value": "0.4",
+        "unit": "의사 / 1,000명",
+        "year": "2023",
+        "source": "World Bank"
+      },
+      "electricityAccess": {
+        "value": "80.2",
+        "unit": "%",
+        "year": "2024",
+        "source": "World Bank"
+      },
+      "internetPenetration": {
+        "value": "57.5",
+        "unit": "%",
+        "year": "2024",
+        "source": "World Bank"
+      }
+    },
     "koicaCumulative": {
       "total": "약 20억 6,717만 원",
       "latest": "약 8억 9,659만 원",
@@ -2301,6 +2899,32 @@ export const COUNTRIES_BASE = {
           "amount": "251,504 원"
         }
       ]
+    },
+    "infrastructure": {
+      "hospitalBeds": {
+        "value": "0.7",
+        "unit": "병상 / 1,000명",
+        "year": "2014",
+        "source": "World Bank"
+      },
+      "physicians": {
+        "value": "0.1",
+        "unit": "의사 / 1,000명",
+        "year": "2022",
+        "source": "World Bank"
+      },
+      "electricityAccess": {
+        "value": "20.1",
+        "unit": "%",
+        "year": "2024",
+        "source": "World Bank"
+      },
+      "internetPenetration": {
+        "value": "8.6",
+        "unit": "%",
+        "year": "2024",
+        "source": "World Bank"
+      }
     },
     "koicaCumulative": {
       "total": "약 85억 7,980만 원",
@@ -2401,6 +3025,32 @@ export const COUNTRIES_BASE = {
         }
       ]
     },
+    "infrastructure": {
+      "hospitalBeds": {
+        "value": "0.2",
+        "unit": "병상 / 1,000명",
+        "year": "2020",
+        "source": "World Bank"
+      },
+      "physicians": {
+        "value": "0.1",
+        "unit": "의사 / 1,000명",
+        "year": "2022",
+        "source": "World Bank"
+      },
+      "electricityAccess": {
+        "value": "34",
+        "unit": "%",
+        "year": "2024",
+        "source": "World Bank"
+      },
+      "internetPenetration": {
+        "value": "28.3",
+        "unit": "%",
+        "year": "2024",
+        "source": "World Bank"
+      }
+    },
     "koicaCumulative": {
       "total": "약 84억 5,307만 원",
       "latest": "약 20억 7,795만 원",
@@ -2484,6 +3134,32 @@ export const COUNTRIES_BASE = {
           "amount": "328,413 원"
         }
       ]
+    },
+    "infrastructure": {
+      "hospitalBeds": {
+        "value": "2.9",
+        "unit": "병상 / 1,000명",
+        "year": "2019",
+        "source": "World Bank"
+      },
+      "physicians": {
+        "value": "0.5",
+        "unit": "의사 / 1,000명",
+        "year": "2022",
+        "source": "World Bank"
+      },
+      "electricityAccess": {
+        "value": "77.7",
+        "unit": "%",
+        "year": "2024",
+        "source": "World Bank"
+      },
+      "internetPenetration": {
+        "value": "59.1",
+        "unit": "%",
+        "year": "2024",
+        "source": "World Bank"
+      }
     },
     "koicaCumulative": {
       "total": "약 12억 2,133만 원",
@@ -2584,6 +3260,32 @@ export const COUNTRIES_BASE = {
         }
       ]
     },
+    "infrastructure": {
+      "hospitalBeds": {
+        "value": "0.7",
+        "unit": "병상 / 1,000명",
+        "year": "2019",
+        "source": "World Bank"
+      },
+      "physicians": {
+        "value": "0.1",
+        "unit": "의사 / 1,000명",
+        "year": "2023",
+        "source": "World Bank"
+      },
+      "electricityAccess": {
+        "value": "82.9",
+        "unit": "%",
+        "year": "2024",
+        "source": "World Bank"
+      },
+      "internetPenetration": {
+        "value": "60.1",
+        "unit": "%",
+        "year": "2024",
+        "source": "World Bank"
+      }
+    },
     "koicaCumulative": {
       "total": "약 1,300억 1,264만 원",
       "latest": "약 108억 2,415만 원",
@@ -2646,6 +3348,32 @@ export const COUNTRIES_BASE = {
     "koica": {
       "total": null,
       "sectors": []
+    },
+    "infrastructure": {
+      "hospitalBeds": {
+        "value": "2.6",
+        "unit": "병상 / 1,000명",
+        "year": "2023",
+        "source": "World Bank"
+      },
+      "physicians": {
+        "value": "6.6",
+        "unit": "의사 / 1,000명",
+        "year": "2022",
+        "source": "World Bank"
+      },
+      "electricityAccess": {
+        "value": "100",
+        "unit": "%",
+        "year": "2024",
+        "source": "World Bank"
+      },
+      "internetPenetration": {
+        "value": "87.8",
+        "unit": "%",
+        "year": "2024",
+        "source": "World Bank"
+      }
     },
     "koicaCumulative": {
       "total": "약 5억 4,649만 원",
@@ -2735,6 +3463,32 @@ export const COUNTRIES_BASE = {
           "amount": "687,529 원"
         }
       ]
+    },
+    "infrastructure": {
+      "hospitalBeds": {
+        "value": "0.9",
+        "unit": "병상 / 1,000명",
+        "year": "2019",
+        "source": "World Bank"
+      },
+      "physicians": {
+        "value": "0.0",
+        "unit": "의사 / 1,000명",
+        "year": "2014",
+        "source": "World Bank"
+      },
+      "electricityAccess": {
+        "value": "54.4",
+        "unit": "%",
+        "year": "2024",
+        "source": "World Bank"
+      },
+      "internetPenetration": {
+        "value": "27.9",
+        "unit": "%",
+        "year": "2024",
+        "source": "World Bank"
+      }
     },
     "koicaCumulative": {
       "total": "약 15억 1,756만 원",
@@ -2835,6 +3589,32 @@ export const COUNTRIES_BASE = {
         }
       ]
     },
+    "infrastructure": {
+      "hospitalBeds": {
+        "value": "0.7",
+        "unit": "병상 / 1,000명",
+        "year": "2021",
+        "source": "World Bank"
+      },
+      "physicians": {
+        "value": "0.2",
+        "unit": "의사 / 1,000명",
+        "year": "2017",
+        "source": "World Bank"
+      },
+      "electricityAccess": {
+        "value": "66",
+        "unit": "%",
+        "year": "2024",
+        "source": "World Bank"
+      },
+      "internetPenetration": {
+        "value": "18.6",
+        "unit": "%",
+        "year": "2017",
+        "source": "World Bank"
+      }
+    },
     "koicaCumulative": {
       "total": "약 612억 2,876만 원",
       "latest": "약 67억 8,146만 원",
@@ -2923,6 +3703,32 @@ export const COUNTRIES_BASE = {
           "amount": "1,583,113 원"
         }
       ]
+    },
+    "infrastructure": {
+      "hospitalBeds": {
+        "value": "0.4",
+        "unit": "병상 / 1,000명",
+        "year": "2006",
+        "source": "World Bank"
+      },
+      "physicians": {
+        "value": "0.1",
+        "unit": "의사 / 1,000명",
+        "year": "2022",
+        "source": "World Bank"
+      },
+      "electricityAccess": {
+        "value": "39.2",
+        "unit": "%",
+        "year": "2024",
+        "source": "World Bank"
+      },
+      "internetPenetration": {
+        "value": "25.1",
+        "unit": "%",
+        "year": "2024",
+        "source": "World Bank"
+      }
     },
     "koicaCumulative": {
       "total": "약 61억 5,370만 원",
@@ -3023,6 +3829,32 @@ export const COUNTRIES_BASE = {
         }
       ]
     },
+    "infrastructure": {
+      "hospitalBeds": {
+        "value": "1.6",
+        "unit": "병상 / 1,000명",
+        "year": "2017",
+        "source": "World Bank"
+      },
+      "physicians": {
+        "value": "1.7",
+        "unit": "의사 / 1,000명",
+        "year": "2022",
+        "source": "World Bank"
+      },
+      "electricityAccess": {
+        "value": "100",
+        "unit": "%",
+        "year": "2024",
+        "source": "World Bank"
+      },
+      "internetPenetration": {
+        "value": "77.4",
+        "unit": "%",
+        "year": "2024",
+        "source": "World Bank"
+      }
+    },
     "koicaCumulative": {
       "total": "약 445억 7,757만 원",
       "latest": "약 26억 424만 원",
@@ -3121,6 +3953,32 @@ export const COUNTRIES_BASE = {
           "amount": "22,174 원"
         }
       ]
+    },
+    "infrastructure": {
+      "hospitalBeds": {
+        "value": "0.8",
+        "unit": "병상 / 1,000명",
+        "year": "2019",
+        "source": "World Bank"
+      },
+      "physicians": {
+        "value": "0.2",
+        "unit": "의사 / 1,000명",
+        "year": "2022",
+        "source": "World Bank"
+      },
+      "electricityAccess": {
+        "value": "55.5",
+        "unit": "%",
+        "year": "2024",
+        "source": "World Bank"
+      },
+      "internetPenetration": {
+        "value": "40.7",
+        "unit": "%",
+        "year": "2024",
+        "source": "World Bank"
+      }
     },
     "koicaCumulative": {
       "total": "약 193억 5,501만 원",
@@ -3221,6 +4079,32 @@ export const COUNTRIES_BASE = {
         }
       ]
     },
+    "infrastructure": {
+      "hospitalBeds": {
+        "value": "1.0",
+        "unit": "병상 / 1,000명",
+        "year": "2023",
+        "source": "World Bank"
+      },
+      "physicians": {
+        "value": "0.1",
+        "unit": "의사 / 1,000명",
+        "year": "2022",
+        "source": "World Bank"
+      },
+      "electricityAccess": {
+        "value": "55.3",
+        "unit": "%",
+        "year": "2024",
+        "source": "World Bank"
+      },
+      "internetPenetration": {
+        "value": "14.3",
+        "unit": "%",
+        "year": "2020",
+        "source": "World Bank"
+      }
+    },
     "koicaCumulative": {
       "total": "약 5억 9,199만 원",
       "latest": null,
@@ -3283,6 +4167,32 @@ export const COUNTRIES_BASE = {
     "koica": {
       "total": null,
       "sectors": []
+    },
+    "infrastructure": {
+      "hospitalBeds": {
+        "value": "2.0",
+        "unit": "병상 / 1,000명",
+        "year": "2013",
+        "source": "World Bank"
+      },
+      "physicians": {
+        "value": "0.6",
+        "unit": "의사 / 1,000명",
+        "year": "2023",
+        "source": "World Bank"
+      },
+      "electricityAccess": {
+        "value": "89.3",
+        "unit": "%",
+        "year": "2024",
+        "source": "World Bank"
+      },
+      "internetPenetration": {
+        "value": "63.4",
+        "unit": "%",
+        "year": "2024",
+        "source": "World Bank"
+      }
     },
     "koicaCumulative": {
       "total": "약 41억 1,845만 원",
@@ -3383,6 +4293,32 @@ export const COUNTRIES_BASE = {
         }
       ]
     },
+    "infrastructure": {
+      "hospitalBeds": {
+        "value": "0.3",
+        "unit": "병상 / 1,000명",
+        "year": "2016",
+        "source": "World Bank"
+      },
+      "physicians": {
+        "value": "0.1",
+        "unit": "의사 / 1,000명",
+        "year": "2023",
+        "source": "World Bank"
+      },
+      "electricityAccess": {
+        "value": "56.6",
+        "unit": "%",
+        "year": "2024",
+        "source": "World Bank"
+      },
+      "internetPenetration": {
+        "value": "21.9",
+        "unit": "%",
+        "year": "2024",
+        "source": "World Bank"
+      }
+    },
     "koicaCumulative": {
       "total": "약 3,122억 8,813만 원",
       "latest": "약 339억 9,466만 원",
@@ -3481,6 +4417,32 @@ export const COUNTRIES_BASE = {
           "amount": "3,890,249 원"
         }
       ]
+    },
+    "infrastructure": {
+      "hospitalBeds": {
+        "value": "0.5",
+        "unit": "병상 / 1,000명",
+        "year": "2010",
+        "source": "World Bank"
+      },
+      "physicians": {
+        "value": "0.2",
+        "unit": "의사 / 1,000명",
+        "year": "2022",
+        "source": "World Bank"
+      },
+      "electricityAccess": {
+        "value": "55.3",
+        "unit": "%",
+        "year": "2024",
+        "source": "World Bank"
+      },
+      "internetPenetration": {
+        "value": "8.9",
+        "unit": "%",
+        "year": "2024",
+        "source": "World Bank"
+      }
     },
     "koicaCumulative": {
       "total": "약 1,741억 5,825만 원",
@@ -3581,6 +4543,32 @@ export const COUNTRIES_BASE = {
         }
       ]
     },
+    "infrastructure": {
+      "hospitalBeds": {
+        "value": "1.1",
+        "unit": "병상 / 1,000명",
+        "year": "2021",
+        "source": "World Bank"
+      },
+      "physicians": {
+        "value": "0.7",
+        "unit": "의사 / 1,000명",
+        "year": "2020",
+        "source": "World Bank"
+      },
+      "electricityAccess": {
+        "value": "100",
+        "unit": "%",
+        "year": "2024",
+        "source": "World Bank"
+      },
+      "internetPenetration": {
+        "value": "74.6",
+        "unit": "%",
+        "year": "2024",
+        "source": "World Bank"
+      }
+    },
     "koicaCumulative": {
       "total": "약 986억 4,208만 원",
       "latest": "약 92억 8,535만 원",
@@ -3680,6 +4668,32 @@ export const COUNTRIES_BASE = {
         }
       ]
     },
+    "infrastructure": {
+      "hospitalBeds": {
+        "value": "2",
+        "unit": "병상 / 1,000명",
+        "year": "2010",
+        "source": "World Bank"
+      },
+      "physicians": {
+        "value": "0.3",
+        "unit": "의사 / 1,000명",
+        "year": "2022",
+        "source": "World Bank"
+      },
+      "electricityAccess": {
+        "value": "53.6",
+        "unit": "%",
+        "year": "2024",
+        "source": "World Bank"
+      },
+      "internetPenetration": {
+        "value": "17.1",
+        "unit": "%",
+        "year": "2024",
+        "source": "World Bank"
+      }
+    },
     "koicaCumulative": {
       "total": "약 70억 3,835만 원",
       "latest": "약 3억 8,479만 원",
@@ -3768,6 +4782,32 @@ export const COUNTRIES_BASE = {
           "amount": "519,422 원"
         }
       ]
+    },
+    "infrastructure": {
+      "hospitalBeds": {
+        "value": "2.1",
+        "unit": "병상 / 1,000명",
+        "year": "2010",
+        "source": "World Bank"
+      },
+      "physicians": {
+        "value": "0.2",
+        "unit": "의사 / 1,000명",
+        "year": "2022",
+        "source": "World Bank"
+      },
+      "electricityAccess": {
+        "value": "65.1",
+        "unit": "%",
+        "year": "2024",
+        "source": "World Bank"
+      },
+      "internetPenetration": {
+        "value": "63.3",
+        "unit": "%",
+        "year": "2024",
+        "source": "World Bank"
+      }
     },
     "koicaCumulative": {
       "total": "약 21억 9,580만 원",
@@ -3868,6 +4908,32 @@ export const COUNTRIES_BASE = {
         }
       ]
     },
+    "infrastructure": {
+      "hospitalBeds": {
+        "value": "1",
+        "unit": "병상 / 1,000명",
+        "year": "2011",
+        "source": "World Bank"
+      },
+      "physicians": {
+        "value": "0.1",
+        "unit": "의사 / 1,000명",
+        "year": "2023",
+        "source": "World Bank"
+      },
+      "electricityAccess": {
+        "value": "18.2",
+        "unit": "%",
+        "year": "2024",
+        "source": "World Bank"
+      },
+      "internetPenetration": {
+        "value": "13.8",
+        "unit": "%",
+        "year": "2024",
+        "source": "World Bank"
+      }
+    },
     "koicaCumulative": {
       "total": "약 38억 9,491만 원",
       "latest": "약 15억 2,835만 원",
@@ -3961,6 +5027,32 @@ export const COUNTRIES_BASE = {
           "amount": "121,154 원"
         }
       ]
+    },
+    "infrastructure": {
+      "hospitalBeds": {
+        "value": "1.4",
+        "unit": "병상 / 1,000명",
+        "year": "2018",
+        "source": "World Bank"
+      },
+      "physicians": {
+        "value": "0.2",
+        "unit": "의사 / 1,000명",
+        "year": "2022",
+        "source": "World Bank"
+      },
+      "electricityAccess": {
+        "value": "69.2",
+        "unit": "%",
+        "year": "2024",
+        "source": "World Bank"
+      },
+      "internetPenetration": {
+        "value": "65.3",
+        "unit": "%",
+        "year": "2024",
+        "source": "World Bank"
+      }
     },
     "koicaCumulative": {
       "total": "약 48억 5,697만 원",
@@ -4061,6 +5153,32 @@ export const COUNTRIES_BASE = {
         }
       ]
     },
+    "infrastructure": {
+      "hospitalBeds": {
+        "value": "1.9",
+        "unit": "병상 / 1,000명",
+        "year": "2014",
+        "source": "World Bank"
+      },
+      "physicians": {
+        "value": "0.1",
+        "unit": "의사 / 1,000명",
+        "year": "2023",
+        "source": "World Bank"
+      },
+      "electricityAccess": {
+        "value": "62",
+        "unit": "%",
+        "year": "2024",
+        "source": "World Bank"
+      },
+      "internetPenetration": {
+        "value": "41.6",
+        "unit": "%",
+        "year": "2024",
+        "source": "World Bank"
+      }
+    },
     "koicaCumulative": {
       "total": "약 228억 8,382만 원",
       "latest": "약 11억 4,861만 원",
@@ -4159,6 +5277,32 @@ export const COUNTRIES_BASE = {
           "amount": "27,954 원"
         }
       ]
+    },
+    "infrastructure": {
+      "hospitalBeds": {
+        "value": "0.1",
+        "unit": "병상 / 1,000명",
+        "year": "2020",
+        "source": "World Bank"
+      },
+      "physicians": {
+        "value": "0.1",
+        "unit": "의사 / 1,000명",
+        "year": "2023",
+        "source": "World Bank"
+      },
+      "electricityAccess": {
+        "value": "13.4",
+        "unit": "%",
+        "year": "2024",
+        "source": "World Bank"
+      },
+      "internetPenetration": {
+        "value": "12.6",
+        "unit": "%",
+        "year": "2024",
+        "source": "World Bank"
+      }
     },
     "koicaCumulative": {
       "total": "약 59억 1,363만 원",
@@ -4259,6 +5403,32 @@ export const COUNTRIES_BASE = {
         }
       ]
     },
+    "infrastructure": {
+      "hospitalBeds": {
+        "value": "2.6",
+        "unit": "병상 / 1,000명",
+        "year": "2016",
+        "source": "World Bank"
+      },
+      "physicians": {
+        "value": "0.1",
+        "unit": "의사 / 1,000명",
+        "year": "2022",
+        "source": "World Bank"
+      },
+      "electricityAccess": {
+        "value": "72",
+        "unit": "%",
+        "year": "2024",
+        "source": "World Bank"
+      },
+      "internetPenetration": {
+        "value": "46.3",
+        "unit": "%",
+        "year": "2024",
+        "source": "World Bank"
+      }
+    },
     "koicaCumulative": {
       "total": "약 853억 8,000만 원",
       "latest": "약 73억 1,119만 원",
@@ -4342,6 +5512,32 @@ export const COUNTRIES_BASE = {
           "amount": "353,557 원"
         }
       ]
+    },
+    "infrastructure": {
+      "hospitalBeds": {
+        "value": "2.2",
+        "unit": "병상 / 1,000명",
+        "year": "2022",
+        "source": "World Bank"
+      },
+      "physicians": {
+        "value": "0.7",
+        "unit": "의사 / 1,000명",
+        "year": "2023",
+        "source": "World Bank"
+      },
+      "electricityAccess": {
+        "value": "98.4",
+        "unit": "%",
+        "year": "2024",
+        "source": "World Bank"
+      },
+      "internetPenetration": {
+        "value": "74.7",
+        "unit": "%",
+        "year": "2024",
+        "source": "World Bank"
+      }
     },
     "koicaCumulative": {
       "total": "약 7억 3,782만 원",
@@ -4442,6 +5638,32 @@ export const COUNTRIES_BASE = {
         }
       ]
     },
+    "infrastructure": {
+      "hospitalBeds": {
+        "value": "1.3",
+        "unit": "병상 / 1,000명",
+        "year": "2019",
+        "source": "World Bank"
+      },
+      "physicians": {
+        "value": "0.3",
+        "unit": "의사 / 1,000명",
+        "year": "2023",
+        "source": "World Bank"
+      },
+      "electricityAccess": {
+        "value": "77",
+        "unit": "%",
+        "year": "2024",
+        "source": "World Bank"
+      },
+      "internetPenetration": {
+        "value": "35.0",
+        "unit": "%",
+        "year": "2024",
+        "source": "World Bank"
+      }
+    },
     "koicaCumulative": {
       "total": "약 1,177억 3,584만 원",
       "latest": "약 143억 2,656만 원",
@@ -4525,6 +5747,32 @@ export const COUNTRIES_BASE = {
           "amount": "577,385 원"
         }
       ]
+    },
+    "infrastructure": {
+      "hospitalBeds": {
+        "value": "2.2",
+        "unit": "병상 / 1,000명",
+        "year": "2010",
+        "source": "World Bank"
+      },
+      "physicians": {
+        "value": "0.4",
+        "unit": "의사 / 1,000명",
+        "year": "2022",
+        "source": "World Bank"
+      },
+      "electricityAccess": {
+        "value": "91.7",
+        "unit": "%",
+        "year": "2024",
+        "source": "World Bank"
+      },
+      "internetPenetration": {
+        "value": "32.5",
+        "unit": "%",
+        "year": "2024",
+        "source": "World Bank"
+      }
     },
     "koicaCumulative": {
       "total": "약 47억 807만 원",
@@ -4625,6 +5873,32 @@ export const COUNTRIES_BASE = {
         }
       ]
     },
+    "infrastructure": {
+      "hospitalBeds": {
+        "value": "0.4",
+        "unit": "병상 / 1,000명",
+        "year": "2006",
+        "source": "World Bank"
+      },
+      "physicians": {
+        "value": "0.2",
+        "unit": "의사 / 1,000명",
+        "year": "2023",
+        "source": "World Bank"
+      },
+      "electricityAccess": {
+        "value": "72.9",
+        "unit": "%",
+        "year": "2024",
+        "source": "World Bank"
+      },
+      "internetPenetration": {
+        "value": "41.4",
+        "unit": "%",
+        "year": "2024",
+        "source": "World Bank"
+      }
+    },
     "koicaCumulative": {
       "total": "약 699억 6,509만 원",
       "latest": "약 111억 8,976만 원",
@@ -4724,6 +5998,32 @@ export const COUNTRIES_BASE = {
         }
       ]
     },
+    "infrastructure": {
+      "hospitalBeds": {
+        "value": "1.6",
+        "unit": "병상 / 1,000명",
+        "year": "2005",
+        "source": "World Bank"
+      },
+      "physicians": {
+        "value": "0.2",
+        "unit": "의사 / 1,000명",
+        "year": "2022",
+        "source": "World Bank"
+      },
+      "electricityAccess": {
+        "value": "53",
+        "unit": "%",
+        "year": "2024",
+        "source": "World Bank"
+      },
+      "internetPenetration": {
+        "value": "47.3",
+        "unit": "%",
+        "year": "2024",
+        "source": "World Bank"
+      }
+    },
     "koicaCumulative": {
       "total": "약 42억 1,529만 원",
       "latest": "약 4억 8,196만 원",
@@ -4786,6 +6086,32 @@ export const COUNTRIES_BASE = {
     "koica": {
       "total": null,
       "sectors": []
+    },
+    "infrastructure": {
+      "hospitalBeds": {
+        "value": "0.8",
+        "unit": "병상 / 1,000명",
+        "year": "2006",
+        "source": "World Bank"
+      },
+      "physicians": {
+        "value": "0.2",
+        "unit": "의사 / 1,000명",
+        "year": "2022",
+        "source": "World Bank"
+      },
+      "electricityAccess": {
+        "value": "22.1",
+        "unit": "%",
+        "year": "2023",
+        "source": "World Bank"
+      },
+      "internetPenetration": {
+        "value": "19.7",
+        "unit": "%",
+        "year": "2024",
+        "source": "World Bank"
+      }
     },
     "koicaCumulative": {
       "total": "약 1,188억 7,102만 원",
@@ -4886,6 +6212,32 @@ export const COUNTRIES_BASE = {
         }
       ]
     },
+    "infrastructure": {
+      "hospitalBeds": {
+        "value": "0.8",
+        "unit": "병상 / 1,000명",
+        "year": "2022",
+        "source": "World Bank"
+      },
+      "physicians": {
+        "value": "0.1",
+        "unit": "의사 / 1,000명",
+        "year": "2022",
+        "source": "World Bank"
+      },
+      "electricityAccess": {
+        "value": "52.4",
+        "unit": "%",
+        "year": "2024",
+        "source": "World Bank"
+      },
+      "internetPenetration": {
+        "value": "31.2",
+        "unit": "%",
+        "year": "2024",
+        "source": "World Bank"
+      }
+    },
     "koicaCumulative": {
       "total": "약 2,245억 3,535만 원",
       "latest": "약 235억 5,708만 원",
@@ -4979,6 +6331,32 @@ export const COUNTRIES_BASE = {
           "amount": "49,021 원"
         }
       ]
+    },
+    "infrastructure": {
+      "hospitalBeds": {
+        "value": "0.3",
+        "unit": "병상 / 1,000명",
+        "year": "2022",
+        "source": "World Bank"
+      },
+      "physicians": {
+        "value": "0.1",
+        "unit": "의사 / 1,000명",
+        "year": "2022",
+        "source": "World Bank"
+      },
+      "electricityAccess": {
+        "value": "61.1",
+        "unit": "%",
+        "year": "2024",
+        "source": "World Bank"
+      },
+      "internetPenetration": {
+        "value": "39.5",
+        "unit": "%",
+        "year": "2024",
+        "source": "World Bank"
+      }
     },
     "koicaCumulative": {
       "total": "약 37억 5,842만 원",
@@ -5078,6 +6456,32 @@ export const COUNTRIES_BASE = {
           "amount": "4,261,191 원"
         }
       ]
+    },
+    "infrastructure": {
+      "hospitalBeds": {
+        "value": "1.8",
+        "unit": "병상 / 1,000명",
+        "year": "2023",
+        "source": "World Bank"
+      },
+      "physicians": {
+        "value": "1.3",
+        "unit": "의사 / 1,000명",
+        "year": "2021",
+        "source": "World Bank"
+      },
+      "electricityAccess": {
+        "value": "100",
+        "unit": "%",
+        "year": "2024",
+        "source": "World Bank"
+      },
+      "internetPenetration": {
+        "value": "76.5",
+        "unit": "%",
+        "year": "2024",
+        "source": "World Bank"
+      }
     },
     "koicaCumulative": {
       "total": "약 778억 6,729만 원",
