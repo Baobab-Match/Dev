@@ -64,16 +64,16 @@ const NOTICE_COPY = {
   recommend: {
     title: "다음 장부터 국가별 상세 분석이 이어집니다.",
     desc: [
-      "각 국가는 ① 국가 상세 정보 → ② 매칭 적합도·추천 근거 순으로 3개 면에 걸쳐 정리됩니다.",
-      "① 국가 상세 정보에는 기후 취약도·중점협력국 여부·외교 친밀도 등 핵심 지표와 기초 국가 정보, 경제 및 ODA 규모, KOICA 지원 현황이 담겨 있습니다.",
+      "각 국가는 ① 국가 상세 정보 → ② 매칭 적합도·추천 근거 순으로 2개 면에 걸쳐 정리됩니다.",
+      "① 국가 상세 정보에는 기후 취약도·중점협력국 여부·외교 친밀도 등 핵심 지표와 기초 국가 정보, 경제 및 ODA 규모, 인프라 현황, KOICA 지원 현황이 담겨 있습니다.",
       "② 매칭 페이지에는 7개 지표별 적합도 막대그래프와 이 국가를 추천하는 구체적인 근거가 정리되어 있어, 순위표의 점수가 어떻게 산정됐는지 바로 확인하실 수 있습니다.",
     ],
   },
   favorite: {
     title: "다음 장부터 관심 국가별 상세 설명이 이어집니다.",
     desc: [
-      "즐겨찾기하신 각 국가는 ① 국가 상세 정보 → ② 매칭 적합도·추천 근거 순으로 3개 면에 걸쳐 정리됩니다.",
-      "① 국가 상세 정보에는 기후 취약도·중점협력국 여부·외교 친밀도 등 핵심 지표와 기초 국가 정보, 경제 및 ODA 규모, KOICA 지원 현황이 담겨 있습니다.",
+      "즐겨찾기하신 각 국가는 ① 국가 상세 정보 → ② 매칭 적합도·추천 근거 순으로 2개 면에 걸쳐 정리됩니다.",
+      "① 국가 상세 정보에는 기후 취약도·중점협력국 여부·외교 친밀도 등 핵심 지표와 기초 국가 정보, 경제 및 ODA 규모, 인프라 현황, KOICA 지원 현황이 담겨 있습니다.",
       "② 매칭 페이지에는 선택하신 분야를 기준으로 한 7개 지표별 적합도와 근거가 정리되어 있어, 즐겨찾기하신 국가가 왜 이 점수·순위로 나왔는지 바로 확인하실 수 있습니다.",
     ],
   },
@@ -82,6 +82,41 @@ const AXIS_LABEL = {
   field: "분야 적합도", climateFit: "기후-기술 적합도", climateScore: "기후 시급성",
   diplomacy: "외교 친밀도", develop: "개발 필요도", export: "수출 연계성", techMatch: "보유기술 적합도",
 };
+
+// 인프라 지표별 아프리카 54개국 평균 계산 (countries 전체 맵을 받아 1회 계산)
+const INFRA_FIELDS = ["hospitalBeds", "physicians", "electricityAccess", "internetPenetration"];
+function computeInfraAvg(countries) {
+  const sums = {}, counts = {};
+  INFRA_FIELDS.forEach((f) => { sums[f] = 0; counts[f] = 0; });
+
+  Object.values(countries || {}).forEach((c) => {
+    const infra = c.infrastructure || {};
+    INFRA_FIELDS.forEach((f) => {
+      const raw = infra[f] && infra[f].value;
+      const num = raw != null ? parseFloat(raw) : null;
+      if (num != null && !isNaN(num)) {
+        sums[f] += num;
+        counts[f] += 1;
+      }
+    });
+  });
+
+  const avg = {};
+  INFRA_FIELDS.forEach((f) => { avg[f] = counts[f] ? sums[f] / counts[f] : null; });
+  return avg;
+}
+
+// 인프라 값 vs 아프리카 평균 비교 문구 (±5% 이내는 "평균 수준"으로 처리)
+function infraCompareText(infraAvg, fieldKey, valueStr) {
+  const avg = infraAvg[fieldKey];
+  const val = valueStr != null ? parseFloat(valueStr) : null;
+  if (avg == null || val == null || isNaN(val)) return null;
+
+  const diff = (val - avg) / avg;
+  const avgLabel = `아프리카 평균 ${avg.toFixed(1)}`;
+  if (Math.abs(diff) < 0.05) return `${avgLabel} · 평균 수준`;
+  return diff > 0 ? `${avgLabel} · 평균보다 높음` : `${avgLabel} · 평균보다 낮음`;
+}
 
 // 본문 폭: A4(595.28) - 좌우 패딩(50*2) = 495.28
 const CONTENT_W = 495;
@@ -424,6 +459,31 @@ function EcoRow({ label, v, defaultSrc, isLast }) {
   );
 }
 
+// 인프라 한 줄 (병상 수·의사 수·전력 접근률·인터넷 이용률) — EcoRow와 동일한 레이아웃 재사용
+function InfraRow({ label, v, compare, isLast }) {
+  let src = null;
+  if (v) {
+    src = v.year && v.source ? `(${v.year} · ${v.source})` : v.year ? `(${v.year})` : v.source ? `(${v.source})` : null;
+  }
+  const labelW = label.length * 12 + 4;
+  const valueLine = v && v.value ? (v.unit === "%" ? `${v.value}%` : `${v.value}${v.unit ? ` ${v.unit}` : ""}`) : null;
+  return (
+    <View style={styles.ecoRow}>
+      <Text style={styles.ecoLabel}>{label}</Text>
+      {src ? <Text style={[styles.ecoSrc, { left: labelW }]}>{src}</Text> : null}
+      {valueLine ? (
+        <>
+          <Text style={styles.ecoKrw}>{valueLine}</Text>
+          {compare ? <Text style={styles.ecoUsd}>{compare}</Text> : null}
+        </>
+      ) : (
+        <Text style={styles.ecoEmpty}>아직 정보가 없습니다</Text>
+      )}
+      {!isLast ? <View style={styles.ecoLine} /> : null}
+    </View>
+  );
+}
+
 // 매칭 막대 한 줄 (두껍게)
 const AXIS_TRACK_W = 270;
 function AxisBar({ label, score }) {
@@ -440,8 +500,9 @@ function AxisBar({ label, score }) {
 }
 
 // ── 국가 상세 (페이지 1) ──
-function CountryDetailPage({ r, country, rankLabel, field, showMatchedField }) {
+function CountryDetailPage({ r, country, rankLabel, field, showMatchedField, infraAvg }) {
   const eco = country?.economy || {};
+  const infra = country?.infrastructure || {};
   const cum = country?.koicaCumulative || {};
   const sectors = ((country?.koica && country.koica.sectors) || []).slice().sort((a, b) => b.percent - a.percent);
 
@@ -465,6 +526,12 @@ function CountryDetailPage({ r, country, rankLabel, field, showMatchedField }) {
     ["수원국 ODA 규모", eco.recipientOda, ODA],
     ["양자 지원 규모", eco.bilateral, ODA],
     ["한국 ODA 규모", eco.koreaOda, ODA],
+  ];
+  const infraRows = [
+    ["병상 수", infra.hospitalBeds, "hospitalBeds"],
+    ["의사 수", infra.physicians, "physicians"],
+    ["전력 접근률", infra.electricityAccess, "electricityAccess"],
+    ["인터넷 이용률", infra.internetPenetration, "internetPenetration"],
   ];
 
   return (
@@ -528,6 +595,23 @@ function CountryDetailPage({ r, country, rankLabel, field, showMatchedField }) {
         <View style={styles.ecoGroup}>
           {ecoRows.map(([label, v, ds], i) => (
             <EcoRow key={label} label={label} v={v} defaultSrc={ds} isLast={i === ecoRows.length - 1} />
+          ))}
+        </View>
+      </View>
+      <SectionMemo />
+
+      {/* 인프라 현황 — 병상 수·의사 수·전력 접근률·인터넷 이용률 (World Bank) */}
+      <View wrap={false}>
+        <SecHead title="인프라 현황" />
+        <View style={styles.ecoGroup}>
+          {infraRows.map(([label, v, fieldKey], i) => (
+            <InfraRow
+              key={label}
+              label={label}
+              v={v}
+              compare={v ? infraCompareText(infraAvg, fieldKey, v.value) : null}
+              isLast={i === infraRows.length - 1}
+            />
           ))}
         </View>
       </View>
@@ -642,6 +726,7 @@ export default function MatchReportPDF({
 }) {
   console.log("🔵 MatchReportPDF 진입!", { ranked: ranked?.length, countries: !!countries });
   const shownField = field || "전체";
+  const infraAvg = computeInfraAvg(countries);
 
   return (
     <Document
@@ -761,7 +846,7 @@ export default function MatchReportPDF({
         const cc = countries[r.id];
         const rankLabel = showRanking ? `${i + 1}순위` : null;
         return [
-          <CountryDetailPage key={`${r.id}-d`} r={r} country={cc} rankLabel={rankLabel} field={shownField} showMatchedField={showMatchedField} />,
+          <CountryDetailPage key={`${r.id}-d`} r={r} country={cc} rankLabel={rankLabel} field={shownField} showMatchedField={showMatchedField} infraAvg={infraAvg} />,
           <MatchPage key={`${r.id}-m`} r={r} country={cc} rankLabel={rankLabel} field={shownField} reportKind={reportKind} showMatchedField={showMatchedField} />,
         ];
       })}
@@ -778,13 +863,15 @@ export default function MatchReportPDF({
             인구·언어·수도 외교부 「국가(지역)별 일반현황」(2025.12 갱신) · GDP·1인당 GDP 외교부
             「국가(지역)별 경제현황」(2025.09 갱신) · ODA 규모(순수원액·수원국·양자·한국) KOICA
             「협력국 통합개발지표」(2025.07 갱신) · KOICA 분야별·누적 지원 KOICA 「국가별 지원실적」
-            (2025.11 갱신). 모든 데이터는 공공데이터포털(data.go.kr) 공개 자료이며, 갱신일은
-            포털 기준입니다. 데이터 기준연도는 각 항목에 별도 표기되어 있습니다.{"\n\n"}
+            (2025.11 갱신) · 병상 수·의사 수·전력 접근률·인터넷 이용률 World Bank Open Data.
+            모든 데이터는 공공데이터포털(data.go.kr) 또는 World Bank 공개 자료이며, 갱신일은
+            각 포털 기준입니다. 데이터 기준연도는 각 항목에 별도 표기되어 있습니다.{"\n\n"}
             본 보고서의 매칭 점수는 공개 데이터를 가공한 규칙 기반 추천 결과로, 실제 협력
             의사결정 시 참고 자료로 활용하시기 바랍니다. 수치는 데이터 갱신 시점에 따라 달라질 수 있습니다.{"\n\n"}
             기후 취약도는 World Bank 기후 API(SSP3-7.0 시나리오, 2040~2059년 전망)의 기온 상승폭(40%)
             ·강수 변화율(30%)·극한강수 지표(30%)를 가중합해 30~100점으로 환산한 값입니다. 
-            외교 친밀도는 외교부 기관 진출현황(40%)·외교관계(30%)·무역관계(30%)를 가중합하고, KOICA 중점협력국은 +20점을 가산한 값입니다.{"\n\n"}
+            외교 친밀도는 외교부 기관 진출현황(40%)·외교관계(30%)·무역관계(30%)를 가중합하고, KOICA 중점협력국은 +20점을 가산한 값입니다.
+            인프라 지표의 평균 비교는 데이터가 확인된 아프리카 국가들의 산술 평균 대비 ±5% 이내를 "평균 수준"으로 판정한 값입니다.{"\n\n"}
             점수 산정 기준이나 데이터에 대해 궁금한 점이 있으시면 아래 사이트로 문의해 주세요.
           </Text>
           <Text style={[styles.sourceText, { marginTop: 6, fontWeight: 700, color: C.green700 }]}>
