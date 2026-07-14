@@ -3,6 +3,9 @@ import { CATEGORIES } from "../data";
 import { Icons } from "../components/ui";
 import { signUp, logIn } from "../firebase/auth";
 
+// 국세청 사업자등록정보 진위확인 프록시 (baobab-api, Render) — serviceKey는 서버에서만 사용
+const BIZ_API_BASE = "https://baobab-api-di7o.onrender.com";
+
 // Firebase 에러 코드 → 한국어 메시지
 function authErrorMessage(code) {
   switch (code) {
@@ -169,10 +172,14 @@ function GovForm({ onDone }) {
 function CompanyForm({ onDone }) {
   const [company, setCompany] = useState("");
   const [bizNo, setBizNo] = useState("");
+  const [repName, setRepName] = useState("");
+  const [openDate, setOpenDate] = useState("");
   const [field, setField] = useState("");
   const [tech, setTech] = useState("");
   const [purpose, setPurpose] = useState("");
   const [exportExp, setExportExp] = useState("");
+  const [bizError, setBizError] = useState("");
+  const [verifying, setVerifying] = useState(false);
   const { account, setAccount, error, loading, submit } = useSignup(onDone);
 
   // 입력하는 동안 자동으로 123-45-67890 형태로 하이픈 넣기
@@ -187,21 +194,46 @@ function CompanyForm({ onDone }) {
     setBizNo(formatted);
   }
 
-  function handleSubmit() {
-    // 사업자번호 형식 검증 (하이픈 빼고 10자리 숫자)
+  async function handleSubmit() {
+    setBizError("");
     const bizDigits = bizNo.replace(/\D/g, "");
+    const openDigits = openDate.replace(/\D/g, ""); // "2021-04-01" -> "20210401"
 
     let invalid = "";
-    if (!company || !bizNo || !field || !tech || !purpose || !exportExp) {
+    if (!company || !bizNo || !repName || !openDate || !field || !tech || !purpose || !exportExp) {
       invalid = "필수 항목을 모두 입력해 주세요.";
     } else if (bizDigits.length !== 10) {
       invalid = "사업자 등록번호는 10자리 숫자여야 합니다.";
+    } else if (openDigits.length !== 8) {
+      invalid = "개업일자를 정확히 선택해 주세요.";
     }
+    if (invalid) { setBizError(invalid); return; }
+
+    // 국세청 진위확인 — baobab-api 서버를 거쳐서 호출 (키는 서버에만 있음)
+    setVerifying(true);
+    try {
+      const res = await fetch(`${BIZ_API_BASE}/verify-biz`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ b_no: bizDigits, p_nm: repName, start_dt: openDigits }),
+      });
+      const data = await res.json();
+      if (!data.valid) {
+        setBizError("입력하신 사업자 정보가 국세청 등록 정보와 일치하지 않습니다. 다시 확인해 주세요.");
+        setVerifying(false);
+        return;
+      }
+    } catch (e) {
+      setBizError("사업자 정보 확인 중 오류가 발생했습니다. 잠시 후 다시 시도해 주세요.");
+      setVerifying(false);
+      return;
+    }
+    setVerifying(false);
 
     // 저장은 하이픈 없는 10자리 숫자로 통일 (보안 규칙 검증과 일치)
     submit(
-      { type: "company", company, bizNo: bizDigits, field, tech, purpose, exportExp },
-      invalid
+      { type: "company", company, bizNo: bizDigits, repName, openDate: openDigits, field, tech, purpose, exportExp },
+      ""
     );
   }
 
@@ -214,6 +246,14 @@ function CompanyForm({ onDone }) {
       <Field label="사업자 등록번호" required>
         <input className="field" inputMode="numeric" placeholder="ex) 123-45-67890"
           value={bizNo} onChange={handleBizNo} maxLength={12} />
+      </Field>
+      <Field label="대표자 성명" required>
+        <input className="field" placeholder="ex) 홍길동"
+          value={repName} onChange={(e) => setRepName(e.target.value)} />
+      </Field>
+      <Field label="개업일자" required hint="사업자등록증에 표기된 개업연월일">
+        <input className="field" type="date"
+          value={openDate} onChange={(e) => setOpenDate(e.target.value)} />
       </Field>
       <Field label="기술분야" required>
         <CategorySelect value={field} onChange={setField} />
@@ -234,10 +274,10 @@ function CompanyForm({ onDone }) {
         </select>
       </Field>
       <AccountFields account={account} setAccount={setAccount} />
-      {error && <p className="form-error">{error}</p>}
+      {(bizError || error) && <p className="form-error">{bizError || error}</p>}
       <div className="form-actions">
-        <button className="btn confirm-yes" onClick={handleSubmit} disabled={loading}>
-          {loading ? "가입 중…" : "가입 완료"}
+        <button className="btn confirm-yes" onClick={handleSubmit} disabled={loading || verifying}>
+          {verifying ? "사업자 정보 확인 중…" : loading ? "가입 중…" : "가입 완료"}
         </button>
       </div>
     </>
