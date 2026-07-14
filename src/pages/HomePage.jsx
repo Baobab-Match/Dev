@@ -298,6 +298,6 @@ export default function HomePage({ go }) {
           </div>
         </section>
       </div>
-+    </div>
+    </div>
   );
 }
