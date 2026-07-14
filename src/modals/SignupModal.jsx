@@ -251,7 +251,7 @@ function CompanyForm({ onDone }) {
         <input className="field" placeholder="ex) 홍길동"
           value={repName} onChange={(e) => setRepName(e.target.value)} />
       </Field>
-      <Field label="개업일자" required hint="사업자등록증에 표기된 개업연월일">
+      <Field label="개업일자" required>
         <input className="field" type="date"
           value={openDate} onChange={(e) => setOpenDate(e.target.value)} />
       </Field>
@@ -373,18 +373,19 @@ export default function SignupModal({ onClose, onDone }) {
   return (
     <div className="overlay" onClick={onClose}>
       <div className="modal modal--signup" onClick={(e) => e.stopPropagation()}>
-        <button className="modal-x" onClick={onClose} aria-label="닫기">✕</button>
-
-        {showBack && (
-          <button
-            type="button"
-            className="modal-back"
-            onClick={() => setView(null)}
-            aria-label="회원 유형 다시 선택"
-          >
-            ← 뒤로
-          </button>
-        )}
+        <div className={"modal-header" + (showBack ? " has-back" : "")}>
+          {showBack ? (
+            <button
+              type="button"
+              className="modal-back"
+              onClick={() => setView(null)}
+              aria-label="회원 유형 다시 선택"
+            >
+              ← 뒤로
+            </button>
+          ) : <span />}
+          <button className="modal-x" onClick={onClose} aria-label="닫기">✕</button>
+        </div>
 
         <div className={"modal-body" + (showBack ? " has-back" : "")}>
           {view === "login" && (

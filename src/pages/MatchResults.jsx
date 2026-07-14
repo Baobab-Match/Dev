@@ -434,7 +434,7 @@ export default function MatchResults({ openCountry, field, profile, user, favori
       {/* 다양성 안내 — 추천 국가는 순수 점수 1등이 아니라 국가군별로 다양하게 선별된 결과임을 명시.
           관심 국가 PDF(순수 점수 기준)와 점수·분야가 다르게 나올 수 있는 이유를 미리 안내한다. */}
       <p className="diversity-note">
-        같은 유형의 국가가 몰리지 않도록 다양성을 고려해 선별된 결과예요 —
+        같은 유형의 국가가 몰리지 않도록 다양성을 고려해 선별된 결과입니다. -
         관심 국가 요약(순수 점수 기준)과 점수나 분야가 다를 수 있습니다.
       </p>
 
