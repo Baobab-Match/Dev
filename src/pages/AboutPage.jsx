@@ -34,12 +34,12 @@ const MISSION = [
 ];
 
 // 왜 아프리카인가 — 다크 섹션 2x2 카드용 데이터
-// 출처: World Bank(노동가능인구) · AU/World Bank(AfCFTA) · Forest Declaration Assessment(콩고분지 탄소흡수) · ND-GAIN 기후적응지수(기후 취약국)
+// 출처: 농촌진흥청 보도자료(정책 협력) · 외교부·KOTRA(진출 경쟁) · AU/World Bank(AfCFTA) · ND-GAIN 기후적응지수(기후 취약국)
 const WHY_AFRICA = [
-  { title: "노동가능인구", val: "70%", trend: "up", desc: "2035년까지 아프리카 노동가능인구가 이만큼 증가할 것으로 전망됩니다. 세계에서 가장 젊고 빠르게 성장하는 노동시장인 만큼, 협력을 시작하기에 지금이 최적의 시점입니다." },
-  { title: "아프리카대륙자유무역지대(AfCFTA)", val: "13억 명", desc: "55개국이 참여하는 단일 무역권으로, 결합 GDP는 약 3조 4천억 달러 규모입니다. 한 국가와의 협력이 55개국 시장 전체로 확장될 수 있는 기회입니다." },
-  { title: "탄소흡수 잠재력", val: "6억 톤", desc: "콩고분지는 아마존보다 많은 탄소를 흡수하는 열대 지역 최대의 탄소흡수원으로, 매년 순 6억 톤의 이산화탄소를 흡수합니다. 아프리카가 지닌 세계 최대 수준의 탄소흡수 잠재력을 보여줍니다." },
-  { title: "기후 취약국 비중", val: "85%", desc: "전 세계 기후변화 취약국 상위 20개국 중 17개국이 아프리카에 있습니다. 가뭄·홍수 등 기후재난 대응 기술이 그 어느 곳보다 절실합니다." },
+  { title: "정책 협력 실증사례", val: "2", suffix: "단계", noCountUp: true, desc: "농촌진흥청은 아프리카벼연구소(AfricaRice)와 협력해 고수량 벼 품종을 개발·보급한 「아프리카 벼개발 파트너십」 1단계를 완료하고, 2026년 7월부터 KAFACI 아프리카 30개국이 참여하는 2단계 사업에 착수했습니다. 가뭄·홍수·냉해·염해에 강한 내재해성 품종 개발로 이어지며, 한국의 아프리카 협력은 계속 확대되고 있습니다." },
+  { title: "아프리카대륙자유무역지대(AfCFTA)", val: "13억 명", desc: "55개국이 참여하는 단일 무역권으로, 결합 GDP는 약 3조 4천억 달러 규모입니다. 한 국가와의 협력이 55개국 시장 전체로 확장될 수 있는 기회입니다. 2018년 출범 이후 아프리카연합(AU) 회원국 대부분이 협정에 서명했으며, 역내 관세 철폐와 교역 활성화로 외국인 투자에도 우호적인 환경이 조성되고 있습니다." },
+  { title: "전략적 산업 진출 경쟁", val: "미·중·EU", suffix: " 아프리카 진출", noCountUp: true, desc: "아프리카는 미국·중국·유럽연합(EU) 등 주요국·경제권이 전략적 산업 진출 대상으로 주목하는 지역으로 부상하고 있습니다. 우리나라 또한 이 흐름에 발맞춰 협력을 확대하고 있어, 지금이 그린테크 기업의 아프리카 진출에 최적의 시점입니다." },
+  { title: "기후 취약국 비중", val: "85%", desc: "전 세계 기후변화 취약국 상위 20개국 중 17개국이 아프리카에 있습니다. 가뭄·홍수 등 기후재난 대응 기술이 그 어느 곳보다 절실합니다. 반면 국가별로 기후·지형·인프라 여건 차이가 커서, 어떤 나라에 어떤 기술이 필요한지 정확히 파악하는 일이 협력의 첫걸음입니다." },
 ];
 
 function TrendArrow({ direction }) {
@@ -266,7 +266,14 @@ export function AboutPage({ go }) {
                     <div className="awa-card" key={i}>
                       <p className="awa-card-label">{s.title}</p>
                       <div className="awa-num-row">
-                        <CountUpStat value={s.val} className="awa-num" />
+                        {s.noCountUp ? (
+                          <div className="awa-num">
+                            {s.val}
+                            {s.suffix && <span className="awa-num-suffix">{s.suffix}</span>}
+                          </div>
+                        ) : (
+                          <CountUpStat value={s.val} className="awa-num" />
+                        )}
                         {s.trend && <TrendArrow direction={s.trend} />}
                       </div>
                       <p className="awa-card-desc">{s.desc}</p>
@@ -275,7 +282,7 @@ export function AboutPage({ go }) {
                 </div>
               </div>
               <p className="eco-foot" style={{ marginTop: "20px" }}>
-                출처: World Bank(노동가능인구) · 아프리카연합·World Bank(AfCFTA) · Forest Declaration Assessment(콩고분지) · ND-GAIN 기후적응지수(기후취약국)
+                출처: 농촌진흥청 보도자료(정책 협력) · 외교부·KOTRA(진출 경쟁) · 아프리카연합·World Bank(AfCFTA) · ND-GAIN 기후적응지수(기후취약국)
               </p>
             </section>
           </section>
