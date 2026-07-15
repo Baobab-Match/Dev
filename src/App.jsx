@@ -21,13 +21,14 @@ const MyPage           = lazy(() => import("./pages/MyPage"));
 const SignupModal      = lazy(() => import("./modals/SignupModal"));
 const MatchConfirm     = lazy(() => import("./modals/MatchConfirm"));
 const FieldSelectModal = lazy(() => import("./modals/FieldSelectModal"));
+const IndustryNewsPage = lazy(() => import("./pages/IndustryNewsPage"));
 
 // nameEn(영문 슬러그) ↔ 한국어 id 양방향 변환
 const ID_TO_SLUG = Object.fromEntries(Object.entries(COUNTRIES).map(([id, c]) => [id, c.nameEn]));
 const SLUG_TO_ID = Object.fromEntries(Object.entries(COUNTRIES).map(([id, c]) => [c.nameEn, id]));
 
 // page 이름 ↔ URL 경로 매핑
-const PATHS = { home: "/", search: "/search", match: "/match", notice: "/notice", about: "/about", mypage: "/mypage" };
+const PATHS = { home: "/", search: "/search", match: "/match", notice: "/notice", about: "/about", mypage: "/mypage", news: "/news" };
 
 // 회원 유형 → 한글 라벨
 const TYPE_LABEL = { company: "기업", public: "공공기관" };
@@ -58,7 +59,6 @@ export default function App() {
   const { recent, pushRecent } = useRecentCountries();
 
   // nav는 항상 흰 배경 고정. 대신 아래로 스크롤하면 숨고, 위로 스크롤하면 바로 다시 나타난다
-  // (SK하이닉스 사이트와 동일한 패턴). 페이지 맨 위 근처에서는 숨기지 않는다.
   const [navHidden, setNavHidden] = useState(false);
   const lastScrollY = useRef(0);
 
@@ -150,6 +150,7 @@ export default function App() {
             )}
           />
           <Route path="/notice" element={<NoticePage />} />
+          <Route path="/news" element={<IndustryNewsPage profile={profile} user={user} />} />
           <Route path="/about" element={<AboutPage go={go} />} />
           <Route
             path="/mypage"

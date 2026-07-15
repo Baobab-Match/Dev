@@ -844,3 +844,52 @@ textarea.field { resize: vertical; min-height: 64px; }
   line-height: 1.6;
   text-align: right;
 }
+
+/* 22. 산업 동향 (Industry News) */
+.news-block-title {
+  font-size: var(--fs-sm);
+  font-weight: 700;
+  color: var(--green-800);
+  margin-bottom: 10px;
+}
+.news-block-sub {
+  font-weight: 400;
+  color: var(--ink-soft);
+  margin-left: 6px;
+}
+.news-list {
+  border-top: 1px solid var(--bone-dark);
+}
+.news-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 14px 4px;
+  border-bottom: 1px solid var(--bone-dark);
+  color: var(--ink);
+  text-decoration: none;
+  transition: background-color 0.15s ease;
+}
+.news-row:hover {
+  background: var(--paper);
+}
+.news-row-title {
+  font-size: var(--fs-md);
+  color: var(--ink);
+  margin-bottom: 4px;
+}
+.news-row-meta {
+  font-size: var(--fs-xs);
+  color: var(--ink-soft);
+}
+.news-row-arrow {
+  flex-shrink: 0;
+  color: var(--green-500);
+  font-size: var(--fs-lg);
+}
+.news-status {
+  font-size: var(--fs-sm);
+  color: var(--ink-soft);
+  padding: 12px 4px;
+}

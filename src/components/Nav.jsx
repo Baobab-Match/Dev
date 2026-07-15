@@ -165,8 +165,9 @@ export default function Nav({ hidden, go, openCountry, user, onLogin, onLogout }
 
       <div className={"nav-links" + (open ? " open" : "")}>
         <button onClick={() => handleGo("notice")}>공지사항</button>
+        <button onClick={() => handleGo("news")}>산업 동향</button>
 
-        {/* 사이트 소개 — 마우스를 올리면 서브메뉴가 뜨고, 데스크탑에선 하이닉스처럼 큰 흰 패널로 표시 */}
+        {/* 사이트 소개 — 마우스를 올리면 서브메뉴가 뜨고, 데스크탑에선 큰 흰 패널로 표시 */}
         <div
           className={"nav-dropdown" + (aboutOpen ? " hover-open" : "")}
           ref={aboutRef}
