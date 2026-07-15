@@ -22,6 +22,7 @@
    19. 라우트 로딩 폴백
    20. AI 매칭 로딩 오버레이
    21. 반응형 (태블릿·모바일) — 전 섹션 공통
+   22. 산업 동향 (Industry News)
    ============================================================ */
 
 
@@ -467,11 +468,44 @@ textarea.field { resize: vertical; min-height: 64px; }
 .awa-trend--down { background: rgba(207, 106, 58, 0.12); color: var(--gold); }
 .awa-card-desc { font-size: var(--fs-sm); color: var(--ink-soft); line-height: 1.65; margin-top: auto; word-break: keep-all; text-indent: 1em; }
 
-/* ── 이런 분들께(for-whom) 탭 — 공공기관·기업·개인 3단 카드 ── */
-.about-audience-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; margin-bottom: 50px; }
-.about-audience-card { padding: 28px 24px; background: var(--paper); border: 1px solid var(--bone-dark); }
-.about-audience-card h3 { font-size: var(--fs-xl); font-weight: 800; color: var(--ink); margin: 10px 0 10px; }
-.about-audience-card p { font-size: var(--fs-lg); color: var(--ink-soft); line-height: 1.75; margin: 0; }
+/* ── 이런 분들께(for-whom) 탭 — 비대칭 리스트형 ── */
+.audience-list { max-width: 1080px; margin: 0 auto 50px; }
+.audience-row {
+  display: grid;
+  grid-template-columns: 220px 1fr;
+  gap: 40px;
+  padding: 40px 0;
+  border-top: 1px solid var(--bone-dark);
+}
+.audience-row:first-child { border-top: none; padding-top: 0; }
+.audience-label {
+  font-size: var(--fs-sm);
+  font-weight: 700;
+  color: var(--ink-soft);
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+}
+.audience-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  margin-top: 6px;
+  flex-shrink: 0;
+}
+.audience-content h3 {
+  font-size: var(--fs-xl);
+  font-weight: 800;
+  color: var(--ink);
+  margin: 0 0 12px;
+}
+.audience-content p {
+  font-size: var(--fs-lg);
+  color: var(--ink-soft);
+  line-height: 1.75;
+  margin: 0;
+  max-width: 68ch;
+}
 
 /* ── 핵심 기능(why) 탭 — 박스형 카드 2열 ── */
 .about-why { display: grid; grid-template-columns: repeat(2, 1fr); gap: 24px; margin-bottom: 50px; }
@@ -687,7 +721,7 @@ textarea.field { resize: vertical; min-height: 64px; }
   .about-mission-split { grid-template-columns: 1fr; gap: 20px; }
   .awa-inner { grid-template-columns: 1fr; gap: 32px; }
   .awa-grid { grid-template-columns: 1fr; }
-  .about-audience-grid { grid-template-columns: 1fr; }
+  .audience-row { grid-template-columns: 1fr; gap: 12px; }
   .how-timeline { grid-template-columns: 1fr; gap: 28px; }
   .how-timeline::before { display: none; }
   .how-stage { display: flex; align-items: flex-start; gap: 16px; text-align: left; padding: 0; }
@@ -820,7 +854,7 @@ textarea.field { resize: vertical; min-height: 64px; }
 .reason-item, .reason-tier { word-break: keep-all; }
 .podium-name { word-break: keep-all; }
 .notice-title, .notice-body p { word-break: keep-all; }
-.about-intro p, .about-subtitle, .about-mission-text, .why-row h3, .why-row p, .how-stage-body h3, .how-stage-body p, .about-audience-card h3, .about-audience-card p, .faq-q, .faq-a, .awa-card-label, .awa-card-desc { word-break: keep-all; }
+.about-intro p, .about-subtitle, .about-mission-text, .why-row h3, .why-row p, .how-stage-body h3, .how-stage-body p, .audience-content h3, .audience-content p, .faq-q, .faq-a, .awa-card-label, .awa-card-desc { word-break: keep-all; }
 .hero-sub { word-break: keep-all; }
 .country-row { word-break: keep-all; }
 .confirm-yes, .confirm-no, .form-actions .confirm-yes { word-break: keep-all; }

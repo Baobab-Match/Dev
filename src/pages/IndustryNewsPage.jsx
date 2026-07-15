@@ -97,7 +97,7 @@ export default function IndustryNewsPage({ profile, user }) {
       </div>
 
       {state === "slow" && (
-        <p className="news-status">서버를 깨우는 중입니다. 최대 1분 정도 걸릴 수 있어요…</p>
+        <p className="news-status">서버를 깨우는 중입니다. 최대 1분 정도 걸릴 수 있습니다.</p>
       )}
       {state === "error" && interestNews.length === 0 && (
         <p className="news-status">지금은 최신 뉴스를 불러오지 못했어요. 아래는 기본 안내 목록입니다.</p>

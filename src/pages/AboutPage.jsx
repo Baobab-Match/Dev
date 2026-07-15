@@ -42,6 +42,9 @@ const WHY_AFRICA = [
   { title: "기후 취약국 비중", val: "85%", desc: "전 세계 기후변화 취약국 상위 20개국 중 17개국이 아프리카에 있습니다. 가뭄·홍수 등 기후재난 대응 기술이 그 어느 곳보다 절실합니다. 반면 국가별로 기후·지형·인프라 여건 차이가 커서, 어떤 나라에 어떤 기술이 필요한지 정확히 파악하는 일이 협력의 첫걸음입니다." },
 ];
 
+// AUDIENCE 배열과 같은 순서로 매칭되는 라벨 색상 (공공기관·기업·개인)
+const AUDIENCE_COLOR = ["var(--green-800)", "var(--gold)", "var(--green-500)"];
+
 function TrendArrow({ direction }) {
   const isUp = direction === "up";
   return (
@@ -290,12 +293,17 @@ export function AboutPage({ go }) {
 
         {tab === "for-whom" && (
           <section className="about-fade">
-            <div className="about-audience-grid">
-              {AUDIENCE.map((a) => (
-                <div className="about-audience-card" key={a.tag}>
-                  <span className="block-tag">{a.tag}</span>
-                  <h3>{a.title}</h3>
-                  <p style={INDENT}>{a.desc}</p>
+            <div className="audience-list">
+              {AUDIENCE.map((a, i) => (
+                <div className="audience-row" key={a.tag}>
+                  <div className="audience-label">
+                    <span className="audience-dot" style={{ background: AUDIENCE_COLOR[i] }} />
+                    {a.tag}
+                  </div>
+                  <div className="audience-content">
+                    <h3>{a.title}</h3>
+                    <p style={INDENT}>{a.desc}</p>
+                  </div>
                 </div>
               ))}
             </div>
