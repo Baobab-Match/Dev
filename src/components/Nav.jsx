@@ -165,7 +165,6 @@ export default function Nav({ hidden, go, openCountry, user, onLogin, onLogout }
 
       <div className={"nav-links" + (open ? " open" : "")}>
         <button onClick={() => handleGo("notice")}>공지사항</button>
-        <button onClick={() => handleGo("news")}>산업 동향</button>
 
         {/* 사이트 소개 — 마우스를 올리면 서브메뉴가 뜨고, 데스크탑에선 큰 흰 패널로 표시 */}
         <div
@@ -201,6 +200,7 @@ export default function Nav({ hidden, go, openCountry, user, onLogin, onLogout }
         <button onClick={() => handleGo("mypage")}>내 정보</button>
         <button onClick={() => handleGo("search")}>국가 정보 찾기</button>
         <button onClick={() => handleGo("match")}>맞춤 국가 추천</button>
+        <button onClick={() => handleGo("news")}>산업 동향</button>
 
         {/* 모바일 풀스크린 메뉴 안에서만 보이는 로그인 버튼 */}
         {user ? (
