@@ -193,7 +193,7 @@ function scoreField(country, field) {
   // 비중 25% 이상이면 만점에 가깝게 (스케일링)
   const score = clamp((pct / 25) * 100);
   const reason = pct > 0
-    ? `KOICA ${want.join("·")} 분야 비중 ${pct.toFixed(1)}% — 한국이 이 분야로 지원해온 협력 채널이 이미 있습니다.`
+    ? `KOICA ${want.join("·")} 분야 비중 ${pct.toFixed(1)}% - 한국이 이 분야로 지원해온 협력 채널이 이미 있습니다.`
     : null;
   return { score, reason };
 }
@@ -242,7 +242,7 @@ function scoreClimateFit(country, field, freeText) {
     if (hazardHit && country?.climateReason) {
       reason = `${country.climateReason} 해당 분야 기술이 직접 도움이 됩니다.`;
     } else if (country?.climateReason) {
-      reason = `${issue} 위험 — ${country.climateReason} 해당 분야 기술이 직접 도움이 됩니다.`;
+      reason = `${issue} 위험 - ${country.climateReason} 해당 분야 기술이 직접 도움이 됩니다.`;
     } else {
       reason = `주요 기후문제가 '${issue}'라 해당 분야 기술 수요가 높습니다.`;
     }
@@ -292,11 +292,11 @@ function scoreClimateUrgency(country) {
   let reason = null;
   if (score >= 70) {
     if (tempRise != null) {
-      reason = `기후 취약도 ${s}점 · 기온 +${tempRise}℃ 전망 — 기후 대응이 시급해 협력 우선순위가 높습니다.`;
+      reason = `기후 취약도 ${s}점 · 기온 +${tempRise}℃ 전망 - 기후 대응이 시급해 협력 우선순위가 높습니다.`;
     } else if (precipRise != null) {
-      reason = `기후 취약도 ${s}점 · 강수 +${precipRise}% 전망 — 홍수 대응이 시급해 협력 우선순위가 높습니다.`;
+      reason = `기후 취약도 ${s}점 · 강수 +${precipRise}% 전망 - 홍수 대응이 시급해 협력 우선순위가 높습니다.`;
     } else {
-      reason = `기후 취약도 ${s}점 — 기후 대응이 시급해 협력 우선순위가 높습니다.`;
+      reason = `기후 취약도 ${s}점 - 기후 대응이 시급해 협력 우선순위가 높습니다.`;
     }
   }
   return { score, reason };
@@ -308,8 +308,8 @@ function scoreDiplomacy(country) {
   if (s == null) return { score: 50, reason: null };
   const extra = country?.priorityPartner ? " · 중점협력국" : "";
   const reason = s >= 70
-    ? `외교 친밀도 ${s}점${extra} — 한국과 우호 관계가 깊어 협력이 원활합니다.`
-    : (country?.priorityPartner ? "한국 중점협력국 — 정부 차원의 협력 우선 대상입니다." : null);
+    ? `외교 친밀도 ${s}점${extra} - 한국과 우호 관계가 깊어 협력이 원활합니다.`
+    : (country?.priorityPartner ? "한국 중점협력국 - 정부 차원의 협력 우선 대상입니다." : null);
   return { score: clamp(s), reason };
 }
 
@@ -348,8 +348,8 @@ function scoreExport(country, exportExp) {
   const hasOda = country?.koreaOdaHistory === true;
   const score = hasOda ? 100 : 40;
   const reason = hasOda
-    ? "수출경험 보유 × 한국 ODA 이력 — 진입 채널과 수출 역량이 모두 갖춰져 있습니다."
-    : "수출경험 보유 — 해외 진출 역량이 있습니다.";
+    ? "수출경험 보유 × 한국 ODA 이력 - 진입 채널과 수출 역량이 모두 갖춰져 있습니다."
+    : "수출경험 보유 - 해외 진출 역량이 있습니다.";
   return { score, reason };
 }
 

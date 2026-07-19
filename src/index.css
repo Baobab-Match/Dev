@@ -578,6 +578,11 @@ textarea.field { resize: vertical; min-height: 64px; }
 .interest-edit .cat-trigger { border-radius: 0; border-width: 1.5px; padding: 11px 18px; }
 .interest-edit .cat-menu { border-radius: var(--r-md); min-width: 260px; width: max-content; max-width: 320px; }
 .interest-edit .cat-opt { word-break: keep-all; white-space: normal; }
+.profile-row--password:has(.password-edit) { align-items: flex-start; }
+.profile-row--password:has(.password-edit) b { padding-top: 11px; }
+.password-edit { flex: 1; display: flex; flex-direction: column; gap: 10px; max-width: 300px; }
+.password-edit .field { padding: 10px 14px; font-size: var(--fs-sm); }
+.password-edit .form-error { margin: 0; }
 .recent-section { margin-top: 28px; }
 .recent-row { display: flex; gap: 12px; overflow-x: auto; padding: 4px 2px 10px; margin-top: 14px; scrollbar-width: thin; }
 .recent-chip { flex: 0 0 auto; display: flex; align-items: center; gap: 10px; background: var(--paper); border: 1.5px solid var(--bone-dark); border-radius: 0; padding: 8px 16px 8px 10px; cursor: pointer; transition: border-color 0.18s, transform 0.18s, box-shadow 0.18s; }
@@ -689,7 +694,7 @@ textarea.field { resize: vertical; min-height: 64px; }
 }
 .ai-loading-card {
   display: flex; flex-direction: column; align-items: center;
-  gap: 20px;
+  gap: 32px;
   width: min(320px, 100%);
   text-align: center;
 }
@@ -700,7 +705,7 @@ textarea.field { resize: vertical; min-height: 64px; }
   display: flex; flex-direction: column; align-items: center; justify-content: center;
   gap: 8px;
 }
-.ai-loading-logo { width: 64px; height: auto; display: block; }
+.ai-loading-logo { width: 64px; height: auto; display: block; position: relative; left: 0; /* 로고 그림이 이미지 안에서 살짝 치우쳐 보이면 이 값을 -2px, 3px 등으로 조절 */ }
 .ai-loading-pct {
   font-family: var(--font-display); font-weight: 900; font-size: 26px;
   color: var(--green-900); line-height: 1;
@@ -858,9 +863,6 @@ textarea.field { resize: vertical; min-height: 64px; }
 @media (max-width: 640px) {
   .footer-info p { display: flex; flex-direction: column; gap: 3px; line-height: 1.6; }
   .footer-info .footer-div { display: none; }
-  .diversity-note {
-    text-align: left;
-  }
 }
 @media (max-width: 560px) {
   .type-grid { grid-template-columns: 1fr; }
@@ -905,7 +907,8 @@ textarea.field { resize: vertical; min-height: 64px; }
   color: var(--ink-soft);
   margin: -6px 0 24px;
   line-height: 1.6;
-  text-align: right;
+  text-align: left;
+  word-break: keep-all;
 }
 
 /* 22. 산업 동향 (Industry News) */

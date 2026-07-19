@@ -47,7 +47,7 @@ function pwErrorMessage(code) {
   }
 }
 
-// 계정 보안 — 비밀번호 변경 섹션 (평소엔 접혀 있다가 "변경" 누르면 폼이 펼쳐짐)
+// 계정 보안 — 비밀번호 변경 (이메일 아래 한 줄로 표시, "변경" 누르면 그 자리에서 폼이 펼쳐짐)
 function PasswordSection() {
   const [editing, setEditing] = useState(false);
   const [current, setCurrent] = useState("");
@@ -78,39 +78,26 @@ function PasswordSection() {
   }
 
   return (
-    <section className="recent-section">
-      <h2 className="about-subtitle">계정 보안</h2>
-
+    <div className="profile-row profile-row--password">
+      <b>비밀번호</b>
       {!editing ? (
-        <div className="profile-row" style={{ marginTop: 14 }}>
-          <b>비밀번호</b>
-          <span>
-            ********
-            <button type="button" className="link-btn" onClick={() => setEditing(true)}>변경</button>
-          </span>
-        </div>
+        <span className="interest-view">
+          ********
+          <button type="button" className="link-btn" onClick={() => setEditing(true)}>변경</button>
+        </span>
       ) : (
-        <div style={{ maxWidth: 420, marginTop: 14 }}>
-          <div className="form-row">
-            <label className="form-label">현재 비밀번호</label>
-            <input className="field" type="password" placeholder="현재 비밀번호"
-              value={current} onChange={(e) => setCurrent(e.target.value)} />
-          </div>
-          <div className="form-row">
-            <label className="form-label">새 비밀번호</label>
-            <input className="field" type="password" placeholder="6자 이상"
-              value={next} onChange={(e) => setNext(e.target.value)} />
-          </div>
-          <div className="form-row">
-            <label className="form-label">새 비밀번호 확인</label>
-            <input className="field" type="password" placeholder="한 번 더 입력해주세요"
-              value={confirm} onChange={(e) => setConfirm(e.target.value)} />
-          </div>
+        <div className="password-edit">
+          <input className="field" type="password" placeholder="현재 비밀번호"
+            value={current} onChange={(e) => setCurrent(e.target.value)} />
+          <input className="field" type="password" placeholder="새 비밀번호 (6자 이상)"
+            value={next} onChange={(e) => setNext(e.target.value)} />
+          <input className="field" type="password" placeholder="새 비밀번호 확인"
+            value={confirm} onChange={(e) => setConfirm(e.target.value)} />
 
           {error && <p className="form-error">{error}</p>}
           {done && <p style={{ color: "var(--green-700)", fontWeight: 700 }}>비밀번호가 변경되었습니다.</p>}
 
-          <div className="form-actions">
+          <div className="interest-actions">
             <button className="btn confirm-yes" onClick={handleSubmit} disabled={saving}>
               {saving ? "변경 중…" : "변경하기"}
             </button>
@@ -118,7 +105,7 @@ function PasswordSection() {
           </div>
         </div>
       )}
-    </section>
+    </div>
   );
 }
 
@@ -192,6 +179,7 @@ export default function MyPage({ profile, favorites, isFavorite, toggleFavorite,
           <h2 className="profile-name">{displayName}</h2>
           <div className="profile-rows">
             <div className="profile-row"><b>이메일</b><span>{profile.email}</span></div>
+            <PasswordSection />
             {profile.department && <div className="profile-row"><b>소속부서</b><span>{profile.department}</span></div>}
             {profile.field && <div className="profile-row"><b>기술분야</b><span>{profile.field}</span></div>}
 
@@ -252,9 +240,6 @@ export default function MyPage({ profile, favorites, isFavorite, toggleFavorite,
           </div>
         </div>
       </div>
-
-      {/* 계정 보안 — 비밀번호 변경 */}
-      <PasswordSection />
 
       {/* 최근 본 국가 */}
       {recentCountries.length > 0 && (
