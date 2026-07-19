@@ -2,23 +2,24 @@ import { useState, useEffect, useRef } from "react";
 import { useLocation } from "react-router-dom";
 import introBanner from "../assets/about-intro-banner.jpg";
 import landingBanner from "../assets/about-landing-banner.jpg";
+import fieldsBanner from "../assets/about-fields-banner.png"; // TODO: 10개 분야 소개 섹션용 사진 — 준비되면 이 경로에 파일 추가
 
 const INDENT = { textIndent: "1em" };
 const INDENT_TOP = { textIndent: "1em", marginTop: "1.2em" };
 
-// 작동 방식 — 4단계 흐름 (실제 서비스 플로우 기준)
+// 작동 방식 — 4단계 흐름 (실제 서비스 플로우 기준, 처음 접하는 사람도 바로 이해할 수 있도록 구체적으로 서술)
 const STEPS = [
   { step: "01", title: "회원가입·로그인", desc: "간단한 정보 입력으로 시작하세요.\n이미 회원이라면 바로 로그인합니다." },
-  { step: "02", title: "탐색 또는 추천 선택", desc: "직접 나라를 찾아봐도 좋고,\n추천을 받아도 좋습니다." },
-  { step: "03", title: "국가 상세 확인", desc: "기후·경제·ODA·인프라까지,\n국가 상세 정보를 살펴봅니다." },
-  { step: "04", title: "보고서 다운로드", desc: "매칭 순위와 국가별 추천 근거를\nPDF 보고서로 저장해 공유합니다." },
+  { step: "02", title: "아프리카 국가 탐색 또는 AI 추천", desc: "아프리카 54개국을 직접 둘러봐도 좋고,\n관심 분야를 입력해 AI에게 협력하기 좋은 국가를 추천받아도 좋습니다." },
+  { step: "03", title: "국가 상세 정보 확인", desc: "기후·경제·ODA·인프라까지,\n관심 있는 국가의 상세 정보를 살펴봅니다." },
+  { step: "04", title: "매칭 결과·보고서 확인", desc: "AI가 분석한 협력 적합도 순위와 추천 근거를\nPDF 보고서로 저장해 공유합니다." },
 ];
 
 // 이용 방법 탭 — 4단계 흐름과는 별개로 언제든 확인 가능한 부가 기능
 const HOW_EXTRA = {
   badge: "+ 부가 기능",
   title: "산업 동향 확인",
-  desc: "10개 산업 분야 중 내가 정보 기반 최신 뉴스를 실시간으로 모아 보여줍니다.",
+  desc: "10개 산업 분야 중 내 정보를 바탕으로 최신 뉴스를 실시간으로 모아 보여줍니다.",
 };
 
 // 탭 메뉴 정의 — 연락처는 제거 (Nav 드롭다운의 서브메뉴와 동일한 목록)
@@ -36,7 +37,7 @@ const TAB_LABEL = Object.fromEntries(TABS.map((t) => [t.id, t.label]));
 const MISSION = [
   "기후위기 대응은 한 나라만의 과제가 아닙니다. 바오밥매치는 물 부족, 가뭄, 재생에너지 등 다양한 분야에서 한국이 보유한 기술과, 이를 필요로 하는 아프리카 국가를 연결합니다. 외교부·KOICA·World Bank의 공공데이터로 아프리카 54개국의 기후·경제·ODA·외교·인프라 지표를 분석하고, 여기에 실시간 산업 동향까지 더해 AI가 각 국가의 기후 특성에 맞는 녹색기술 수요를 분석해 가장 적합한 협력 대상을 추천합니다.",
   "우리는 단순한 기술 거래를 넘어, 지속가능한 동반 성장을 지향합니다. 기후 취약 국가의 적응 역량을 키우고 청정에너지로의 전환을 앞당기는 환경적 가치(E), 지역사회의 삶의 질과 일자리를 개선하는 사회적 가치(S), 그리고 공공데이터에 기반한 투명하고 설명 가능한 추천으로 신뢰를 쌓는 거버넌스(G)까지 - ESG의 세 축을 매칭의 기준으로 삼습니다.",
-  "기술은 국경을 넘을 때 비로소 가치를 발합니다. 한국이 수십 년간 축적한 물 관리, 재생에너지, 기후 적응 기술은 지금 이 순간에도 누군가에게 가장 절실한 해법이 될 수 있습니다. 바오밥매치는 그 기술이 가장 필요한 곳으로, 가장 정확하게 닿도록 데이터와 AI로 다리를 놓습니다.",
+  "기술은 국경을 넘을 때 비로소 가치를 발합니다. 한국이 수십 년간 축적한 물 관리, 재생에너지, 기후 적응 기술은 지금 이 순간에도 누군가에게 가장 절실한 해법이 될 수 있습니다. 바오밥매치는 그 기술이 가장 필요한 곳으로, 가장 정확하게 닿도록 데이터와 AI로 다리를 놓습니다. 동시에 바오밥매치가 공공기관과 기업만을 위한 사이트로 남기를 바라지 않습니다. 아프리카를 막연히 멀게만 느끼던 사람도 국가별 데이터를 하나씩 살펴보는 것만으로 아프리카를 더 가깝고 구체적인 대륙으로 느끼게 되기를 바랍니다. 정보의 다리를 놓는 일을 넘어, 더 많은 사람이 아프리카에 관심을 갖게 되는 작은 계기가 되고 싶습니다.",
   "바오밥나무가 깊은 뿌리로 메마른 땅에서도 생명을 잇듯, 우리는 기술과 사람을, 그리고 오늘의 필요와 내일의 가능성을 연결합니다. 그 연결이 더 푸른 지구를 향한 작은 시작이 되기를 바랍니다.",
 ];
 
@@ -47,6 +48,14 @@ const WHY_AFRICA = [
   { title: "아프리카대륙자유무역지대(AfCFTA)", val: "13억 명", desc: "55개국이 참여하는 단일 무역권으로, 결합 GDP는 약 3조 4천억 달러 규모입니다. 한 국가와의 협력이 55개국 시장 전체로 확장될 수 있는 기회입니다. 2018년 출범 이후 아프리카연합(AU) 회원국 대부분이 협정에 서명했으며, 역내 관세 철폐와 교역 활성화로 외국인 투자에도 우호적인 환경이 조성되고 있습니다." },
   { title: "전략적 산업 진출 경쟁", val: "미·중·EU", suffix: " 아프리카 진출", noCountUp: true, desc: "아프리카는 미국·중국·유럽연합(EU) 등 주요국·경제권이 전략적 산업 진출 대상으로 주목하는 지역으로 부상하고 있습니다. 우리나라 또한 이 흐름에 발맞춰 협력을 확대하고 있어, 지금이 그린테크 기업의 아프리카 진출에 최적의 시점입니다." },
   { title: "기후 취약국 비중", val: "85%", desc: "전 세계 기후변화 취약국 상위 20개국 중 17개국이 아프리카에 있습니다. 가뭄·홍수 등 기후재난 대응 기술이 그 어느 곳보다 절실합니다. 반면 국가별로 기후·지형·인프라 여건 차이가 커서, 어떤 나라에 어떤 기술이 필요한지 정확히 파악하는 일이 협력의 첫걸음입니다." },
+];
+
+// 10개 분야(CATEGORIES)를 3개 테마로 그룹핑 — 랜딩의 "10개 분야" 섹션 전용
+// ※ data.js의 CATEGORIES 항목명이 바뀌면 아래 문자열도 함께 맞춰줄 것
+const FIELD_GROUPS = [
+  { tag: "기후·환경", items: ["가뭄", "물 부족 및 정수 기술", "홍수 및 재해 대응 인프라", "기후변화 대응 및 탄소감축", "재생에너지 및 에너지 전환"] },
+  { tag: "산업·자원", items: ["친환경 교통 및 인프라", "자원순환 및 친환경 소재", "농업 및 식량안보"] },
+  { tag: "사회", items: ["교육 및 역량 강화", "사회적 갈등 및 강제이주"] },
 ];
 
 // AUDIENCE 배열과 같은 순서로 매칭되는 라벨 색상 (공공기관·기업·개인)
@@ -195,7 +204,7 @@ export function AboutPage({ go }) {
   return (
     <main className="page about-page">
       {tab === "landing" ? (
-        <>
+        <div className="about-landing-flex">
           {/* 신념 — 기존 그대로 */}
           <section className="about-landing-hero">
             <img src={landingBanner} className="about-landing-hero-img" alt="사무실 건물 외관" />
@@ -215,6 +224,34 @@ export function AboutPage({ go }) {
             </div>
           </section>
 
+          {/* 10개 분야 소개 — 신념과 이런 분들께 사이, 국가 추천의 기준이 되는 10개 분야를 랜딩에서 바로 보여줌 */}
+          <section className="about-landing-fields">
+            <div className="about-landing-fields-media">
+              <img src={fieldsBanner} className="about-landing-fields-img" alt="협력 분야를 살펴보는 모습" />
+            </div>
+            <div className="about-landing-fields-body">
+              <p className="about-mission-eyebrow">10 FIELDS</p>
+              <h2 className="about-landing-fields-title">
+                10개 분야로 나뉘는 맞춤 협력 포인트
+              </h2>
+              <p className="about-landing-fields-desc" style={INDENT}>
+                협력이 필요한 영역을 10개 분야로 나눠 국가별 수요를 분석합니다. 이러한 보유 기술이나 관심 분야를 바탕으로, AI가 가장 적합한 협력 국가를 추천합니다.
+              </p>
+              <div className="about-fields-groups">
+                {FIELD_GROUPS.map((g) => (
+                  <div className="about-fields-group-row" key={g.tag}>
+                    <div className="about-fields-group-tag">{g.tag}</div>
+                    <div className="about-fields-chip-set">
+                      {g.items.map((c) => (
+                        <span className="about-fields-chip" key={c}>{c}</span>
+                      ))}
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </section>
+
           {/* 이런 분들께 — 사진 없이 가운데 정렬 텍스트 섹션 (네이버 하이퍼클로바X 스타일 참고) */}
           <section className="about-landing-audience">
             <h2 className="about-landing-audience-title">
@@ -229,7 +266,7 @@ export function AboutPage({ go }) {
             </button>
           </section>
           
-        </>
+        </div>
       ) : (
         <nav className="breadcrumb" aria-label="이동 경로">
           <button onClick={() => go && go("home")}>Home</button>
