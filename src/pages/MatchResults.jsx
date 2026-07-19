@@ -271,6 +271,7 @@ export default function MatchResults({ openCountry, field, profile, user, favori
           subtitle={"공공데이터 기반 객관적 지표와 AI 추천 모델을 통해\n가장 적합한 협력 국가를 분석한 결과입니다."}
           showRanking={true}
           showMatchedField={chosenFields.length > 1}
+          isAiResult={!!aiRanked}
         />,
         recFileName
       );
@@ -297,8 +298,12 @@ export default function MatchResults({ openCountry, field, profile, user, favori
         aiCacheKey(effectiveFields, profile?.type || "general") +
         "|fav:" + [...favIds].sort().join(",");
 
-      let favResult = favAiCache.get(key);
-      if (!favResult) {
+      let cached = favAiCache.get(key);
+      let favResult, favIsAi;
+
+      if (cached) {
+        ({ favResult, favIsAi } = cached);
+      } else {
         try {
           const raw = await fetchAiRanked(effectiveFields, profile?.type || "general", {
             topN: FAVORITE_TOPN,
@@ -319,13 +324,17 @@ export default function MatchResults({ openCountry, field, profile, user, favori
               return { ...r, axes };
             })
             .sort((a, b) => b.matchScore - a.matchScore);
+
+          // 국가가 하나라도 규칙 기반으로 보완됐다면 "AI 결과"라고 부를 수 없음
+          favIsAi = fallbackForMissing.length === 0;
         } catch (aiErr) {
           console.warn("관심 국가 AI 매칭 실패 — 규칙 기반으로 대체합니다:", aiErr);
           favResult = favIds
             .map((id) => scoreCountry(COUNTRIES[id], resolvedProfile))
             .sort((a, b) => b.matchScore - a.matchScore);
+          favIsAi = false;
         }
-        favAiCache.set(key, favResult);
+        favAiCache.set(key, { favResult, favIsAi });
       }
 
       await downloadPdf(
@@ -339,6 +348,7 @@ export default function MatchResults({ openCountry, field, profile, user, favori
           rankingTitle={"관심 국가 요약"}
           reportKind="favorite"
           showMatchedField={chosenFields.length > 1}
+          isAiResult={favIsAi}
         />,
         favFileName
       );
@@ -367,7 +377,7 @@ export default function MatchResults({ openCountry, field, profile, user, favori
         {/* AI 서버 부팅 중 안내 — 30초 넘게 응답이 없어서 임시로 규칙 기반 결과를 보여주는 중일 때만 표시 */}
         {coldStart && !aiRanked && (
           <p className="cold-start-notice">
-            로딩 속도가 오래 걸려서 우선 규칙 기반 머신러닝 결과를 보여드릴게요 -
+            로딩 속도가 오래 걸려서 우선 규칙 기반 머신러닝 결과를 보여드릴게요.
             AI 분석이 끝나면 자동으로 최신 결과로 바뀝니다.
           </p>
         )}

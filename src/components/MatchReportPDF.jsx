@@ -78,6 +78,13 @@ const NOTICE_COPY = {
     ],
   },
 };
+
+// 데이터 출처 페이지의 "매칭 점수 산정 방식" 안내 문구 — AI 매칭 성공 여부에 따라 분기
+const SCORE_SOURCE_NOTE = {
+  ai: "본 보고서의 매칭 점수는 공개 데이터 기반 지표와 AI 추천 모델(K-Means 군집화·코사인 유사도)을 결합해 산출한 결과로, 실제 협력 의사결정 시 참고 자료로 활용하시기 바랍니다. 수치는 데이터 갱신 시점에 따라 달라질 수 있습니다.",
+  rule: "본 보고서의 매칭 점수는 공개 데이터를 가공한 규칙 기반 추천 결과로, 실제 협력 의사결정 시 참고 자료로 활용하시기 바랍니다. 수치는 데이터 갱신 시점에 따라 달라질 수 있습니다.",
+};
+
 const AXIS_LABEL = {
   field: "분야 적합도", climateFit: "기후-기술 적합도", climateScore: "기후 시급성",
   diplomacy: "외교 친밀도", develop: "개발 필요도", export: "수출 연계성", techMatch: "보유기술 적합도",
@@ -324,6 +331,7 @@ const styles = StyleSheet.create({
 
   sourceBox: { marginTop: 14, borderTopWidth: 0.5, borderTopColor: C.boneDark, paddingTop: 20 },
   sourceText: { fontSize: 12.5, color: C.inkSoft, lineHeight: 1.9 },
+  sourceParagraph: { textIndent: 16, marginBottom: 12 },
 });
 
 function todayKo() {
@@ -721,8 +729,9 @@ export default function MatchReportPDF({
   subtitle = "공공데이터 기반 객관적 지표와 AI 추천 모델을 통해\n가장 적합한 협력 국가를 분석한 결과입니다.",
   showRanking = true,
   rankingTitle = "추천 순위 요약",
-  reportKind = "recommend", // "recommend" | "favorite" — 참고 등급 문구 분기용
-  showMatchedField = false, // 관심분야를 2개 이상 골랐을 때만 true — 국가별로 어떤 분야 기준인지 표시
+  reportKind = "recommend",
+  showMatchedField = false,
+  isAiResult = false, // AI 매칭이 실제로 반영됐는지 — 데이터 출처 페이지 문구 분기용
 }) {
   console.log("🔵 MatchReportPDF 진입!", { ranked: ranked?.length, countries: !!countries });
   const shownField = field || "전체";
@@ -859,19 +868,24 @@ export default function MatchReportPDF({
         </View>
         <Text style={styles.h2}>데이터 출처 및 유의사항</Text>
         <View style={styles.sourceBox}>
-          <Text style={styles.sourceText}>
+          <Text style={[styles.sourceText, styles.sourceParagraph]}>
             인구·언어·수도 외교부 「국가(지역)별 일반현황」(2025.12 갱신) · GDP·1인당 GDP 외교부
             「국가(지역)별 경제현황」(2025.09 갱신) · ODA 규모(순수원액·수원국·양자·한국) KOICA
             「협력국 통합개발지표」(2025.07 갱신) · KOICA 분야별·누적 지원 KOICA 「국가별 지원실적」
             (2025.11 갱신) · 병상 수·의사 수·전력 접근률·인터넷 이용률 World Bank Open Data.
             모든 데이터는 공공데이터포털(data.go.kr) 또는 World Bank 공개 자료이며, 갱신일은
-            각 포털 기준입니다. 데이터 기준연도는 각 항목에 별도 표기되어 있습니다.{"\n\n"}
-            본 보고서의 매칭 점수는 공개 데이터를 가공한 규칙 기반 추천 결과로, 실제 협력
-            의사결정 시 참고 자료로 활용하시기 바랍니다. 수치는 데이터 갱신 시점에 따라 달라질 수 있습니다.{"\n\n"}
+            각 포털 기준입니다. 데이터 기준연도는 각 항목에 별도 표기되어 있습니다.
+          </Text>
+          <Text style={[styles.sourceText, styles.sourceParagraph]}>
+            {isAiResult ? SCORE_SOURCE_NOTE.ai : SCORE_SOURCE_NOTE.rule}
+          </Text>
+          <Text style={[styles.sourceText, styles.sourceParagraph]}>
             기후 취약도는 World Bank 기후 API(SSP3-7.0 시나리오, 2040~2059년 전망)의 기온 상승폭(40%)
-            ·강수 변화율(30%)·극한강수 지표(30%)를 가중합해 30~100점으로 환산한 값입니다. 
+            ·강수 변화율(30%)·극한강수 지표(30%)를 가중합해 30~100점으로 환산한 값입니다.
             외교 친밀도는 외교부 기관 진출현황(40%)·외교관계(30%)·무역관계(30%)를 가중합하고, KOICA 중점협력국은 +20점을 가산한 값입니다.
-            인프라 지표의 평균 비교는 데이터가 확인된 아프리카 국가들의 산술 평균 대비 ±5% 이내를 "평균 수준"으로 판정한 값입니다.{"\n\n"}
+            인프라 지표의 평균 비교는 데이터가 확인된 아프리카 국가들의 산술 평균 대비 ±5% 이내를 "평균 수준"으로 판정한 값입니다.
+          </Text>
+          <Text style={[styles.sourceText, styles.sourceParagraph, { marginBottom: 0 }]}>
             점수 산정 기준이나 데이터에 대해 궁금한 점이 있으시면 아래 사이트로 문의해 주세요.
           </Text>
           <Text style={[styles.sourceText, { marginTop: 6, fontWeight: 700, color: C.green700 }]}>
