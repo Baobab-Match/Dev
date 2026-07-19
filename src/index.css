@@ -858,6 +858,9 @@ textarea.field { resize: vertical; min-height: 64px; }
 @media (max-width: 640px) {
   .footer-info p { display: flex; flex-direction: column; gap: 3px; line-height: 1.6; }
   .footer-info .footer-div { display: none; }
+  .diversity-note {
+    text-align: left;
+  }
 }
 @media (max-width: 560px) {
   .type-grid { grid-template-columns: 1fr; }
