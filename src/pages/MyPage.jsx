@@ -2,6 +2,7 @@ import { useState, useMemo } from "react";
 import { Link } from "react-router-dom";
 import { COUNTRIES, CATEGORIES } from "../data";
 import { CountrySilhouette, Icons } from "../components/ui";
+import { changePassword } from "../firebase/auth";
 
 const TYPE_LABEL = { gov: "공공기관", company: "기업", general: "개인" };
 const TYPE_ICON = { gov: "gov", company: "company", general: "person" };
@@ -34,6 +35,92 @@ const SCORE_LABEL = {
   diplomacy: "외교 친밀도",
   climate: "기후 필요성",
 };
+
+// Firebase 에러 코드 → 한국어 메시지 (비밀번호 변경 전용)
+function pwErrorMessage(code) {
+  switch (code) {
+    case "auth/invalid-credential":    return "현재 비밀번호가 일치하지 않습니다.";
+    case "auth/weak-password":         return "새 비밀번호는 6자 이상이어야 합니다.";
+    case "auth/requires-recent-login": return "보안을 위해 로그아웃 후 다시 로그인한 뒤 시도해 주세요.";
+    case "auth/too-many-requests":     return "시도 횟수가 많습니다. 잠시 후 다시 시도해 주세요.";
+    default:                           return "문제가 발생했습니다. 다시 시도해 주세요.";
+  }
+}
+
+// 계정 보안 — 비밀번호 변경 섹션 (평소엔 접혀 있다가 "변경" 누르면 폼이 펼쳐짐)
+function PasswordSection() {
+  const [editing, setEditing] = useState(false);
+  const [current, setCurrent] = useState("");
+  const [next, setNext] = useState("");
+  const [confirm, setConfirm] = useState("");
+  const [error, setError] = useState("");
+  const [done, setDone] = useState(false);
+  const [saving, setSaving] = useState(false);
+
+  const resetFields = () => { setCurrent(""); setNext(""); setConfirm(""); setError(""); setDone(false); };
+  const cancel = () => { setEditing(false); resetFields(); };
+
+  async function handleSubmit() {
+    setError(""); setDone(false);
+    if (!current || !next || !confirm) { setError("모든 항목을 입력해 주세요."); return; }
+    if (next.length < 6) { setError("새 비밀번호는 6자 이상이어야 합니다."); return; }
+    if (next !== confirm) { setError("새 비밀번호가 일치하지 않습니다."); return; }
+    setSaving(true);
+    try {
+      await changePassword(current, next);
+      setDone(true);
+      setCurrent(""); setNext(""); setConfirm("");
+    } catch (e) {
+      setError(pwErrorMessage(e.code));
+    } finally {
+      setSaving(false);
+    }
+  }
+
+  return (
+    <section className="recent-section">
+      <h2 className="about-subtitle">계정 보안</h2>
+
+      {!editing ? (
+        <div className="profile-row" style={{ marginTop: 14 }}>
+          <b>비밀번호</b>
+          <span>
+            ********
+            <button type="button" className="link-btn" onClick={() => setEditing(true)}>변경</button>
+          </span>
+        </div>
+      ) : (
+        <div style={{ maxWidth: 420, marginTop: 14 }}>
+          <div className="form-row">
+            <label className="form-label">현재 비밀번호</label>
+            <input className="field" type="password" placeholder="현재 비밀번호"
+              value={current} onChange={(e) => setCurrent(e.target.value)} />
+          </div>
+          <div className="form-row">
+            <label className="form-label">새 비밀번호</label>
+            <input className="field" type="password" placeholder="6자 이상"
+              value={next} onChange={(e) => setNext(e.target.value)} />
+          </div>
+          <div className="form-row">
+            <label className="form-label">새 비밀번호 확인</label>
+            <input className="field" type="password" placeholder="한 번 더 입력해주세요"
+              value={confirm} onChange={(e) => setConfirm(e.target.value)} />
+          </div>
+
+          {error && <p className="form-error">{error}</p>}
+          {done && <p style={{ color: "var(--green-700)", fontWeight: 700 }}>비밀번호가 변경되었습니다.</p>}
+
+          <div className="form-actions">
+            <button className="btn confirm-yes" onClick={handleSubmit} disabled={saving}>
+              {saving ? "변경 중…" : "변경하기"}
+            </button>
+            <button className="btn confirm-no" onClick={cancel} disabled={saving}>취소</button>
+          </div>
+        </div>
+      )}
+    </section>
+  );
+}
 
 export default function MyPage({ profile, favorites, isFavorite, toggleFavorite, openCountry, updateProfile, recent = [] }) {
   const [editing, setEditing] = useState(false);
@@ -165,6 +252,9 @@ export default function MyPage({ profile, favorites, isFavorite, toggleFavorite,
           </div>
         </div>
       </div>
+
+      {/* 계정 보안 — 비밀번호 변경 */}
+      <PasswordSection />
 
       {/* 최근 본 국가 */}
       {recentCountries.length > 0 && (

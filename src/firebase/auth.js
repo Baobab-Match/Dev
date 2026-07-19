@@ -3,6 +3,10 @@ import {
   createUserWithEmailAndPassword,
   signInWithEmailAndPassword,
   signOut,
+  sendPasswordResetEmail,
+  updatePassword,
+  reauthenticateWithCredential,
+  EmailAuthProvider,
 } from "firebase/auth";
 import { doc, setDoc, serverTimestamp } from "firebase/firestore";
 import { auth, db } from "./config";
@@ -33,4 +37,20 @@ export async function logIn({ email, password }) {
 // 로그아웃
 export async function logOut() {
   await signOut(auth);
+}
+
+// 비밀번호 재설정 메일 발송 — 로그인 페이지에서 "비밀번호를 잊으셨나요?" 클릭 시 사용
+export async function resetPassword(email) {
+  await sendPasswordResetEmail(auth, email);
+}
+
+// 비밀번호 변경 — 마이페이지(로그인 상태)에서 사용.
+// 보안 정책상 최근 로그인 세션이 오래됐으면 실패할 수 있어(auth/requires-recent-login),
+// 현재 비밀번호로 먼저 재인증한 뒤 변경한다.
+export async function changePassword(currentPassword, newPassword) {
+  const user = auth.currentUser;
+  if (!user) throw new Error("로그인이 필요합니다.");
+  const credential = EmailAuthProvider.credential(user.email, currentPassword);
+  await reauthenticateWithCredential(user, credential);
+  await updatePassword(user, newPassword);
 }

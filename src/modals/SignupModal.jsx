@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { CATEGORIES } from "../data";
 import { Icons } from "../components/ui";
-import { signUp, logIn } from "../firebase/auth";
+import { signUp, logIn, resetPassword } from "../firebase/auth";
 
 // 국세청 사업자등록정보 진위확인 프록시 (baobab-api, Render) — serviceKey는 서버에서만 사용
 const BIZ_API_BASE = "https://baobab-api-di7o.onrender.com";
@@ -14,6 +14,7 @@ function authErrorMessage(code) {
     case "auth/invalid-email":        return "이메일 형식이 올바르지 않습니다.";
     case "auth/invalid-credential":   return "이메일 또는 비밀번호가 일치하지 않습니다.";
     case "auth/operation-not-allowed":return "이메일/비밀번호 로그인이 비활성화되어 있습니다.";
+    case "auth/too-many-requests":    return "잠시 후 다시 시도해 주세요.";
     default:                          return "문제가 발생했습니다. 다시 시도해 주세요.";
   }
 }
@@ -316,7 +317,7 @@ function GeneralForm({ onDone }) {
 }
 
 // 로그인 폼
-function LoginForm({ onDone, onGoSignup }) {
+function LoginForm({ onDone, onGoSignup, onGoReset }) {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
@@ -350,6 +351,14 @@ function LoginForm({ onDone, onGoSignup }) {
           value={password} onChange={(e) => setPassword(e.target.value)} />
       </Field>
       {error && <p className="form-error">{error}</p>}
+
+      {/* 비밀번호 찾기 진입점 — 제출 버튼 바로 위, 눈에 띄지 않게 작게 */}
+      <p style={{ textAlign: "right", marginTop: 8 }}>
+        <button type="button" className="link-btn" style={{ marginLeft: 0, fontSize: "var(--fs-sm)" }} onClick={onGoReset}>
+          비밀번호를 잊으셨나요?
+        </button>
+      </p>
+
       <div className="form-actions">
         <button className="btn confirm-yes" onClick={handleSubmit} disabled={loading}>
           {loading ? "로그인 중" : "로그인"}
@@ -363,12 +372,74 @@ function LoginForm({ onDone, onGoSignup }) {
   );
 }
 
+// 비밀번호 재설정 폼
+function ResetForm({ onGoLogin }) {
+  const [email, setEmail] = useState("");
+  const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false);
+  const [sent, setSent] = useState(false);
+
+  async function handleSubmit() {
+    setError("");
+    if (!email) {
+      setError("이메일을 입력해 주세요.");
+      return;
+    }
+    setLoading(true);
+    try {
+      await resetPassword(email);
+      setSent(true);
+    } catch (e) {
+      setError(authErrorMessage(e.code));
+    } finally {
+      setLoading(false);
+    }
+  }
+
+  if (sent) {
+    return (
+      <>
+        <p style={{ color: "var(--green-700)", fontWeight: 700, fontSize: "var(--fs-lg)", textAlign: "center", lineHeight: 2 }}>
+          <b>{email}</b> 주소로 재설정 링크를 보냈어요.<br />
+          발신 주소는 noreply@baobab-match.firebaseapp.com 입니다.<br />
+          메일함(스팸함도 함께)을 확인해 주세요.
+        </p>
+        <div className="form-actions">
+          <button className="btn confirm-yes" onClick={onGoLogin}>로그인으로 돌아가기</button>
+        </div>
+      </>
+    );
+  }
+
+  return (
+    <>
+      <Field label="이메일">
+        <input className="field" type="email" placeholder="가입하신 이메일 주소"
+          value={email} onChange={(e) => setEmail(e.target.value)} />
+      </Field>
+      {error && <p className="form-error">{error}</p>}
+      <div className="form-actions">
+        <button className="btn confirm-yes" onClick={handleSubmit} disabled={loading}>
+          {loading ? "전송 중…" : "재설정 링크 보내기"}
+        </button>
+      </div>
+      <p className="modal-switch login-switch">
+        <button type="button" className="link-btn" style={{ marginLeft: 0 }} onClick={onGoLogin}>
+          로그인으로 돌아가기
+        </button>
+      </p>
+    </>
+  );
+}
+
 // 회원 유형 한글 라벨 — 폼 단계 안내에 사용
 const TYPE_LABEL = { gov: "공공기관", company: "기업", general: "개인" };
 
 export default function SignupModal({ onClose, onDone }) {
   const [view, setView] = useState("login");
-  const showBack = view && view !== "login";
+  const isSignupForm = view === "gov" || view === "company" || view === "general";
+  const isReset = view === "reset";
+  const showBack = isSignupForm || isReset;
 
   return (
     <div className="overlay" onClick={onClose}>
@@ -378,8 +449,8 @@ export default function SignupModal({ onClose, onDone }) {
             <button
               type="button"
               className="modal-back"
-              onClick={() => setView(null)}
-              aria-label="회원 유형 다시 선택"
+              onClick={() => setView(isReset ? "login" : null)}
+              aria-label={isReset ? "로그인으로 돌아가기" : "회원 유형 다시 선택"}
             >
               ← 뒤로
             </button>
@@ -393,7 +464,7 @@ export default function SignupModal({ onClose, onDone }) {
               <h2 className="modal-title">로그인</h2>
               <p className="modal-sub">바오밥매치에 오신 것을 환영합니다.</p>
               <div className="modal-rule" />
-              <LoginForm onDone={onDone} onGoSignup={() => setView(null)} />
+              <LoginForm onDone={onDone} onGoSignup={() => setView(null)} onGoReset={() => setView("reset")} />
             </>
           )}
 
@@ -423,7 +494,18 @@ export default function SignupModal({ onClose, onDone }) {
             </>
           )}
 
-          {showBack && (
+          {isReset && (
+            <>
+              <h2 className="modal-title">비밀번호 재설정</h2>
+              <p className="modal-sub" style={{ fontSize: "var(--fs-sm)" }}>
+                가입하신 이메일 주소를 입력하시면 비밀번호 재설정 링크를 보내드립니다.
+              </p>
+              <div className="modal-rule" />
+              <ResetForm onGoLogin={() => setView("login")} />
+            </>
+          )}
+
+          {isSignupForm && (
             <>
               <h2 className="modal-title">회원가입</h2>
               <p className="modal-sub">
