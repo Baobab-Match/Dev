@@ -59,7 +59,7 @@ const FIELD_GROUPS = [
 ];
 
 // AUDIENCE 배열과 같은 순서로 매칭되는 라벨 색상 (공공기관·기업·개인)
-const AUDIENCE_COLOR = ["var(--green-800)", "var(--gold)", "var(--green-500)"];
+const AUDIENCE_COLOR = ["var(--green-800)", "var(--green-600)", "var(--green-500)"];
 
 function TrendArrow({ direction }) {
   const isUp = direction === "up";
@@ -176,8 +176,8 @@ const AUDIENCE = [
   },
   {
     tag: "개인",
-    title: "국제개발 분야를 조사·연구하는 개인",
-    desc: "소속 기관이 없어도 동일한 방식으로 국가 정보를 열람하고 매칭 결과를 받아볼 수 있습니다. 아프리카 협력 분야를 공부하거나 자료를 준비하는 데 참고용으로 활용하기 좋습니다.",
+    title: "아프리카·국제협력에 관심 있는 개인",
+    desc: "전문 지식이나 소속 기관이 없어도 동일한 방식의 매칭 결과를 받아볼 수 있습니다. 관심 있는 아프리카 국가를 부담 없이 둘러보세요.",
   },
 ];
 
@@ -235,7 +235,7 @@ export function AboutPage({ go }) {
                 10개 분야로 나뉘는 맞춤 협력 포인트
               </h2>
               <p className="about-landing-fields-desc" style={INDENT}>
-                협력이 필요한 영역을 10개 분야로 나눠 국가별 수요를 분석합니다. 이러한 보유 기술이나 관심 분야를 바탕으로, AI가 가장 적합한 협력 국가를 추천합니다.
+                협력이 필요한 영역을 10개 분야로 나눠 국가별 수요를 분석합니다. 이러한 분야를 바탕으로, AI가 가장 적합한 협력 국가를 추천합니다.
               </p>
               <div className="about-fields-groups">
                 {FIELD_GROUPS.map((g) => (
