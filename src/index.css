@@ -660,8 +660,9 @@ textarea.field { resize: vertical; min-height: 64px; }
 .impact-section { text-align: center; background: var(--paper); width: 100vw; max-width: none; margin-left: calc(50% - 50vw); margin-right: calc(50% - 50vw); padding-top: 140px; padding-bottom: 140px; }
 .stats-caption { max-width: 540px; margin: 0.8em auto 0; font-size: var(--fs-lg); color: var(--ink-soft); line-height: 1.7; word-break: keep-all; }
 .stats-caption strong { color: var(--green-700); font-weight: 700; }
-.impact-cards { display: flex; justify-content: center; gap: 20px; flex-wrap: wrap; max-width: 1140px; margin: 48px auto 0; padding: 0 16px; }
-.impact-card { flex: 1; min-width: 280px; max-width: 360px; display: flex; flex-direction: column; align-items: center; padding: 36px 28px; background: var(--bone); border: none; border-radius: var(--r-md); box-shadow: var(--shadow-sm); transition: box-shadow 0.2s ease; }
+/* 수정 */
+.impact-cards { display: flex; justify-content: center; gap: 20px; flex-wrap: wrap; max-width: 1240px; margin: 48px auto 0; padding: 0 16px; }
+.impact-card { flex: 1; min-width: 250px; max-width: 320px; display: flex; flex-direction: column; align-items: center; padding: 36px 28px; background: var(--bone); border: none; border-radius: var(--r-md); box-shadow: var(--shadow-sm); transition: box-shadow 0.2s ease; }
 .impact-card:hover { box-shadow: var(--shadow-md); }
 .impact-title { font-size: var(--fs-md); font-weight: 700; color: var(--ink-soft); margin-bottom: 20px; }
 .impact-num { font-family: var(--font-display); font-size: 64px; font-weight: 800; line-height: 1; letter-spacing: -0.02em; color: var(--ink); margin: 0; }

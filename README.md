@@ -10,8 +10,10 @@
 - **프론트엔드** — Vite + React (컴포넌트 기반 구조), CSS 변수 디자인 토큰
 - **인증·데이터** — Firebase Authentication / Firestore
 - **호스팅** — Firebase Hosting (보안 헤더·정적 자산 장기 캐싱 적용, 아래 [배포](#배포-firebase-hosting) 참고)
-- **AI 추천** — scikit-learn K-Means + 코사인 유사도 모델(`baobab_matcher.pkl`) → FastAPI(`baobab-api`) 서빙, Render 배포
-- **데이터 파이프라인** — Google Colab 4단계 노트북으로 공공데이터 12종 수집·가공 ([baobab-match-data-pipeline](레포링크) 참고)
+- **백엔드** — FastAPI(`baobab-api`)를 Render에 배포. `main.py`를 라우터별로 분리해 `matcher.py`(AI 추천), `biz.py`(사업자 인증), `news.py`(산업 동향 뉴스)로 구성
+- **AI 추천** — scikit-learn K-Means + 코사인 유사도 모델(`baobab_matcher.pkl`) → `matcher.py`가 서빙
+- **산업 동향 뉴스** — Google News RSS를 `news.py`에서 `httpx`로 실시간 조회, `data.js`의 10개 산업 카테고리에 키워드 매핑
+- **데이터 파이프라인** — Google Colab 4단계 노트북으로 공공데이터 15종 수집·가공 ([baobab-match-data-pipeline](레포링크) 참고)
 
 ## 사전 준비
 로컬에서 처음 실행하기 전에 아래가 준비돼 있어야 합니다.
@@ -105,6 +107,7 @@ Firebase Hosting 설정에 아래 헤더/캐싱 규칙이 적용되어 있습니
 ### ✅ 인증 (Firebase Auth)
 - 이메일/비밀번호 회원가입·로그인
 - **회원 타입 3종** — 공공기관 / 기업 / 일반
+- 가입 시 국세청 사업자등록정보 진위확인 API(`biz.py` 경유)로 사업자 정보 검증 — 형식 검사를 넘어 실제 등록 여부까지 확인
 - 가입 시 Firestore `users/{uid}`에 프로필 저장
 - 로그인 상태 관리 (`useAuth.js`)
 
@@ -116,14 +119,15 @@ Firebase Hosting 설정에 아래 헤더/캐싱 규칙이 적용되어 있습니
 - **랜딩(Hero)** — 바오밥 모티프 자동 슬라이드 배너 + 진입 CTA
 - **회원가입 모달** — 공공기관 / 기업 / 일반 타입 선택 → 폼 입력
 - **국가 정보 검색** — 아프리카 지도(추천국 하이라이트) + 국가 검색 리스트
-- **국가 상세** — 기후/외교 지표, KOICA 도넛차트, 경제·ODA 규모
+- **국가 상세** — 기후/외교 지표, KOICA 도넛차트, 경제·ODA 규모, 인프라 지표(병상 수·의사 수·전력 접근률·인터넷 이용률)
 - **기술 매칭 결과** — 분야 기반 추천국 순위 + 선정 요소
+- **산업 동향** — 관심 분야 + 아프리카 전체 산업·경제 뉴스를 실시간으로 표시
 - **마이페이지** — 즐겨찾기 국가 관리 (로그인 필요)
 
 ### ✅ AI 추천 매칭
 관심 분야·보유 기술을 입력하면 규칙 기반 엔진과 AI 모델을 결합한 하이브리드 방식으로 협력 국가를 추천합니다.
 - **모델** — Google Colab에서 학습한 scikit-learn K-Means 군집화 + 코사인 유사도 (`baobab_matcher.pkl`)
-- **서빙** — FastAPI 백엔드 `baobab-api`를 Render에 배포 (`https://baobab-api-di7o.onrender.com`)
+- **서빙** — FastAPI 백엔드 `baobab-api`를 Render에 배포 (`https://baobab-api-di7o.onrender.com`), 추천 로직은 `matcher.py` 라우터가 전담
 - **응답 흐름** — 화면 진입 즉시 클라이언트에서 규칙 기반 결과(`matchEngine.js`)를 먼저 보여주고, AI 서버 응답이 도착하면 결과를 교체합니다. 25초 내 응답이 없거나 실패하면 규칙 기반 결과를 그대로 유지하는 폴백을 적용해, Render 무료 티어의 콜드 스타트 지연에도 서비스가 끊기지 않습니다.
 - **로딩 UI** — `AiMatchLoading.jsx`에서 원형 진행률 애니메이션과 한국어 안내 문구를 순환 표시해 대기 시간의 체감을 줄였습니다.
 - **추천 근거** — `explain()` 함수가 KOICA 분야 비중·GDP·외교 점수·기후 취약도 등 실제 수치를 인용한 문장을 생성하고, `headline()` 함수가 가중 기여도가 가장 높은 축을 골라 한 줄 요약을 만듭니다.
@@ -131,30 +135,38 @@ Firebase Hosting 설정에 아래 헤더/캐싱 규칙이 적용되어 있습니
 
 > ⚠️ 모델 로딩 시 `scikit-learn` 버전은 학습 환경(Colab)과 동일하게 **`1.6.1`로 고정**해야 합니다. 버전 불일치 시 모델 로드가 실패합니다.
 
+### ✅ 산업 동향 뉴스
+- `IndustryNewsPage.jsx`가 `baobab-api`의 `/industry-news`를 호출해 아프리카 산업·경제 뉴스를 실시간으로 가져옵니다.
+- 로그인 상태에서 프로필에 관심 분야가 있으면 **관심 분야 뉴스**와 **아프리카 전체 동향**을 구분해서 보여줍니다.
+- 뉴스 원천은 Google News RSS이며, `news.py`가 `data.js`의 10개 산업 카테고리에 검색 키워드를 매핑해 조회합니다.
+- 서버 콜드 스타트로 응답이 지연될 경우 안내 문구를 띄우고, 완전히 실패하면 고정 폴백 뉴스 목록을 대신 표시합니다.
+
 ## 파일 구조
 ```
 src/
 ├─ App.jsx              # 라우팅 + 페이지/모달 조합
 ├─ pages/               # HomePage, CountrySearch, CountryDetail,
-│                       #   MatchResults, NoticePage, AboutPage, MyPage
+│                       #   MatchResults, NoticePage, AboutPage, MyPage, IndustryNewsPage
 ├─ modals/              # SignupModal, MatchConfirm, FieldSelectModal
 ├─ components/          # Nav 등 공통 컴포넌트
 ├─ useAuth.js           # 인증 상태 (Firebase Auth 연동)
 ├─ useFavorites.js      # 즐겨찾기 상태 (Firestore 연동)
 ├─ auth.js / firestore.js / config.js  # Firebase 설정·연동
 ├─ ui.jsx               # 로고, 아이콘, 국가 실루엣, KOICA 도넛차트
-├─ AfricaMap.jsx        # 아프리카 지도 SVG (← 실서비스 시 GeoJSON으로 교체 권장)
+├─ AfricaMap.jsx         # 아프리카 지도 SVG (africaGeo.js — 실제 GeoJSON을 빌드 타임에 SVG path로 변환)
 ├─ data.js              # 국가/카테고리 데이터
 └─ index.css            # 디자인 시스템 (CSS 변수 토큰)
 ```
 
+백엔드(`baobab-api`, 별도 레포)는 `main.py` 아래 기능별 `APIRouter`로 분리돼 있습니다 — `matcher.py`(AI 추천), `biz.py`(사업자 인증), `news.py`(산업 동향 뉴스).
+
 ## 📊 데이터
 
-`countries_base.js`(기초정보)와 `countries_scores.js`(외교·기후·매칭 점수)가 아프리카 54개국의 전체 데이터를 담고 있으며, 두 파일 모두 공공데이터 파이프라인의 산출물입니다.
+`countries_base.js`(기초정보·인프라)와 `countries_scores.js`(외교·기후·매칭 점수)가 아프리카 54개국의 전체 데이터를 담고 있으며, 두 파일 모두 공공데이터 파이프라인의 산출물입니다.
 
 | 파일 | 내용 | 출처 |
 |---|---|---|
-| `countries_base.js` | 인구·언어·수도·GDP, KOICA 지원 현황, ODA 4종 | 외교부 일반현황·경제현황, KOICA 통합개발지표·지원실적 |
+| `countries_base.js` | 인구·언어·수도·GDP, KOICA 지원 현황, ODA 4종, 인프라 지표(병상 수·의사 수·전력 접근률·인터넷 이용률) | 외교부 일반현황·경제현황, KOICA 통합개발지표·지원실적, World Bank Open Data |
 | `countries_scores.js` | diplomacyScore, climateScore·mainClimateIssue, matchScore | 외교부 기관 진출현황·외교관계·무역관계, World Bank CCKP, K-Means+코사인 유사도 |
 
 ### 데이터 갱신 워크플로우 (Colab)
@@ -167,15 +179,23 @@ src/
 - **기초·경제·ODA** — 외교부 일반현황·경제현황, KOICA 통합개발지표·지원실적
 - **외교 친밀도** — 외교부 기관 진출현황·외교관계·무역관계
 - **기후 취약도** — World Bank Climate Change Knowledge Portal API
+- **인프라 지표** — World Bank Open Data (병상 수·의사 수·전력 접근률·인터넷 이용률)
 - **시장 진입 용이도** — 한아프리카재단 250대기업·스타트업 디렉터리
-- **활용 데이터 기관** — 외교부 · KOICA · 한아프리카재단 · World Bank CCKP
+- **산업 동향 뉴스** — Google News RSS (실시간 조회, 별도 저장 없음)
+- **활용 데이터 기관** — 외교부 · KOICA · 한아프리카재단 · World Bank
+
+### 산업 분야 분류
+매칭 엔진은 관심 분야를 10개 카테고리(가뭄, 물 부족 및 정수 기술, 홍수 및 재해 대응 인프라 등)로 세분화하여, 사용자가 선택한 분야를 기준으로 국가를 추천합니다. 같은 카테고리 체계를 산업 동향 뉴스의 키워드 매핑에도 그대로 사용합니다.
 
 ## 확장 포인트
-1. **가중치 재조정** — 실사용 데이터 기반으로 축별 가중치를 주기적으로 재조정하는 루프 구축.
-2. **하이브리드 매칭 고도화** — 현재 키워드 사전 방식에 임베딩 기반 유사도를 병행 적용.
-3. **사업자 인증 강화** — 국세청 사업자등록정보 진위확인 API 연동 (현재는 10자리 형식 검증만 지원).
-4. **실제 지도** — `AfricaMap.jsx`를 `react-simple-maps` + 아프리카 GeoJSON으로 교체.
+1. **매칭 결과 피드백 수집** — 추천 결과에 대한 사용자 반응(도움됨/아쉬움 등)을 Firestore에 저장하는 구조 구축. 아래 가중치 재조정의 선행 조건.
+2. **가중치 재조정** — 위 피드백 데이터가 쌓이면, 이를 기반으로 축별 가중치를 주기적으로 재조정하는 루프 구축 (현재 `matchEngine.js`의 `WEIGHTS`는 고정값).
+3. **노동법 데이터 확충** — 최저임금·법정근로시간·외국인 고용허가 요건을 54개국 전체에 단계적으로 채워 넣기. KOTRA가 다루는 15~25개국을 우선 반영.
+4. **엑셀(xlsx) 내보내기** — 매칭 결과·국가 비교표를 SheetJS 기반으로 다운로드하는 기능.
+5. **Gemini API 연동** — 규칙 기반 추천 근거 문장을, 더 자연스러운 자연어 설명으로 보강. 백엔드 라우팅 + Firestore 캐싱으로 API 키 보호 및 응답 속도 확보.
+6. **참여 유도 기능** — 기존 국가 데이터를 활용한 국가 탐험 배지, 데일리 퀴즈 등 (서비스 정체성과 무관한 게이미피케이션은 배제).
+7. **콜드 스타트 대응 고도화** — 현재는 데모 전 수동 `curl` 핑으로 대응 중. 로그인 시 prewarm, 주기적 keep-alive, 또는 유료 Render 플랜 전환 등 검토.
 
 ## 디자인 토큰
-- 딥 바오밥그린 `#2d4a32` · 세이지 `#5a7d5a` · 본 화이트 `#f4f1e9` · 에티오피아 골드 `#c9a227`
-- 디스플레이: Noto Serif KR / 본문: Gothic A1 / 데이터: JetBrains Mono
+- 딥 바오밥그린 `#2d4a32` · 세이지 `#5a7d5a` · 화이트 `#ffffff` · 하락 지표 앰버 `#cf6a3a`
+- 디스플레이·본문: Pretendard Variable / 데이터: JetBrains Mono
