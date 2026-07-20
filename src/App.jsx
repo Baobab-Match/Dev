@@ -7,6 +7,7 @@ import { useFavorites } from "./useFavorites";
 import { useAuth } from "./useAuth";
 import { COUNTRIES } from "./data";
 import { useRecentCountries } from "./useRecentCountries";
+import { warmupApi } from "./apiWarmup"; // 콜드 스타트 대응 — "맞춤 국가 추천" 클릭 시 백그라운드로 API 깨우기
 
 // ── 코드 스플리팅 ──────────────────────────────────────────────
 // 아래 페이지·모달은 해당 화면에 들어갈 때 비로소 내려받습니다(lazy).
@@ -95,6 +96,10 @@ export default function App() {
   // 기존 go(p) 시그니처 유지 — 내부에서 navigate로 이동. state는 About 페이지 탭 지정 등에 사용
   const go = (p, direct = false, state) => {
     if ((p === "mypage" || p === "match") && !user) { setSignup(true); return; } // 로그인 필요
+    // "맞춤 국가 추천" 진입 시점(확인 모달이 뜨기도 전)에 API를 미리 깨워둔다.
+    // 이후 확인 모달 → 분야 선택 → /match 진입 → /recommend 호출까지 거치는 동안
+    // Render 서버가 깨어날 시간을 최대한 벌어주기 위함.
+    if (p === "match") warmupApi();
     if (p === "match" && !direct) { setMatchConfirm(true); return; }
     window.scrollTo(0, 0);
     navigate(PATHS[p] || "/", state ? { state } : undefined);
