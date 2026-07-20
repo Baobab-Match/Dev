@@ -960,3 +960,69 @@ textarea.field { resize: vertical; min-height: 64px; }
   color: var(--ink-soft);
   padding: 12px 4px;
 }
+
+/* 매칭 결과 피드백 — reasons-stack 다음, 스크롤 진입 시 살짝 떠오르며 등장 */
+.match-feedback {
+  margin-top: 56px;
+  padding-top: 40px;
+  border-top: 1px solid var(--bone-dark);
+  text-align: center;
+  opacity: 0;
+  transform: translateY(22px);
+  transition: opacity 0.6s ease, transform 0.6s ease;
+}
+.match-feedback.is-visible { opacity: 1; transform: translateY(0); }
+.match-feedback-title { font-family: var(--font-display); font-weight: 800; font-size: var(--fs-xl); color: var(--green-900); margin-bottom: 20px; }
+
+.match-feedback-buttons { display: flex; gap: 12px; justify-content: center; }
+.mf-btn { padding: 12px 26px; font-size: var(--fs-sm); font-weight: 700; border-radius: 0; cursor: pointer; transition: background 0.16s, border-color 0.16s, color 0.16s, transform 0.08s ease; }
+.mf-btn--good { background: var(--green-700); color: #fff; border: 1.5px solid var(--green-700); }
+.mf-btn--good:hover { background: var(--green-800); }
+.mf-btn--bad { background: transparent; color: var(--ink-soft); border: 1.5px solid var(--bone-dark); }
+.mf-btn:active { transform: scale(0.97); }
+
+.match-feedback-detail { max-width: 640px; margin: 0 auto; text-align: left; }
+.match-feedback-sub { font-size: var(--fs-sm); color: var(--ink-soft); margin-bottom: 16px; text-align: center; }
+.match-feedback-textarea { width: 100%; border: 1px solid var(--bone-dark); border-radius: 0; padding: 12px; font-family: inherit; font-size: var(--fs-sm); resize: vertical; margin-bottom: 16px; }
+.match-feedback-textarea:focus { outline: none; border-color: var(--green-500); }
+.mf-submit { width: auto; margin: 0 auto; display: block; padding: 12px 30px; }
+.mf-submit:disabled { opacity: 0.4; cursor: not-allowed; }
+.match-feedback-done { font-size: var(--fs-md); color: var(--green-700); font-weight: 600; }
+
+/* 아쉬워요 버튼 호버도 초록 톤으로 통일 */
+.mf-btn--bad:hover { border-color: var(--green-700); color: var(--green-700); }
+
+/* 설문형 번호 리스트 */
+.match-feedback-chips { display: flex; flex-direction: column; margin-bottom: 20px; border-top: 1px solid var(--bone-dark); }
+.mf-reason {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  width: 100%;
+  text-align: left;
+  padding: 14px 6px;
+  border: none;
+  border-bottom: 1px solid var(--bone-dark);
+  background: transparent;
+  cursor: pointer;
+  transition: background 0.14s ease, color 0.14s ease;
+}
+.mf-reason:hover { background: var(--paper); }
+.mf-reason-num {
+  flex: none;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  border: 1.5px solid var(--bone-dark);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: var(--fs-xs);
+  font-weight: 700;
+  color: var(--ink-soft);
+  transition: background 0.14s ease, border-color 0.14s ease, color 0.14s ease;
+}
+.mf-reason-label { font-size: var(--fs-md); font-weight: 600; color: var(--ink); }
+.mf-reason.active { background: transparent; }
+.mf-reason.active .mf-reason-num { background: var(--green-700); border-color: var(--green-700); color: #fff; }
+.mf-reason.active .mf-reason-label { color: var(--ink); font-weight: 700; }

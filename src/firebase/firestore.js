@@ -3,6 +3,7 @@
 // ※ 실제 코드는 4번 단계에서 채웁니다. 지금은 뼈대.
 import {
   collection, getDocs, doc, getDoc, updateDoc, setDoc, arrayUnion, arrayRemove,
+  addDoc, serverTimestamp,
 } from "firebase/firestore";
 import { db } from "./config";
 
@@ -47,4 +48,16 @@ export async function removeFavorite(uid, countryId) {
 // 내 프로필 일부 필드 업데이트 (관심분야 변경 등)
 export async function updateUserProfile(uid, patch) {
   await updateDoc(doc(db, "users", uid), patch);
+}
+
+export async function saveMatchFeedback({ uid, countryIds, fieldSelected, positive, reasons, otherText }) {
+  await addDoc(collection(db, "feedback"), {
+    userId: uid || null,
+    countryIds,
+    fieldSelected,
+    positive,
+    reasons,           // 축 키 배열 — ["field","diplomacy",...], 도움됐으면 []
+    otherText: otherText || "",
+    createdAt: serverTimestamp(),
+  });
 }

@@ -5,6 +5,8 @@ import { rankCountries, scoreCountry, matchTier } from "../data/matchEngine";
 import { CountrySilhouette } from "../components/ui";
 import MatchReportPDF from "../components/MatchReportPDF";
 import AiMatchLoading from "../components/AiMatchLoading";
+import MatchFeedback from "../components/MatchFeedback"; 
+import { saveMatchFeedback } from "../firebase/firestore";
 
 // field 를 항상 배열로 정규화 (문자열 1개 / 배열 / 빈값 모두 허용)
 function toFieldArray(field) {
@@ -475,6 +477,12 @@ export default function MatchResults({ openCountry, field, profile, user, favori
           );
         })}
       </div>
+      <MatchFeedback
+        uid={user?.uid}
+        countryIds={(displayRanked || []).map((r) => r.id)}
+        fieldSelected={chosenFields}
+        userType={profile?.type}
+      />
     </main>
   );
 }
