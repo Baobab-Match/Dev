@@ -39,8 +39,23 @@ function infraCompareText(fieldKey, valueStr) {
   return diff > 0 ? `${avgLabel} · 평균보다 높습니다` : `${avgLabel} · 평균보다 낮습니다`;
 }
 
+// climateScore/diplomacyScore 상대 순위 계산 (모듈 로드 시 1회만) — 점수 높은 국가가 1위
+// 두 점수 모두 54개국 안에서의 상대 순위를 정규화한 값이라, 순위를 같이 보여주면
+// "63점"이라는 절대 숫자보다 훨씬 직관적으로 위치를 파악할 수 있다.
+function buildRankMap(scoreKey) {
+  const entries = Object.values(COUNTRIES)
+    .filter((c) => c[scoreKey] != null)
+    .map((c) => ({ id: c.id, score: c[scoreKey] }))
+    .sort((a, b) => b.score - a.score);
+  const map = {};
+  entries.forEach((e, i) => { map[e.id] = { rank: i + 1, total: entries.length }; });
+  return map;
+}
+const CLIMATE_RANK = buildRankMap("climateScore");
+const DIPLOMACY_RANK = buildRankMap("diplomacyScore");
+
 // 상세 페이지 전용 — 히어로 스탯 한 칸
-function StatItem({ value, label, suffix, yes }) {
+function StatItem({ value, label, suffix, yes, rank }) {
   return (
     <div className="stat">
       <div className={"stat-val" + (yes ? " yes" : "")}>
@@ -48,6 +63,7 @@ function StatItem({ value, label, suffix, yes }) {
         {suffix && !isNil(value) && <small>{suffix}</small>}
       </div>
       <div className="stat-label">{label}</div>
+      {rank && <div className="stat-rank">{rank.total}개국 중 {rank.rank}위</div>}
     </div>
   );
 }
@@ -213,13 +229,13 @@ export default function CountryDetail({ id, go, from = "search", isFavorite, tog
     ["언어", c.language || "—"],
   ];
 
-  // 히어로 스탯 (5칸)
+  // 히어로 스탯 (5칸) — 기후 취약도·외교 친밀도는 54개국 내 상대 순위도 함께 표시
   const stats = [
-    { value: c.climateScore, suffix: "/100", label: "기후 취약도" },
+    { value: c.climateScore, suffix: "/100", label: "기후 취약도*", rank: CLIMATE_RANK[c.id] },
     { value: c.mainClimateIssue, label: "주요 기후문제" },
     { value: c.priorityPartner ? "Yes" : "No", label: "중점협력국", yes: c.priorityPartner },
     { value: c.koreaOdaHistory ? "Yes" : "No", label: "한국 ODA 이력", yes: c.koreaOdaHistory },
-    { value: c.diplomacyScore, suffix: "/100", label: "외교 친밀도" },
+    { value: c.diplomacyScore, suffix: "/100", label: "외교 친밀도*", rank: DIPLOMACY_RANK[c.id] },
   ];
 
   // KOICA 분기 판정
@@ -254,6 +270,7 @@ export default function CountryDetail({ id, go, from = "search", isFavorite, tog
           <div className="stat-strip">
             {stats.map((s) => <StatItem key={s.label} {...s} />)}
           </div>
+          <p className="stat-strip-note">* 산정 기준은 하단 "산정기준" 참고</p>
         </div>
       </div>
 
@@ -351,7 +368,7 @@ export default function CountryDetail({ id, go, from = "search", isFavorite, tog
       </p>
       <p className="source-footnote" style={{ marginTop: 10 }}>
         <span className="source-footnote-mark">산정기준</span>
-        기후 취약도는 World Bank 기후 API(SSP3-7.0 시나리오, 2040~2059년 전망)의 기온 상승폭(40%)·강수 변화율(30%)·극한강수 지표(30%)를 가중합해 30~100점으로 환산한 값입니다. 외교 친밀도는 외교부 기관 진출현황(40%)·외교관계(30%)·무역관계(30%)를 가중합하고, KOICA 중점협력국은 +20점을 가산한 값입니다. 인프라 지표의 평균 비교는 데이터가 확인된 아프리카 국가들의 산술 평균 대비 ±5% 이내를 "평균 수준"으로 판정한 값입니다.
+        기후 취약도는 World Bank 기후 API(SSP3-7.0 시나리오, 2040~2059년 전망)의 기온 상승폭(40%)·강수 변화율(30%)·극한강수 지표(30%)를 가중합해 30~100점으로 환산한 값입니다. 외교 친밀도는 외교부 기관 진출현황(40%)·외교관계(30%)·무역관계(30%)를 가중합하고, KOICA 중점협력국은 +20점을 가산한 값입니다. 두 점수 모두 아프리카 54개국 안에서의 상대 순위를 정규화한 값으로, 절대적인 수준이 아니라 이 54개국 사이에서의 상대적 위치를 나타냅니다. 인프라 지표의 평균 비교는 데이터가 확인된 아프리카 국가들의 산술 평균 대비 ±5% 이내를 "평균 수준"으로 판정한 값입니다.
       </p>
     </main>
   );

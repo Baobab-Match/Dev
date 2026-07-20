@@ -13,6 +13,7 @@
 import {
   Document, Page, Text, View, StyleSheet, Font, Svg, Path, Circle,
 } from "@react-pdf/renderer";
+import { axisTier } from "../data/matchEngine";
 
 // ── 한글 폰트 (로컬 .ttf 번들) ──
 import PretendardRegular from "../assets/fonts/Pretendard-Regular.ttf";
@@ -46,6 +47,10 @@ const TIER_COLOR = { strong: C.green800, good: C.green700, fair: C.inkSoft, weak
 const TIER_LABEL = { strong: "매우 적합", good: "적합", fair: "부분 적합", weak: "참고" };
 const TIER_RANGE = { strong: "75점 이상", good: "60~74점", fair: "45~59점", weak: "45점 미만" };
 const TIER_ORDER = ["strong", "good", "fair", "weak"];
+
+// 축별로 hasData:false일 때 보여줄 문구 — 국가 데이터가 아예 없는 축은 "데이터 없음",
+// 사용자 입력·유형에 따라 해당 사항이 없는 축(수출경험·보유기술)은 "해당없음"으로 구분
+const NO_DATA_LABEL = { export: "해당없음", techMatch: "해당없음" };
 
 // '참고' 등급 문구 — 추천 보고서는 엔진이 전체 국가 중에서 골라온 결과이므로 "후보"라는
 // 표현이 맞지만, 관심 국가 보고서는 사용자가 이미 직접 즐겨찾기한 국가이므로 "후보"라고
@@ -111,6 +116,18 @@ function computeInfraAvg(countries) {
   const avg = {};
   INFRA_FIELDS.forEach((f) => { avg[f] = counts[f] ? sums[f] / counts[f] : null; });
   return avg;
+}
+
+// climateScore/diplomacyScore 상대 순위 계산 (countries 전체 맵을 받아 1회 계산) — 점수 높은 국가가 1위
+// 웹 상세 페이지(CountryDetail.jsx)의 CLIMATE_RANK/DIPLOMACY_RANK와 동일한 로직
+function buildRankMap(countries, scoreKey) {
+  const entries = Object.values(countries || {})
+    .filter((c) => c[scoreKey] != null)
+    .map((c) => ({ id: c.id, score: c[scoreKey] }))
+    .sort((a, b) => b.score - a.score);
+  const map = {};
+  entries.forEach((e, i) => { map[e.id] = { rank: i + 1, total: entries.length }; });
+  return map;
 }
 
 // 인프라 값 vs 아프리카 평균 비교 문구 (±5% 이내는 "평균 수준"으로 처리)
@@ -257,6 +274,7 @@ const styles = StyleSheet.create({
   statValYes: { color: C.green600 },
   statSuffix: { fontSize: 9, fontWeight: 600, color: C.green500 },
   statLabel: { fontSize: 10, fontWeight: 600, color: C.inkSoft, marginTop: 4, lineHeight: 1 },
+  statRank: { fontSize: 8.5, fontWeight: 600, color: C.green500, marginTop: 3, lineHeight: 1 },
   thinRule: { borderBottomWidth: 0.5, borderBottomColor: C.boneDark, marginBottom: 18 },
 
   // 풀와이드 섹션 제목 (좌측 바 + 제목)
@@ -318,11 +336,16 @@ const styles = StyleSheet.create({
   // ── 매칭 페이지 (막대 두껍게 + 글자 키움) ──
   matchTierNote: { fontSize: 13.5, fontWeight: 700, marginBottom: 20 },
   axisGroup: { marginBottom: 16 },
-  axisRow: { position: "relative", height: 28, marginBottom: 9 },
+  // 등급 라벨(또는 데이터 없음 문구) 한 줄이 더 들어갈 공간 확보를 위해 28 → 34
+  axisRow: { position: "relative", height: 34, marginBottom: 9 },
   axisLabel: { position: "absolute", left: 0, top: 5, fontSize: 13, color: C.inkSoft, fontWeight: 600, lineHeight: 1 },
   axisTrack: { position: "absolute", left: 150, top: 4, height: 17, backgroundColor: C.boneDark, borderRadius: 0 },
   axisFill: { height: 17, borderRadius: 0 },
-  axisVal: { position: "absolute", right: 0, top: 4, fontSize: 14, fontWeight: 800, color: C.green700, lineHeight: 1 },
+  axisVal: { position: "absolute", right: 0, top: 2, fontSize: 14, fontWeight: 800, color: C.green700, lineHeight: 1 },
+  // 축별 등급 라벨(예: "매우 적합") — 점수 숫자 바로 아래 한 줄
+  axisTierLabel: { position: "absolute", right: 0, top: 18, fontSize: 9, fontWeight: 600, color: C.inkSoft, lineHeight: 1 },
+  // hasData:false인 축 — 숫자 대신 "데이터 없음"/"해당없음" 표시
+  axisNoData: { position: "absolute", right: 0, top: 8, fontSize: 10.5, fontWeight: 600, color: C.inkSoft, opacity: 0.6, lineHeight: 1 },
 
   reasonItem: { flexDirection: "row", marginBottom: 12, paddingLeft: 2 },
   reasonCheck: { width: 20, fontSize: 12, color: C.green700, fontWeight: 700 },
@@ -362,6 +385,8 @@ function TierLegend() {
         매칭 점수는 분야 적합도·기후-기술 적합도·기후 시급성·외교 친밀도·개발 필요도·수출 연계성·
         보유기술 적합도 7개 지표를 사용자 유형(기업·공공기관·개인)별 가중치로 종합한 결과입니다.
         같은 국가라도 선택한 분야나 사용자 유형에 따라 점수·순위가 달라질 수 있습니다.
+        아래 지표별 막대그래프의 등급도 같은 4단계 기준을 개별 지표에 적용한 것이며,
+        지표에 따라 데이터가 없거나 해당 사항이 없는 경우 등급 대신 별도로 표시됩니다.
       </Text>
     </View>
   );
@@ -492,34 +517,46 @@ function InfraRow({ label, v, compare, isLast }) {
   );
 }
 
-// 매칭 막대 한 줄 (두껍게)
+// 매칭 막대 한 줄 (두껍게) — hasData:false면 막대·숫자 대신 "데이터 없음"/"해당없음" 표시
 const AXIS_TRACK_W = 270;
-function AxisBar({ label, score }) {
+function AxisBar({ axisKey, label, score, hasData = true, tier }) {
   const pct = Math.max(0, Math.min(100, score ?? 0));
   return (
     <View style={styles.axisRow}>
       <View style={[styles.axisTrack, { width: AXIS_TRACK_W }]}>
-        <View style={[styles.axisFill, { width: (AXIS_TRACK_W * pct) / 100, backgroundColor: barColor(pct) }]} />
+        {hasData ? (
+          <View style={[styles.axisFill, { width: (AXIS_TRACK_W * pct) / 100, backgroundColor: barColor(pct) }]} />
+        ) : null}
       </View>
       <Text style={styles.axisLabel}>{label}</Text>
-      <Text style={styles.axisVal}>{Math.round(pct)}</Text>
+      {hasData ? (
+        <>
+          <Text style={styles.axisVal}>{Math.round(pct)}</Text>
+          {tier ? <Text style={styles.axisTierLabel}>{TIER_LABEL[tier]}</Text> : null}
+        </>
+      ) : (
+        <Text style={styles.axisNoData}>{NO_DATA_LABEL[axisKey] || "데이터 없음"}</Text>
+      )}
     </View>
   );
 }
 
 // ── 국가 상세 (페이지 1) ──
-function CountryDetailPage({ r, country, rankLabel, field, showMatchedField, infraAvg }) {
+function CountryDetailPage({ r, country, rankLabel, field, showMatchedField, infraAvg, climateRank, diplomacyRank }) {
   const eco = country?.economy || {};
   const infra = country?.infrastructure || {};
   const cum = country?.koicaCumulative || {};
   const sectors = ((country?.koica && country.koica.sectors) || []).slice().sort((a, b) => b.percent - a.percent);
 
+  const cRank = climateRank ? climateRank[country?.id] : null;
+  const dRank = diplomacyRank ? diplomacyRank[country?.id] : null;
+
   const stats = [
-    { value: country?.climateScore, label: "기후 취약도", suffix: "/100" },
+    { value: country?.climateScore, label: "기후 취약도", suffix: "/100", rank: cRank },
     { value: country?.mainClimateIssue, label: "주요 기후문제" },
     { value: country?.priorityPartner ? "Yes" : "No", label: "중점협력국", yes: country?.priorityPartner },
     { value: country?.koreaOdaHistory ? "Yes" : "No", label: "한국 ODA 이력", yes: country?.koreaOdaHistory },
-    { value: country?.diplomacyScore, label: "외교 친밀도", suffix: "/100" },
+    { value: country?.diplomacyScore, label: "외교 친밀도", suffix: "/100", rank: dRank },
   ];
   const basics = [
     ["수도", country?.capital || "—"],
@@ -578,6 +615,7 @@ function CountryDetailPage({ r, country, rankLabel, field, showMatchedField, inf
               {s.suffix && s.value != null ? <Text style={styles.statSuffix}>{s.suffix}</Text> : null}
             </Text>
             <Text style={styles.statLabel}>{s.label}</Text>
+            {s.rank ? <Text style={styles.statRank}>{s.rank.total}개국 중 {s.rank.rank}위</Text> : null}
           </View>
         ))}
       </View>
@@ -699,9 +737,19 @@ function MatchPage({ r, country, rankLabel, field, reportKind = "recommend", sho
       <SecHead title="매칭 적합도 분석" />
       <Text style={[styles.matchTierNote, { color: TIER_COLOR[r.tier] }]}>{tierNote}</Text>
       <View style={styles.axisGroup}>
-        {axisEntries.map(([key, v]) => (
-          <AxisBar key={key} label={AXIS_LABEL[key] || key} score={v.score} />
-        ))}
+        {axisEntries.map(([key, v]) => {
+          const t = axisTier(v); // hasData:false면 null
+          return (
+            <AxisBar
+              key={key}
+              axisKey={key}
+              label={AXIS_LABEL[key] || key}
+              score={v.score}
+              hasData={!!t}
+              tier={t?.tier}
+            />
+          );
+        })}
       </View>
 
       <SecHead title="추천 근거" />
@@ -736,6 +784,8 @@ export default function MatchReportPDF({
   console.log("🔵 MatchReportPDF 진입!", { ranked: ranked?.length, countries: !!countries });
   const shownField = field || "전체";
   const infraAvg = computeInfraAvg(countries);
+  const climateRank = buildRankMap(countries, "climateScore");
+  const diplomacyRank = buildRankMap(countries, "diplomacyScore");
 
   return (
     <Document
@@ -855,7 +905,7 @@ export default function MatchReportPDF({
         const cc = countries[r.id];
         const rankLabel = showRanking ? `${i + 1}순위` : null;
         return [
-          <CountryDetailPage key={`${r.id}-d`} r={r} country={cc} rankLabel={rankLabel} field={shownField} showMatchedField={showMatchedField} infraAvg={infraAvg} />,
+          <CountryDetailPage key={`${r.id}-d`} r={r} country={cc} rankLabel={rankLabel} field={shownField} showMatchedField={showMatchedField} infraAvg={infraAvg} climateRank={climateRank} diplomacyRank={diplomacyRank} />,
           <MatchPage key={`${r.id}-m`} r={r} country={cc} rankLabel={rankLabel} field={shownField} reportKind={reportKind} showMatchedField={showMatchedField} />,
         ];
       })}
@@ -883,6 +933,7 @@ export default function MatchReportPDF({
             기후 취약도는 World Bank 기후 API(SSP3-7.0 시나리오, 2040~2059년 전망)의 기온 상승폭(40%)
             ·강수 변화율(30%)·극한강수 지표(30%)를 가중합해 30~100점으로 환산한 값입니다.
             외교 친밀도는 외교부 기관 진출현황(40%)·외교관계(30%)·무역관계(30%)를 가중합하고, KOICA 중점협력국은 +20점을 가산한 값입니다.
+            두 점수 모두 아프리카 54개국 안에서의 상대 순위를 정규화한 값으로, 절대적인 수준이 아니라 이 54개국 사이에서의 상대적 위치를 나타냅니다.
             인프라 지표의 평균 비교는 데이터가 확인된 아프리카 국가들의 산술 평균 대비 ±5% 이내를 "평균 수준"으로 판정한 값입니다.
           </Text>
           <Text style={[styles.sourceText, styles.sourceParagraph, { marginBottom: 0 }]}>

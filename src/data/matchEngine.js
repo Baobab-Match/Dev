@@ -181,6 +181,12 @@ export function matchTier(score) {
   if (score >= 45) return { tier: "fair",   tierNote: "일부 조건에서 적합한 국가입니다." };
   return { tier: "weak", tierNote: "이 분야에 특별히 부합하는 국가가 많지 않아, 종합 점수 기준 상대적으로 가까운 후보입니다." };
 }
+
+// 축별 등급 — hasData가 false면 등급 없이 null (호출부에서 "데이터 없음"/"해당없음"으로 표시)
+export function axisTier(axis) {
+  if (!axis || axis.hasData === false) return null;
+  return matchTier(axis.score);
+}
 function scoreField(country, field) {
   const sectors = country?.koica?.sectors || [];
   const want = FIELD_KOICA_SECTORS[field] || [];
