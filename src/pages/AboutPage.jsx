@@ -235,7 +235,7 @@ export function AboutPage({ go }) {
                 10개 분야로 나뉘는 맞춤 협력 포인트
               </h2>
               <p className="about-landing-fields-desc" style={INDENT}>
-                협력이 필요한 영역을 10개 분야로 나눠 국가별 수요를 분석합니다. 이러한 분야를 바탕으로, AI가 가장 적합한 협력 국가를 추천합니다.
+                협력이 필요한 영역을 10개 분야로 나누고, 국가별 공공데이터를 분석해 실제 수요를 파악합니다. 이 분석 결과와 보유 기술·관심 분야를 종합해, AI가 가장 적합한 협력 국가를 추천합니다.
               </p>
               <div className="about-fields-groups">
                 {FIELD_GROUPS.map((g) => (

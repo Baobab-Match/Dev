@@ -10,7 +10,7 @@ export default function Footer() {
             <span className="footer-div">|</span>
             <span className="footer-item">대표 : 바오밥수호대</span>
             <span className="footer-div">|</span>
-            <span className="footer-item">사업자등록번호 : 123-45-67890</span>
+            <span className="footer-item">2026년 외교 공공데이터·AI 활용 경진대회 출품작</span>
           </p>
           <p>
             <span className="footer-item">주소 : 서울특별시 강남구</span>
