@@ -105,12 +105,14 @@ async function fetchAiRanked(fields, userType, options = {}) {
       entries = entries.filter((item) => idSet.has(item.country));
     }
 
-    // AI matchScore는 0~10 스케일 → matchEngine.js와 같은 0~100 스케일로 변환
+    // AI matchScore는 matcher.py의 recommend()에서 이미 0~100 스케일로 반환됨
+    // (round(score/smax*100, 1)) — matchEngine.js(규칙기반)와 스케일이 같아서 변환 불필요.
+    // 예전에 0~10 스케일로 잘못 가정해 *10을 곱하던 버그를 제거함(matchScore 10배 인플레이션).
     return entries
       .sort((a, b) => b.matchScore - a.matchScore)
       .slice(0, limit)
       .map((item) => {
-        const scaled = Number((item.matchScore * 10).toFixed(1));
+        const scaled = Number(item.matchScore.toFixed(1));
         const { tier, tierNote } = matchTier(scaled);
         return {
           id: item.country,

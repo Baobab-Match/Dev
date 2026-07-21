@@ -1,6 +1,7 @@
 // 자동 생성됨 — 바오밥매치 기초 국가 데이터
 // 점수 칸(climateScore 등)은 AI 추천 단계에서 채워짐
 // economy 항목: {usd, krw, year, source} / ODA 항목: {usd, krw, year, isNet}
+// koicaHealthDetail: ODA 로데이터 기반 보건 세부 지원 현황 (없는 국가는 null)
 
 export const COUNTRIES_BASE = {
   "가나": {
@@ -126,6 +127,31 @@ export const COUNTRIES_BASE = {
       "latest": "약 152억 1,239만 원",
       "latestYear": "2023",
       "startYear": "1991"
+    },
+    "koicaHealthDetail": {
+      "year": "2024",
+      "sectors": [
+        {
+          "name": "보건정책 및 행정관리",
+          "percent": 82.3,
+          "amount": "1,592,607,000 원"
+        },
+        {
+          "name": "의료서비스",
+          "percent": 11.3,
+          "amount": "217,702,500 원"
+        },
+        {
+          "name": "보건인력개발",
+          "percent": 3.3,
+          "amount": "63,480,000 원"
+        },
+        {
+          "name": "기초보건진료",
+          "percent": 3.1,
+          "amount": "60,666,000 원"
+        }
+      ]
     }
   },
   "가봉": {
@@ -228,22 +254,22 @@ export const COUNTRIES_BASE = {
         "source": "World Bank"
       },
       "physicians": {
-        "value": "0.5",
+        "value": null,
         "unit": "의사 / 1,000명",
-        "year": "2022",
-        "source": "World Bank"
+        "year": null,
+        "source": null
       },
       "electricityAccess": {
-        "value": "95.1",
+        "value": null,
         "unit": "%",
-        "year": "2024",
-        "source": "World Bank"
+        "year": null,
+        "source": null
       },
       "internetPenetration": {
-        "value": "68.7",
+        "value": null,
         "unit": "%",
-        "year": "2024",
-        "source": "World Bank"
+        "year": null,
+        "source": null
       }
     },
     "koicaCumulative": {
@@ -251,6 +277,16 @@ export const COUNTRIES_BASE = {
       "latest": null,
       "latestYear": "2023",
       "startYear": "1991"
+    },
+    "koicaHealthDetail": {
+      "year": "2024",
+      "sectors": [
+        {
+          "name": "보건정책 및 행정관리",
+          "percent": 100.0,
+          "amount": "82,500,000 원"
+        }
+      ]
     }
   },
   "감비아": {
@@ -332,10 +368,10 @@ export const COUNTRIES_BASE = {
     },
     "infrastructure": {
       "hospitalBeds": {
-        "value": "1.1",
+        "value": null,
         "unit": "병상 / 1,000명",
-        "year": "2023",
-        "source": "World Bank"
+        "year": null,
+        "source": null
       },
       "physicians": {
         "value": "0.1",
@@ -361,6 +397,16 @@ export const COUNTRIES_BASE = {
       "latest": "약 1,295만 원",
       "latestYear": "2023",
       "startYear": "1991"
+    },
+    "koicaHealthDetail": {
+      "year": "2024",
+      "sectors": [
+        {
+          "name": "보건정책 및 행정관리",
+          "percent": 100.0,
+          "amount": "15,870,000 원"
+        }
+      ]
     }
   },
   "기니": {
@@ -469,9 +515,9 @@ export const COUNTRIES_BASE = {
         "source": "World Bank"
       },
       "electricityAccess": {
-        "value": "51.1",
+        "value": "53.8",
         "unit": "%",
-        "year": "2023",
+        "year": "2024",
         "source": "World Bank"
       },
       "internetPenetration": {
@@ -486,7 +532,8 @@ export const COUNTRIES_BASE = {
       "latest": "약 7억 3,616만 원",
       "latestYear": "2023",
       "startYear": "1991"
-    }
+    },
+    "koicaHealthDetail": null
   },
   "기니비사우": {
     "id": "기니비사우",
@@ -606,7 +653,8 @@ export const COUNTRIES_BASE = {
       "latest": "약 8억 3,910만 원",
       "latestYear": "2023",
       "startYear": "1991"
-    }
+    },
+    "koicaHealthDetail": null
   },
   "나미비아": {
     "id": "나미비아",
@@ -731,7 +779,8 @@ export const COUNTRIES_BASE = {
       "latest": "약 1억 6,449만 원",
       "latestYear": "2023",
       "startYear": "1991"
-    }
+    },
+    "koicaHealthDetail": null
   },
   "나이지리아": {
     "id": "나이지리아",
@@ -856,6 +905,26 @@ export const COUNTRIES_BASE = {
       "latest": "약 79억 4,892만 원",
       "latestYear": "2023",
       "startYear": "1991"
+    },
+    "koicaHealthDetail": {
+      "year": "2024",
+      "sectors": [
+        {
+          "name": "기초보건진료",
+          "percent": 96.9,
+          "amount": "9,584,469,000 원"
+        },
+        {
+          "name": "보건정책 및 행정관리",
+          "percent": 2.7,
+          "amount": "262,597,500 원"
+        },
+        {
+          "name": "보건인력개발",
+          "percent": 0.5,
+          "amount": "47,610,000 원"
+        }
+      ]
     }
   },
   "남수단": {
@@ -956,7 +1025,7 @@ export const COUNTRIES_BASE = {
       "electricityAccess": {
         "value": "5.4",
         "unit": "%",
-        "year": "2023",
+        "year": "2024",
         "source": "World Bank"
       },
       "internetPenetration": {
@@ -971,7 +1040,8 @@ export const COUNTRIES_BASE = {
       "latest": "약 57억 4,080만 원",
       "latestYear": "2023",
       "startYear": "1991"
-    }
+    },
+    "koicaHealthDetail": null
   },
   "남아프리카공화국": {
     "id": "남아프리카공화국",
@@ -1091,7 +1161,8 @@ export const COUNTRIES_BASE = {
       "latest": "약 10억 3,021만 원",
       "latestYear": "2023",
       "startYear": "1991"
-    }
+    },
+    "koicaHealthDetail": null
   },
   "니제르": {
     "id": "니제르",
@@ -1211,7 +1282,8 @@ export const COUNTRIES_BASE = {
       "latest": "약 1억 3,772만 원",
       "latestYear": "2023",
       "startYear": "1991"
-    }
+    },
+    "koicaHealthDetail": null
   },
   "라이베리아": {
     "id": "라이베리아",
@@ -1331,6 +1403,16 @@ export const COUNTRIES_BASE = {
       "latest": "약 4억 9,047만 원",
       "latestYear": "2023",
       "startYear": "1991"
+    },
+    "koicaHealthDetail": {
+      "year": "2024",
+      "sectors": [
+        {
+          "name": "보건정책 및 행정관리",
+          "percent": 100.0,
+          "amount": "29,457,000 원"
+        }
+      ]
     }
   },
   "레소토": {
@@ -1451,7 +1533,8 @@ export const COUNTRIES_BASE = {
       "latest": "약 13억 4,281만 원",
       "latestYear": "2023",
       "startYear": "1991"
-    }
+    },
+    "koicaHealthDetail": null
   },
   "르완다": {
     "id": "르완다",
@@ -1576,6 +1659,21 @@ export const COUNTRIES_BASE = {
       "latest": "약 203억 5,478만 원",
       "latestYear": "2023",
       "startYear": "1991"
+    },
+    "koicaHealthDetail": {
+      "year": "2024",
+      "sectors": [
+        {
+          "name": "의료서비스",
+          "percent": 64.5,
+          "amount": "115,266,000 원"
+        },
+        {
+          "name": "보건정책 및 행정관리",
+          "percent": 35.5,
+          "amount": "63,480,000 원"
+        }
+      ]
     }
   },
   "리비아": {
@@ -1701,7 +1799,8 @@ export const COUNTRIES_BASE = {
       "latest": "약 4억 4,169만 원",
       "latestYear": "2023",
       "startYear": "1991"
-    }
+    },
+    "koicaHealthDetail": null
   },
   "마다가스카르": {
     "id": "마다가스카르",
@@ -1821,7 +1920,8 @@ export const COUNTRIES_BASE = {
       "latest": "약 48억 4,419만 원",
       "latestYear": "2023",
       "startYear": "1991"
-    }
+    },
+    "koicaHealthDetail": null
   },
   "말라위": {
     "id": "말라위",
@@ -1946,6 +2046,16 @@ export const COUNTRIES_BASE = {
       "latest": "약 49억 3,645만 원",
       "latestYear": "2023",
       "startYear": "1991"
+    },
+    "koicaHealthDetail": {
+      "year": "2024",
+      "sectors": [
+        {
+          "name": "보건정책 및 행정관리",
+          "percent": 100.0,
+          "amount": "63,480,000 원"
+        }
+      ]
     }
   },
   "말리": {
@@ -2071,7 +2181,8 @@ export const COUNTRIES_BASE = {
       "latest": "약 3억 8,490만 원",
       "latestYear": "2023",
       "startYear": "1991"
-    }
+    },
+    "koicaHealthDetail": null
   },
   "모로코": {
     "id": "모로코",
@@ -2196,6 +2307,21 @@ export const COUNTRIES_BASE = {
       "latest": "약 57억 1,129만 원",
       "latestYear": "2023",
       "startYear": "1991"
+    },
+    "koicaHealthDetail": {
+      "year": "2024",
+      "sectors": [
+        {
+          "name": "의료교육 및 훈련",
+          "percent": 74.2,
+          "amount": "45,760,500 원"
+        },
+        {
+          "name": "보건정책 및 행정관리",
+          "percent": 25.8,
+          "amount": "15,870,000 원"
+        }
+      ]
     }
   },
   "모리셔스": {
@@ -2321,7 +2447,8 @@ export const COUNTRIES_BASE = {
       "latest": "약 2억 5,851만 원",
       "latestYear": "2023",
       "startYear": "1991"
-    }
+    },
+    "koicaHealthDetail": null
   },
   "모리타니아": {
     "id": "모리타니아",
@@ -2446,7 +2573,8 @@ export const COUNTRIES_BASE = {
       "latest": "약 5억 7,154만 원",
       "latestYear": "2023",
       "startYear": "1991"
-    }
+    },
+    "koicaHealthDetail": null
   },
   "모잠비크": {
     "id": "모잠비크",
@@ -2571,6 +2699,16 @@ export const COUNTRIES_BASE = {
       "latest": "약 104억 4,320만 원",
       "latestYear": "2023",
       "startYear": "1991"
+    },
+    "koicaHealthDetail": {
+      "year": "2024",
+      "sectors": [
+        {
+          "name": "보건정책 및 행정관리",
+          "percent": 100.0,
+          "amount": "11,484,204,000 원"
+        }
+      ]
     }
   },
   "베냉": {
@@ -2674,9 +2812,9 @@ export const COUNTRIES_BASE = {
         "source": "World Bank"
       },
       "electricityAccess": {
-        "value": "57",
+        "value": "59",
         "unit": "%",
-        "year": "2023",
+        "year": "2024",
         "source": "World Bank"
       },
       "internetPenetration": {
@@ -2691,7 +2829,8 @@ export const COUNTRIES_BASE = {
       "latest": "약 6억 3,842만 원",
       "latestYear": "2023",
       "startYear": "1991"
-    }
+    },
+    "koicaHealthDetail": null
   },
   "보츠와나": {
     "id": "보츠와나",
@@ -2811,6 +2950,21 @@ export const COUNTRIES_BASE = {
       "latest": "약 8억 9,659만 원",
       "latestYear": "2023",
       "startYear": "1991"
+    },
+    "koicaHealthDetail": {
+      "year": "2024",
+      "sectors": [
+        {
+          "name": "기초의료설비",
+          "percent": 92.8,
+          "amount": "377,151,000 원"
+        },
+        {
+          "name": "보건정책 및 행정관리",
+          "percent": 7.2,
+          "amount": "29,457,000 원"
+        }
+      ]
     }
   },
   "부룬디": {
@@ -2931,6 +3085,16 @@ export const COUNTRIES_BASE = {
       "latest": "약 39억 475만 원",
       "latestYear": "2023",
       "startYear": "1991"
+    },
+    "koicaHealthDetail": {
+      "year": "2024",
+      "sectors": [
+        {
+          "name": "보건정책 및 행정관리",
+          "percent": 100.0,
+          "amount": "63,480,000 원"
+        }
+      ]
     }
   },
   "부르키나파소": {
@@ -3056,7 +3220,8 @@ export const COUNTRIES_BASE = {
       "latest": "약 20억 7,795만 원",
       "latestYear": "2023",
       "startYear": "1991"
-    }
+    },
+    "koicaHealthDetail": null
   },
   "상투메프린시페": {
     "id": "상투메프린시페",
@@ -3166,7 +3331,8 @@ export const COUNTRIES_BASE = {
       "latest": "약 4억 2,928만 원",
       "latestYear": "2023",
       "startYear": "1991"
-    }
+    },
+    "koicaHealthDetail": null
   },
   "세네갈": {
     "id": "세네갈",
@@ -3291,6 +3457,21 @@ export const COUNTRIES_BASE = {
       "latest": "약 108억 2,415만 원",
       "latestYear": "2023",
       "startYear": "1991"
+    },
+    "koicaHealthDetail": {
+      "year": "2024",
+      "sectors": [
+        {
+          "name": "보건인력개발",
+          "percent": 99.2,
+          "amount": "18,750,000,000 원"
+        },
+        {
+          "name": "기초보건진료",
+          "percent": 0.8,
+          "amount": "155,998,500 원"
+        }
+      ]
     }
   },
   "세이셸": {
@@ -3380,7 +3561,8 @@ export const COUNTRIES_BASE = {
       "latest": null,
       "latestYear": "2023",
       "startYear": "1991"
-    }
+    },
+    "koicaHealthDetail": null
   },
   "소말리아": {
     "id": "소말리아",
@@ -3495,7 +3677,8 @@ export const COUNTRIES_BASE = {
       "latest": "약 1억 5,435만 원",
       "latestYear": "2023",
       "startYear": "1991"
-    }
+    },
+    "koicaHealthDetail": null
   },
   "수단": {
     "id": "수단",
@@ -3620,7 +3803,8 @@ export const COUNTRIES_BASE = {
       "latest": "약 67억 8,146만 원",
       "latestYear": "2023",
       "startYear": "1991"
-    }
+    },
+    "koicaHealthDetail": null
   },
   "시에라리온": {
     "id": "시에라리온",
@@ -3735,6 +3919,21 @@ export const COUNTRIES_BASE = {
       "latest": "약 12억 3,541만 원",
       "latestYear": "2023",
       "startYear": "1991"
+    },
+    "koicaHealthDetail": {
+      "year": "2024",
+      "sectors": [
+        {
+          "name": "기초보건진료",
+          "percent": 91.4,
+          "amount": "339,040,500 원"
+        },
+        {
+          "name": "보건인력개발",
+          "percent": 8.6,
+          "amount": "31,740,000 원"
+        }
+      ]
     }
   },
   "알제리": {
@@ -3860,6 +4059,21 @@ export const COUNTRIES_BASE = {
       "latest": "약 26억 424만 원",
       "latestYear": "2023",
       "startYear": "1991"
+    },
+    "koicaHealthDetail": {
+      "year": "2024",
+      "sectors": [
+        {
+          "name": "보건정책 및 행정관리",
+          "percent": 65.0,
+          "amount": "29,457,000 원"
+        },
+        {
+          "name": "보건인력개발",
+          "percent": 35.0,
+          "amount": "15,870,000 원"
+        }
+      ]
     }
   },
   "앙골라": {
@@ -3985,6 +4199,16 @@ export const COUNTRIES_BASE = {
       "latest": "약 16억 6,024만 원",
       "latestYear": "2023",
       "startYear": "1991"
+    },
+    "koicaHealthDetail": {
+      "year": "2024",
+      "sectors": [
+        {
+          "name": "보건정책 및 행정관리",
+          "percent": 100.0,
+          "amount": "606,352,500 원"
+        }
+      ]
     }
   },
   "에리트레아": {
@@ -4110,7 +4334,8 @@ export const COUNTRIES_BASE = {
       "latest": null,
       "latestYear": "2023",
       "startYear": "1991"
-    }
+    },
+    "koicaHealthDetail": null
   },
   "에스와티니": {
     "id": "에스와티니",
@@ -4199,6 +4424,16 @@ export const COUNTRIES_BASE = {
       "latest": "약 3억 9,921만 원",
       "latestYear": "2023",
       "startYear": "1991"
+    },
+    "koicaHealthDetail": {
+      "year": "2024",
+      "sectors": [
+        {
+          "name": "보건정책 및 행정관리",
+          "percent": 100.0,
+          "amount": "217,117,500 원"
+        }
+      ]
     }
   },
   "에티오피아": {
@@ -4324,6 +4559,31 @@ export const COUNTRIES_BASE = {
       "latest": "약 339억 9,466만 원",
       "latestYear": "2023",
       "startYear": "1991"
+    },
+    "koicaHealthDetail": {
+      "year": "2024",
+      "sectors": [
+        {
+          "name": "생식보건",
+          "percent": 49.8,
+          "amount": "1,462,798,500 원"
+        },
+        {
+          "name": "의료서비스",
+          "percent": 19.7,
+          "amount": "580,539,000 원"
+        },
+        {
+          "name": "보건교육",
+          "percent": 18.7,
+          "amount": "550,044,000 원"
+        },
+        {
+          "name": "기초보건진료",
+          "percent": 11.8,
+          "amount": "346,662,000 원"
+        }
+      ]
     }
   },
   "우간다": {
@@ -4449,6 +4709,31 @@ export const COUNTRIES_BASE = {
       "latest": "약 252억 5,853만 원",
       "latestYear": "2023",
       "startYear": "1991"
+    },
+    "koicaHealthDetail": {
+      "year": "2024",
+      "sectors": [
+        {
+          "name": "보건정책 및 행정관리",
+          "percent": 96.2,
+          "amount": "13,563,480,000 원"
+        },
+        {
+          "name": "의료서비스",
+          "percent": 2.1,
+          "amount": "290,269,500 원"
+        },
+        {
+          "name": "보건교육",
+          "percent": 1.6,
+          "amount": "224,661,000 원"
+        },
+        {
+          "name": "보건인력개발",
+          "percent": 0.1,
+          "amount": "15,870,000 원"
+        }
+      ]
     }
   },
   "이집트": {
@@ -4574,6 +4859,16 @@ export const COUNTRIES_BASE = {
       "latest": "약 92억 8,535만 원",
       "latestYear": "2023",
       "startYear": "1991"
+    },
+    "koicaHealthDetail": {
+      "year": "2024",
+      "sectors": [
+        {
+          "name": "보건정책 및 행정관리",
+          "percent": 100.0,
+          "amount": "31,740,000 원"
+        }
+      ]
     }
   },
   "잠비아": {
@@ -4699,7 +4994,8 @@ export const COUNTRIES_BASE = {
       "latest": "약 3억 8,479만 원",
       "latestYear": "2023",
       "startYear": "1991"
-    }
+    },
+    "koicaHealthDetail": null
   },
   "적도기니": {
     "id": "적도기니",
@@ -4814,7 +5110,8 @@ export const COUNTRIES_BASE = {
       "latest": "약 7억 9,295만 원",
       "latestYear": "2023",
       "startYear": "1991"
-    }
+    },
+    "koicaHealthDetail": null
   },
   "중앙아프리카": {
     "id": "중앙아프리카",
@@ -4939,7 +5236,8 @@ export const COUNTRIES_BASE = {
       "latest": "약 15억 2,835만 원",
       "latestYear": "2023",
       "startYear": "1991"
-    }
+    },
+    "koicaHealthDetail": null
   },
   "지부티": {
     "id": "지부티",
@@ -5059,7 +5357,8 @@ export const COUNTRIES_BASE = {
       "latest": "약 1억 4,730만 원",
       "latestYear": "2023",
       "startYear": "1991"
-    }
+    },
+    "koicaHealthDetail": null
   },
   "짐바브웨": {
     "id": "짐바브웨",
@@ -5184,6 +5483,16 @@ export const COUNTRIES_BASE = {
       "latest": "약 11억 4,861만 원",
       "latestYear": "2023",
       "startYear": "1991"
+    },
+    "koicaHealthDetail": {
+      "year": "2024",
+      "sectors": [
+        {
+          "name": "보건정책 및 행정관리",
+          "percent": 100.0,
+          "amount": "31,740,000 원"
+        }
+      ]
     }
   },
   "차드": {
@@ -5309,7 +5618,8 @@ export const COUNTRIES_BASE = {
       "latest": "약 20억 9,637만 원",
       "latestYear": "2023",
       "startYear": "1991"
-    }
+    },
+    "koicaHealthDetail": null
   },
   "카메룬": {
     "id": "카메룬",
@@ -5434,6 +5744,26 @@ export const COUNTRIES_BASE = {
       "latest": "약 73억 1,119만 원",
       "latestYear": "2023",
       "startYear": "1991"
+    },
+    "koicaHealthDetail": {
+      "year": "2024",
+      "sectors": [
+        {
+          "name": "보건정책 및 행정관리",
+          "percent": 79.3,
+          "amount": "253,258,500 원"
+        },
+        {
+          "name": "의료서비스",
+          "percent": 13.6,
+          "amount": "43,333,500 원"
+        },
+        {
+          "name": "보건교육",
+          "percent": 7.2,
+          "amount": "22,881,000 원"
+        }
+      ]
     }
   },
   "카보베르데": {
@@ -5544,7 +5874,8 @@ export const COUNTRIES_BASE = {
       "latest": null,
       "latestYear": "2023",
       "startYear": "1991"
-    }
+    },
+    "koicaHealthDetail": null
   },
   "케냐": {
     "id": "케냐",
@@ -5669,6 +6000,26 @@ export const COUNTRIES_BASE = {
       "latest": "약 143억 2,656만 원",
       "latestYear": "2023",
       "startYear": "1991"
+    },
+    "koicaHealthDetail": {
+      "year": "2024",
+      "sectors": [
+        {
+          "name": "의료교육 및 훈련",
+          "percent": 78.7,
+          "amount": "176,310,000 원"
+        },
+        {
+          "name": "보건정책 및 행정관리",
+          "percent": 14.2,
+          "amount": "31,740,000 원"
+        },
+        {
+          "name": "보건인력개발",
+          "percent": 7.1,
+          "amount": "15,870,000 원"
+        }
+      ]
     }
   },
   "코모로": {
@@ -5779,7 +6130,8 @@ export const COUNTRIES_BASE = {
       "latest": "약 15억 4,167만 원",
       "latestYear": "2023",
       "startYear": "1991"
-    }
+    },
+    "koicaHealthDetail": null
   },
   "코트디부아르": {
     "id": "코트디부아르",
@@ -5904,6 +6256,16 @@ export const COUNTRIES_BASE = {
       "latest": "약 111억 8,976만 원",
       "latestYear": "2023",
       "startYear": "1991"
+    },
+    "koicaHealthDetail": {
+      "year": "2024",
+      "sectors": [
+        {
+          "name": "보건정책 및 행정관리",
+          "percent": 100.0,
+          "amount": "164,307,000 원"
+        }
+      ]
     }
   },
   "콩고": {
@@ -6029,7 +6391,8 @@ export const COUNTRIES_BASE = {
       "latest": "약 4억 8,196만 원",
       "latestYear": "2023",
       "startYear": "1991"
-    }
+    },
+    "koicaHealthDetail": null
   },
   "콩고민주공화국": {
     "id": "콩고민주공화국",
@@ -6101,9 +6464,9 @@ export const COUNTRIES_BASE = {
         "source": "World Bank"
       },
       "electricityAccess": {
-        "value": "22.1",
+        "value": "22.5",
         "unit": "%",
-        "year": "2023",
+        "year": "2024",
         "source": "World Bank"
       },
       "internetPenetration": {
@@ -6118,6 +6481,26 @@ export const COUNTRIES_BASE = {
       "latest": "약 120억 6,763만 원",
       "latestYear": "2023",
       "startYear": "1991"
+    },
+    "koicaHealthDetail": {
+      "year": "2024",
+      "sectors": [
+        {
+          "name": "전염병 관리 및 예방(말라리아,결핵, 성병, 코로나19 제외)",
+          "percent": 85.7,
+          "amount": "9,000,000,000 원"
+        },
+        {
+          "name": "생식보건",
+          "percent": 13.6,
+          "amount": "1,425,000,000 원"
+        },
+        {
+          "name": "보건정책 및 행정관리",
+          "percent": 0.8,
+          "amount": "79,350,000 원"
+        }
+      ]
     }
   },
   "탄자니아": {
@@ -6243,6 +6626,46 @@ export const COUNTRIES_BASE = {
       "latest": "약 235억 5,708만 원",
       "latestYear": "2023",
       "startYear": "1991"
+    },
+    "koicaHealthDetail": {
+      "year": "2024",
+      "sectors": [
+        {
+          "name": "기초영양",
+          "percent": 60.7,
+          "amount": "1,451,019,000 원"
+        },
+        {
+          "name": "의료서비스",
+          "percent": 17.2,
+          "amount": "411,799,500 원"
+        },
+        {
+          "name": "보건정책 및 행정관리",
+          "percent": 8.8,
+          "amount": "209,623,500 원"
+        },
+        {
+          "name": "보건교육",
+          "percent": 6.1,
+          "amount": "146,640,000 원"
+        },
+        {
+          "name": "기초보건진료",
+          "percent": 4.0,
+          "amount": "95,332,500 원"
+        },
+        {
+          "name": "보건인력개발",
+          "percent": 2.0,
+          "amount": "47,610,000 원"
+        },
+        {
+          "name": "의료교육 및 훈련",
+          "percent": 1.2,
+          "amount": "28,600,500 원"
+        }
+      ]
     }
   },
   "토고": {
@@ -6363,7 +6786,8 @@ export const COUNTRIES_BASE = {
       "latest": "약 6억 214만 원",
       "latestYear": "2023",
       "startYear": "1991"
-    }
+    },
+    "koicaHealthDetail": null
   },
   "튀니지": {
     "id": "튀니지",
@@ -6488,6 +6912,21 @@ export const COUNTRIES_BASE = {
       "latest": "약 50억 1,955만 원",
       "latestYear": "2023",
       "startYear": "1991"
+    },
+    "koicaHealthDetail": {
+      "year": "2024",
+      "sectors": [
+        {
+          "name": "의료서비스",
+          "percent": 76.9,
+          "amount": "86,665,500 원"
+        },
+        {
+          "name": "기초보건진료",
+          "percent": 23.1,
+          "amount": "25,999,500 원"
+        }
+      ]
     }
   }
 };

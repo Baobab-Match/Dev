@@ -55,7 +55,9 @@ const CLIMATE_RANK = buildRankMap("climateScore");
 const DIPLOMACY_RANK = buildRankMap("diplomacyScore");
 
 // 상세 페이지 전용 — 히어로 스탯 한 칸
-function StatItem({ value, label, suffix, yes, rank }) {
+// rankHint: "1위=가장 취약"처럼 순위 방향을 직접 명시하는 문구.
+// "순위가 낮을수록/높을수록"은 사람마다 반대로 해석하기 쉬워 일부러 쓰지 않음.
+function StatItem({ value, label, suffix, yes, rank, rankHint }) {
   return (
     <div className="stat">
       <div className={"stat-val" + (yes ? " yes" : "")}>
@@ -63,7 +65,45 @@ function StatItem({ value, label, suffix, yes, rank }) {
         {suffix && !isNil(value) && <small>{suffix}</small>}
       </div>
       <div className="stat-label">{label}</div>
-      {rank && <div className="stat-rank">{rank.total}개국 중 {rank.rank}위</div>}
+      {rank && (
+        <div className="stat-rank">
+          {rank.total}개국 중 {rank.rank}위
+          {rankHint && <span className="stat-rank-hint"> ({rankHint})</span>}
+        </div>
+      )}
+    </div>
+  );
+}
+
+// 보건 세부 지원 현황 — KOICA ODA 로데이터(144개 세부 사업분야) 기반.
+// 국가 데이터에 c.koicaHealthDetail = { year, sectors: [{ name, percent, amount }] } 형태로
+// 들어온다고 가정(콜랩 파이프라인 반영 전까지는 없는 국가가 많음 → 26/54개국만 존재).
+// 상위 HEALTH_DETAIL_TOP_N개만 개별 막대로, 나머지는 "기타"로 합산.
+const HEALTH_DETAIL_TOP_N = 6;
+function buildHealthDetailRows(healthDetail) {
+  if (!healthDetail || !healthDetail.sectors || healthDetail.sectors.length === 0) return null;
+  const sorted = healthDetail.sectors.slice().sort((a, b) => (b.percent || 0) - (a.percent || 0));
+  if (sorted.length <= HEALTH_DETAIL_TOP_N) return sorted;
+
+  const top = sorted.slice(0, HEALTH_DETAIL_TOP_N);
+  const rest = sorted.slice(HEALTH_DETAIL_TOP_N);
+  const restPercent = rest.reduce((sum, s) => sum + (s.percent || 0), 0);
+  top.push({ name: "기타", percent: restPercent, amount: null, count: rest.length, isOther: true });
+  return top;
+}
+
+// 보건 세부 지원 현황 — 막대 한 줄
+function HealthDetailBar({ name, percent, amount, count, isOther }) {
+  return (
+    <div className="health-bar-row">
+      <div className="health-bar-label">{name}</div>
+      <div className="health-bar-track">
+        <div className="health-bar-fill" style={{ width: `${Math.min(100, percent || 0)}%` }} />
+      </div>
+      <div className="health-bar-pct">{(percent || 0).toFixed(1)}%</div>
+      <div className="health-bar-amt">
+        {isOther ? `세부사업 ${count}개` : (amount || "—")}
+      </div>
     </div>
   );
 }
@@ -230,12 +270,13 @@ export default function CountryDetail({ id, go, from = "search", isFavorite, tog
   ];
 
   // 히어로 스탯 (5칸) — 기후 취약도·외교 친밀도는 54개국 내 상대 순위도 함께 표시
+  // rankHint로 순위 방향(1위가 좋은 건지 나쁜 건지)을 바로 그 자리에서 명시
   const stats = [
-    { value: c.climateScore, suffix: "/100", label: "기후 취약도*", rank: CLIMATE_RANK[c.id] },
+    { value: c.climateScore, suffix: "/100", label: "기후 취약도", rank: CLIMATE_RANK[c.id], rankHint: "1위=가장 취약" },
     { value: c.mainClimateIssue, label: "주요 기후문제" },
     { value: c.priorityPartner ? "Yes" : "No", label: "중점협력국", yes: c.priorityPartner },
     { value: c.koreaOdaHistory ? "Yes" : "No", label: "한국 ODA 이력", yes: c.koreaOdaHistory },
-    { value: c.diplomacyScore, suffix: "/100", label: "외교 친밀도*", rank: DIPLOMACY_RANK[c.id] },
+    { value: c.diplomacyScore, suffix: "/100", label: "외교 친밀도", rank: DIPLOMACY_RANK[c.id], rankHint: "1위=가장 친밀" },
   ];
 
   // KOICA 분기 판정
@@ -243,6 +284,11 @@ export default function CountryDetail({ id, go, from = "search", isFavorite, tog
   const hasDonut = sectors.length > 0;
   const cum = c.koicaCumulative || null;
   const hasCum = !!(cum && cum.total);
+  
+  // 보건 세부 지원 현황 — 데이터 없는 국가(26/54개국만 커버)는 블록 자체를 숨김
+  const healthDetail = c.koicaHealthDetail || null;
+  const healthDetailRows = buildHealthDetailRows(healthDetail);
+  const hasHealthDetail = !!healthDetailRows;
 
   const backLabel = from === "match" ? "추천 결과로" : from === "mypage" ? "내 정보로" : "국가 목록으로";
 
@@ -270,7 +316,6 @@ export default function CountryDetail({ id, go, from = "search", isFavorite, tog
           <div className="stat-strip">
             {stats.map((s) => <StatItem key={s.label} {...s} />)}
           </div>
-          <p className="stat-strip-note">* 산정 기준은 하단 "산정기준" 참고</p>
         </div>
       </div>
 
@@ -361,10 +406,22 @@ export default function CountryDetail({ id, go, from = "search", isFavorite, tog
         </div>
       </div>
 
+      {/* 5. 보건 세부 지원 현황 — KOICA ODA 로데이터, 기존 KOICA 도넛과 독립된 전체 폭 블록 */}
+      {hasHealthDetail && (
+        <div className="info-block info-block--wide">
+          <div className="block-tag">보건 세부 지원 현황</div>
+          <p className="health-detail-desc">
+            KOICA ODA 세부 사업분야 데이터를 기준으로, 보건 분야 지원이 실제로 어디에 쓰였는지 보여줍니다.
+            {healthDetail.year && <span className="eco-src">({healthDetail.year} · KOICA ODA)</span>}
+          </p>
+          {healthDetailRows.map((row) => <HealthDetailBar key={row.name} {...row} />)}
+        </div>
+      )}
+
       {/* 데이터 출처 안내 — 전 국가 공통 (각주형) */}
       <p className="source-footnote">
         <span className="source-footnote-mark">출처</span>
-        인구·언어·수도 외교부 「국가(지역)별 일반현황」(2025.12 갱신) · GDP·1인당 GDP 외교부 「국가(지역)별 경제현황」(2025.09 갱신) · ODA 규모(순수원액·수원국·양자·한국) KOICA 「협력국 통합개발지표」(2025.07 갱신) · KOICA 분야별·누적 지원 KOICA 「국가별 지원실적」(2025.11 갱신) · 병상 수·의사 수·전력 접근률·인터넷 이용률 World Bank Open Data. 모든 데이터는 공공데이터포털(data.go.kr) 또는 World Bank 공개 자료이며, 갱신일은 각 포털 기준입니다. 데이터 기준연도는 각 항목에 별도 표기되어 있습니다.
+        인구·언어·수도 외교부 「국가(지역)별 일반현황」(2025.12 갱신) · GDP·1인당 GDP 외교부 「국가(지역)별 경제현황」(2025.09 갱신) · ODA 규모(순수원액·수원국·양자·한국) KOICA 「협력국 통합개발지표」(2025.07 갱신) · KOICA 분야별·누적 지원 KOICA 「국가별 지원실적」(2025.11 갱신) · 보건 세부 지원 현황 KOICA 「ODA 실적보고 로데이터」(2025.11 갱신) · 병상 수·의사 수·전력 접근률·인터넷 이용률 World Bank Open Data. 모든 데이터는 공공데이터포털(data.go.kr) 또는 World Bank 공개 자료이며, 갱신일은 각 포털 기준입니다. 데이터 기준연도는 각 항목에 별도 표기되어 있습니다.
       </p>
       <p className="source-footnote" style={{ marginTop: 10 }}>
         <span className="source-footnote-mark">산정기준</span>
