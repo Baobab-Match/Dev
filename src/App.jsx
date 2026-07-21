@@ -20,8 +20,7 @@ const NoticePage       = lazy(() => import("./pages/NoticePage").then(m => ({ de
 const AboutPage        = lazy(() => import("./pages/AboutPage").then(m => ({ default: m.AboutPage })));
 const MyPage           = lazy(() => import("./pages/MyPage"));
 const SignupModal      = lazy(() => import("./modals/SignupModal"));
-const MatchConfirm     = lazy(() => import("./modals/MatchConfirm"));
-const FieldSelectModal = lazy(() => import("./modals/FieldSelectModal"));
+const MatchFlowModal = lazy(() => import("./modals/MatchFlowModal"));
 const IndustryNewsPage = lazy(() => import("./pages/IndustryNewsPage"));
 
 // nameEn(영문 슬러그) ↔ 한국어 id 양방향 변환
@@ -48,8 +47,7 @@ export default function App() {
   const location = useLocation();
 
   const [signup, setSignup] = useState(false);
-  const [matchConfirm, setMatchConfirm] = useState(false);
-  const [fieldSelect, setFieldSelect] = useState(false);
+  const [matchFlow, setMatchFlow] = useState(null); // null | "confirm" | "field"
   const [matchField, setMatchField] = useState([]); 
   const [toast, setToast] = useState(null);
   // ready: Firebase 로그인 세션 복원(onAuthStateChanged 첫 콜백)이 끝났는지 여부.
@@ -100,7 +98,7 @@ export default function App() {
     // 이후 확인 모달 → 분야 선택 → /match 진입 → /recommend 호출까지 거치는 동안
     // Render 서버가 깨어날 시간을 최대한 벌어주기 위함.
     if (p === "match") warmupApi();
-    if (p === "match" && !direct) { setMatchConfirm(true); return; }
+    if (p === "match" && !direct) { setMatchFlow("confirm"); return; }
     window.scrollTo(0, 0);
     navigate(PATHS[p] || "/", state ? { state } : undefined);
   };
@@ -114,8 +112,7 @@ export default function App() {
 
   const runMatch = (field) => {
     setMatchField(field);
-    setMatchConfirm(false);
-    setFieldSelect(false);
+    setMatchFlow(null);
     window.scrollTo(0, 0);
     navigate("/match");
   };
@@ -184,19 +181,15 @@ export default function App() {
             onDone={() => { setSignup(false); }}
           />
         )}
-        {matchConfirm && (
-          <MatchConfirm
+        {matchFlow && (
+          <MatchFlowModal
+            view={matchFlow}
             profile={profile}
-            onClose={() => setMatchConfirm(false)}
-            onYes={() => { if (profile) runMatch(myField ? [myField] : []); }}
-            onNo={() => { setMatchConfirm(false); setFieldSelect(true); }}
-          />
-        )}
-        {fieldSelect && (
-          <FieldSelectModal
-            onClose={() => setFieldSelect(false)}
-            onMatch={runMatch}
             type={TYPE_LABEL[profile?.type] || "개인"}
+            onClose={() => setMatchFlow(null)}
+            onYes={() => { if (profile) runMatch(myField ? [myField] : []); }}
+            onSwitchToField={() => setMatchFlow("field")}
+            onMatch={runMatch}
           />
         )}
       </Suspense>

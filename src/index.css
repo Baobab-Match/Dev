@@ -1048,3 +1048,7 @@ textarea.field { resize: vertical; min-height: 64px; }
   .health-bar-label { width: 100%; }
   .health-bar-amt { display: none; }
 }
+
+.field-group { margin-bottom: 26px; }
+.field-group:last-child { margin-bottom: 0; }
+.field-group-tag { font-size: var(--fs-sm); font-weight: 800; color: var(--green-700); letter-spacing: 0.02em; margin-bottom: 12px; }

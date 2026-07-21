@@ -3,6 +3,7 @@ import { useLocation } from "react-router-dom";
 import introBanner from "../assets/about-intro-banner.jpg";
 import landingBanner from "../assets/about-landing-banner.jpg";
 import fieldsBanner from "../assets/about-fields-banner.png"; // TODO: 11개 분야 소개 섹션용 사진 — 준비되면 이 경로에 파일 추가
+import { CATEGORIES, FIELD_GROUPS } from "../data";
 
 const INDENT = { textIndent: "1em" };
 const INDENT_TOP = { textIndent: "1em", marginTop: "1.2em" };
@@ -48,14 +49,6 @@ const WHY_AFRICA = [
   { title: "아프리카대륙자유무역지대(AfCFTA)", val: "13억 명", desc: "55개국이 참여하는 단일 무역권으로, 결합 GDP는 약 3조 4천억 달러 규모입니다. 한 국가와의 협력이 55개국 시장 전체로 확장될 수 있는 기회입니다. 2018년 출범 이후 아프리카연합(AU) 회원국 대부분이 협정에 서명했으며, 역내 관세 철폐와 교역 활성화로 외국인 투자에도 우호적인 환경이 조성되고 있습니다." },
   { title: "전략적 산업 진출 경쟁", val: "미·중·EU", suffix: " 아프리카 진출", noCountUp: true, desc: "아프리카는 미국·중국·유럽연합(EU) 등 주요국·경제권이 전략적 산업 진출 대상으로 주목하는 지역으로 부상하고 있습니다. 우리나라 또한 이 흐름에 발맞춰 협력을 확대하고 있어, 지금이 그린테크 기업의 아프리카 진출에 최적의 시점입니다." },
   { title: "기후 취약국 비중", val: "85%", desc: "전 세계 기후변화 취약국 상위 20개국 중 17개국이 아프리카에 있습니다. 가뭄·홍수 등 기후재난 대응 기술이 그 어느 곳보다 절실합니다. 반면 국가별로 기후·지형·인프라 여건 차이가 커서, 어떤 나라에 어떤 기술이 필요한지 정확히 파악하는 일이 협력의 첫걸음입니다." },
-];
-
-// 11개 분야(CATEGORIES)를 3개 테마로 그룹핑 — 랜딩의 "11개 분야" 섹션 전용
-// ※ data.js의 CATEGORIES 항목명이 바뀌면 아래 문자열도 함께 맞춰줄 것
-const FIELD_GROUPS = [
-  { tag: "기후·환경", items: ["가뭄", "물 부족 및 정수 기술", "홍수 및 재해 대응 인프라", "기후변화 대응 및 탄소감축", "재생에너지 및 에너지 전환", "기후성 질병 및 보건의료"] },
-  { tag: "산업·자원", items: ["친환경 교통 및 인프라", "자원순환 및 친환경 소재", "농업 및 식량안보"] },
-  { tag: "사회", items: ["교육 및 역량 강화", "사회적 갈등 및 강제이주"] },
 ];
 
 // AUDIENCE 배열과 같은 순서로 매칭되는 라벨 색상 (공공기관·기업·개인)
