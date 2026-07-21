@@ -9,11 +9,10 @@
 ## 기술 스택
 - **프론트엔드** — Vite + React (컴포넌트 기반 구조), CSS 변수 디자인 토큰
 - **인증·데이터** — Firebase Authentication / Firestore
-- **분석** — Google Analytics(Firebase Analytics 연동, GA4)
 - **호스팅** — Firebase Hosting (보안 헤더·정적 자산 장기 캐싱 적용, 아래 [배포](#배포-firebase-hosting) 참고)
 - **백엔드** — FastAPI(`baobab-api`)를 Render에 배포. `main.py`를 라우터별로 분리해 `matcher.py`(AI 추천), `biz.py`(사업자 인증), `news.py`(산업 동향 뉴스)로 구성
 - **AI 추천** — scikit-learn K-Means + 코사인 유사도 모델(`baobab_matcher.pkl`) → `matcher.py`가 서빙
-- **산업 동향 뉴스** — Google News RSS를 `news.py`에서 `httpx`로 실시간 조회, `data.js`의 10개 산업 카테고리에 키워드 매핑
+- **산업 동향 뉴스** — Google News RSS를 `news.py`에서 `httpx`로 실시간 조회, `data.js`의 11개 산업 카테고리에 키워드 매핑
 - **데이터 파이프라인** — Google Colab 4단계 노트북으로 공공데이터 15종 수집·가공 ([baobab-match-data-pipeline](레포링크) 참고)
 
 ## 사전 준비
@@ -36,13 +35,11 @@ VITE_FIREBASE_PROJECT_ID=
 VITE_FIREBASE_STORAGE_BUCKET=
 VITE_FIREBASE_MESSAGING_SENDER_ID=
 VITE_FIREBASE_APP_ID=
-VITE_FIREBASE_MEASUREMENT_ID=
 
 # reCAPTCHA (Firebase App Check용)
 VITE_RECAPTCHA_SITE_KEY=
 ```
 값은 Firebase 콘솔의 프로젝트 설정(baobab-match) 및 App Check → reCAPTCHA v3 등록 화면에서 확인할 수 있습니다. 값이 비어있거나 잘못되면 `config.js`의 `initializeApp`/`initializeAppCheck` 단계에서 바로 에러가 납니다.
-> `VITE_FIREBASE_MEASUREMENT_ID`는 Google Analytics 연동용으로, 비어 있어도 `config.js`가 브라우저 지원 여부를 확인 후 조용히 건너뛰므로 앱 실행에는 영향이 없습니다.
 
 ### 3. Firebase 콘솔 설정
 `.env` 값이 맞아도, 연결된 Firebase 프로젝트에서 아래가 활성화되어 있어야 앱이 정상 동작합니다.
@@ -118,17 +115,12 @@ Firebase Hosting 설정에 아래 헤더/캐싱 규칙이 적용되어 있습니
 - 관심 국가 즐겨찾기 추가/삭제 (`useFavorites.js`)
 - 기존 localStorage 방식에서 **Firestore 기반으로 마이그레이션 완료** → 기기 간 동기화
 
-### ✅ 방문 통계 (Google Analytics)
-- Firebase 프로젝트에 Google Analytics(GA4) 연동 완료 (`config.js`)
-- 브라우저가 지원하지 않는 환경(트래킹 차단 등)에서는 `isSupported()` 확인 후 조용히 비활성화되어 앱 실행에는 영향 없음
-- 연동 시점 이전의 방문 데이터는 소급 집계되지 않으며, Firebase 콘솔 → 애널리틱스에서 실시간·과거(연동 이후) 통계 확인 가능
-
 ### ✅ 화면
 - **랜딩(Hero)** — 바오밥 모티프 자동 슬라이드 배너 + 진입 CTA
 - **회원가입 모달** — 공공기관 / 기업 / 일반 타입 선택 → 폼 입력
 - **국가 정보 검색** — 아프리카 지도(추천국 하이라이트) + 국가 검색 리스트
-- **국가 상세** — 기후/외교 지표(54개국 중 순위 표시 포함), KOICA 도넛차트, 경제·ODA 규모, 인프라 지표(병상 수·의사 수·전력 접근률·인터넷 이용률)
-- **기술 매칭 결과** — 분야 기반 추천국 순위 + 선정 요소 + 추천 결과 피드백 수집("도움됐어요/아쉬워요")
+- **국가 상세** — 기후/외교 지표, KOICA 도넛차트, 경제·ODA 규모, 인프라 지표(병상 수·의사 수·전력 접근률·인터넷 이용률)
+- **기술 매칭 결과** — 분야 기반 추천국 순위 + 선정 요소
 - **산업 동향** — 관심 분야 + 아프리카 전체 산업·경제 뉴스를 실시간으로 표시
 - **마이페이지** — 즐겨찾기 국가 관리 (로그인 필요)
 
@@ -137,7 +129,6 @@ Firebase Hosting 설정에 아래 헤더/캐싱 규칙이 적용되어 있습니
 - **모델** — Google Colab에서 학습한 scikit-learn K-Means 군집화 + 코사인 유사도 (`baobab_matcher.pkl`)
 - **서빙** — FastAPI 백엔드 `baobab-api`를 Render에 배포 (`https://baobab-api-di7o.onrender.com`), 추천 로직은 `matcher.py` 라우터가 전담
 - **응답 흐름** — 화면 진입 즉시 클라이언트에서 규칙 기반 결과(`matchEngine.js`)를 먼저 보여주고, AI 서버 응답이 도착하면 결과를 교체합니다. 25초 내 응답이 없거나 실패하면 규칙 기반 결과를 그대로 유지하는 폴백을 적용해, Render 무료 티어의 콜드 스타트 지연에도 서비스가 끊기지 않습니다.
-- **콜드 스타트 대응** — "맞춤 국가 추천" 진입 시 `apiWarmup.js`가 백그라운드로 `baobab-api`에 웜업 요청을 보내 슬립 상태를 미리 깨워둡니다(fire-and-forget, 세션당 1회). 응답 대기·에러 처리를 하지 않아 사용자 경험에 영향 없이 콜드 스타트 지연을 줄입니다.
 - **로딩 UI** — `AiMatchLoading.jsx`에서 원형 진행률 애니메이션과 한국어 안내 문구를 순환 표시해 대기 시간의 체감을 줄였습니다.
 - **추천 근거** — `explain()` 함수가 KOICA 분야 비중·GDP·외교 점수·기후 취약도 등 실제 수치를 인용한 문장을 생성하고, `headline()` 함수가 가중 기여도가 가장 높은 축을 골라 한 줄 요약을 만듭니다.
 - **매칭 축** — 분야 적합도·기후기술 적합도·기후 취약도·외교 친밀도·개발 필요도·수출 연계성 6개 축(기업 사용자는 시장 진입 용이도 축 추가)을 fit·need·coop·entry 4개 상위 축으로 집약해, 규칙 기반 엔진과 AI 모델이 동일한 기준으로 결과를 산출합니다.
@@ -147,7 +138,7 @@ Firebase Hosting 설정에 아래 헤더/캐싱 규칙이 적용되어 있습니
 ### ✅ 산업 동향 뉴스
 - `IndustryNewsPage.jsx`가 `baobab-api`의 `/industry-news`를 호출해 아프리카 산업·경제 뉴스를 실시간으로 가져옵니다.
 - 로그인 상태에서 프로필에 관심 분야가 있으면 **관심 분야 뉴스**와 **아프리카 전체 동향**을 구분해서 보여줍니다.
-- 뉴스 원천은 Google News RSS이며, `news.py`가 `data.js`의 10개 산업 카테고리에 검색 키워드를 매핑해 조회합니다.
+- 뉴스 원천은 Google News RSS이며, `news.py`가 `data.js`의 11개 산업 카테고리에 검색 키워드를 매핑해 조회합니다.
 - 서버 콜드 스타트로 응답이 지연될 경우 안내 문구를 띄우고, 완전히 실패하면 고정 폴백 뉴스 목록을 대신 표시합니다.
 
 ## 파일 구조
@@ -160,8 +151,7 @@ src/
 ├─ components/          # Nav 등 공통 컴포넌트
 ├─ useAuth.js           # 인증 상태 (Firebase Auth 연동)
 ├─ useFavorites.js      # 즐겨찾기 상태 (Firestore 연동)
-├─ apiWarmup.js         # 콜드 스타트 대응 — baobab-api 백그라운드 웜업
-├─ auth.js / firestore.js / config.js  # Firebase 설정·연동 (config.js에 Analytics 포함)
+├─ auth.js / firestore.js / config.js  # Firebase 설정·연동
 ├─ ui.jsx               # 로고, 아이콘, 국가 실루엣, KOICA 도넛차트
 ├─ AfricaMap.jsx         # 아프리카 지도 SVG (africaGeo.js — 실제 GeoJSON을 빌드 타임에 SVG path로 변환)
 ├─ data.js              # 국가/카테고리 데이터
@@ -195,15 +185,16 @@ src/
 - **활용 데이터 기관** — 외교부 · KOICA · 한아프리카재단 · World Bank
 
 ### 산업 분야 분류
-매칭 엔진은 관심 분야를 10개 카테고리(가뭄, 물 부족 및 정수 기술, 홍수 및 재해 대응 인프라 등)로 세분화하여, 사용자가 선택한 분야를 기준으로 국가를 추천합니다. 같은 카테고리 체계를 산업 동향 뉴스의 키워드 매핑에도 그대로 사용합니다.
+매칭 엔진은 관심 분야를 11개 카테고리(가뭄, 물 부족 및 정수 기술, 홍수 및 재해 대응 인프라, 기후성 질병 및 보건의료 등)로 세분화하여, 사용자가 선택한 분야를 기준으로 국가를 추천합니다. 같은 카테고리 체계를 산업 동향 뉴스의 키워드 매핑에도 그대로 사용합니다.
 
 ## 확장 포인트
-1. **가중치 재조정** — 매칭 결과 피드백(구현 완료, `MatchFeedback.jsx` → Firestore 저장)이 쌓이면, 이를 기반으로 축별 가중치를 주기적으로 재조정하는 루프 구축 (현재 `matchEngine.js`의 `WEIGHTS`는 고정값).
-2. **노동법 데이터 확충** — 최저임금·법정근로시간·외국인 고용허가 요건을 54개국 전체에 단계적으로 채워 넣기. KOTRA가 다루는 15~25개국을 우선 반영.
-3. **Gemini API 연동** — 규칙 기반 추천 근거 문장을, 더 자연스러운 자연어 설명으로 보강. 백엔드 라우팅 + Firestore 캐싱으로 API 키 보호 및 응답 속도 확보.
-4. **참여 유도 기능** — 기존 국가 데이터를 활용한 국가 탐험 배지, 데일리 퀴즈 등 (서비스 정체성과 무관한 게이미피케이션은 배제).
-
-> 매칭 결과 피드백 수집과 콜드 스타트 대응 자동화는 구현이 완료되어 위 목록에서 제외했습니다(모두 "AI 추천 매칭" 절 참고). 엑셀(xlsx) 내보내기는 우선순위에서 제외되어 로드맵에서 뺐습니다.
+1. **매칭 결과 피드백 수집** — 추천 결과에 대한 사용자 반응(도움됨/아쉬움 등)을 Firestore에 저장하는 구조 구축. 아래 가중치 재조정의 선행 조건.
+2. **가중치 재조정** — 위 피드백 데이터가 쌓이면, 이를 기반으로 축별 가중치를 주기적으로 재조정하는 루프 구축 (현재 `matchEngine.js`의 `WEIGHTS`는 고정값).
+3. **노동법 데이터 확충** — 최저임금·법정근로시간·외국인 고용허가 요건을 54개국 전체에 단계적으로 채워 넣기. KOTRA가 다루는 15~25개국을 우선 반영.
+4. **엑셀(xlsx) 내보내기** — 매칭 결과·국가 비교표를 SheetJS 기반으로 다운로드하는 기능.
+5. **Gemini API 연동** — 규칙 기반 추천 근거 문장을, 더 자연스러운 자연어 설명으로 보강. 백엔드 라우팅 + Firestore 캐싱으로 API 키 보호 및 응답 속도 확보.
+6. **참여 유도 기능** — 기존 국가 데이터를 활용한 국가 탐험 배지, 데일리 퀴즈 등 (서비스 정체성과 무관한 게이미피케이션은 배제).
+7. **콜드 스타트 대응 고도화** — 현재는 데모 전 수동 `curl` 핑으로 대응 중. 로그인 시 prewarm, 주기적 keep-alive, 또는 유료 Render 플랜 전환 등 검토.
 
 ## 디자인 토큰
 - 딥 바오밥그린 `#2d4a32` · 세이지 `#5a7d5a` · 화이트 `#ffffff` · 하락 지표 앰버 `#cf6a3a`

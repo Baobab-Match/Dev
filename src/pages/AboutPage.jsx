@@ -2,7 +2,7 @@ import { useState, useEffect, useRef } from "react";
 import { useLocation } from "react-router-dom";
 import introBanner from "../assets/about-intro-banner.jpg";
 import landingBanner from "../assets/about-landing-banner.jpg";
-import fieldsBanner from "../assets/about-fields-banner.png"; // TODO: 10개 분야 소개 섹션용 사진 — 준비되면 이 경로에 파일 추가
+import fieldsBanner from "../assets/about-fields-banner.png"; // TODO: 11개 분야 소개 섹션용 사진 — 준비되면 이 경로에 파일 추가
 
 const INDENT = { textIndent: "1em" };
 const INDENT_TOP = { textIndent: "1em", marginTop: "1.2em" };
@@ -19,7 +19,7 @@ const STEPS = [
 const HOW_EXTRA = {
   badge: "+ 부가 기능",
   title: "산업 동향 확인",
-  desc: "10개 산업 분야 중 내 정보를 바탕으로 최신 뉴스를 실시간으로 모아 보여줍니다.",
+  desc: "11개 산업 분야 중 내 정보를 바탕으로 최신 뉴스를 실시간으로 모아 보여줍니다.",
 };
 
 // 탭 메뉴 정의 — 연락처는 제거 (Nav 드롭다운의 서브메뉴와 동일한 목록)
@@ -50,10 +50,10 @@ const WHY_AFRICA = [
   { title: "기후 취약국 비중", val: "85%", desc: "전 세계 기후변화 취약국 상위 20개국 중 17개국이 아프리카에 있습니다. 가뭄·홍수 등 기후재난 대응 기술이 그 어느 곳보다 절실합니다. 반면 국가별로 기후·지형·인프라 여건 차이가 커서, 어떤 나라에 어떤 기술이 필요한지 정확히 파악하는 일이 협력의 첫걸음입니다." },
 ];
 
-// 10개 분야(CATEGORIES)를 3개 테마로 그룹핑 — 랜딩의 "10개 분야" 섹션 전용
+// 11개 분야(CATEGORIES)를 3개 테마로 그룹핑 — 랜딩의 "11개 분야" 섹션 전용
 // ※ data.js의 CATEGORIES 항목명이 바뀌면 아래 문자열도 함께 맞춰줄 것
 const FIELD_GROUPS = [
-  { tag: "기후·환경", items: ["가뭄", "물 부족 및 정수 기술", "홍수 및 재해 대응 인프라", "기후변화 대응 및 탄소감축", "재생에너지 및 에너지 전환"] },
+  { tag: "기후·환경", items: ["가뭄", "물 부족 및 정수 기술", "홍수 및 재해 대응 인프라", "기후변화 대응 및 탄소감축", "재생에너지 및 에너지 전환", "기후성 질병 및 보건의료"] },
   { tag: "산업·자원", items: ["친환경 교통 및 인프라", "자원순환 및 친환경 소재", "농업 및 식량안보"] },
   { tag: "사회", items: ["교육 및 역량 강화", "사회적 갈등 및 강제이주"] },
 ];
@@ -158,7 +158,7 @@ const WHY_DETAIL = [
   },
   {
     title: "실시간 산업 동향으로 최신 흐름까지",
-    desc: "10개 산업 분야별 최신 뉴스를 실시간으로 모아 보여주는 산업 동향 페이지를 제공합니다. 국가 지표만으로는 알 수 없는 시장의 최근 이슈와 흐름을 함께 확인하며, 협력을 검토하거나 시점을 판단하는 데 참고 자료로 활용할 수 있습니다.",
+    desc: "11개 산업 분야별 최신 뉴스를 실시간으로 모아 보여주는 산업 동향 페이지를 제공합니다. 국가 지표만으로는 알 수 없는 시장의 최근 이슈와 흐름을 함께 확인하며, 협력을 검토하거나 시점을 판단하는 데 참고 자료로 활용할 수 있습니다.",
   },
 ];
 
@@ -224,18 +224,18 @@ export function AboutPage({ go }) {
             </div>
           </section>
 
-          {/* 10개 분야 소개 — 신념과 이런 분들께 사이, 국가 추천의 기준이 되는 10개 분야를 랜딩에서 바로 보여줌 */}
+          {/* 11개 분야 소개 — 신념과 이런 분들께 사이, 국가 추천의 기준이 되는 11개 분야를 랜딩에서 바로 보여줌 */}
           <section className="about-landing-fields">
             <div className="about-landing-fields-media">
               <img src={fieldsBanner} className="about-landing-fields-img" alt="협력 분야를 살펴보는 모습" />
             </div>
             <div className="about-landing-fields-body">
-              <p className="about-mission-eyebrow">10 FIELDS</p>
+              <p className="about-mission-eyebrow">11 FIELDS</p>
               <h2 className="about-landing-fields-title">
-                10개 분야로 나뉘는 맞춤 협력 포인트
+                11개 분야로 나뉘는 맞춤 협력 포인트
               </h2>
               <p className="about-landing-fields-desc" style={INDENT}>
-                협력이 필요한 영역을 10개 분야로 나누고, 국가별 공공데이터를 분석해 실제 수요를 파악합니다. 이 분석 결과와 보유 기술·관심 분야를 종합해, AI가 가장 적합한 협력 국가를 추천합니다.
+                협력이 필요한 영역을 11개 분야로 나누고, 국가별 공공데이터를 분석해 실제 수요를 파악합니다. 이 분석 결과와 보유 기술·관심 분야를 종합해, AI가 가장 적합한 협력 국가를 추천합니다.
               </p>
               <div className="about-fields-groups">
                 {FIELD_GROUPS.map((g) => (

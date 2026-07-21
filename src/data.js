@@ -12,6 +12,7 @@ export const CATEGORIES = [
   "자원순환 및 친환경 소재",
   "교육 및 역량 강화",
   "사회적 갈등 및 강제이주",
+  "기후성 질병 및 보건의료",
 ];
 
 export const MY_PROFILE = {
