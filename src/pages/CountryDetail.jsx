@@ -418,10 +418,55 @@ export default function CountryDetail({ id, go, from = "search", isFavorite, tog
         </div>
       )}
 
+      {/* 6. 실제 협력 창구 — 재외공관(현지 한국 대사관)은 54개국 전체 존재,
+          주한공관(서울)은 19/54개국만 존재 → 없으면 그 칸만 자동으로 숨김 */}
+      {c.diplomaticContact && (
+        <div className="info-block info-block--wide">
+          <div className="block-tag">
+            협력 문의처
+            <span className="block-tag-field"> · 대사관 및 공관 연락처</span>
+          </div>
+          <div className="diplo-grid">
+            {/* 현지 대한민국 대사관 — 항상 존재 */}
+            <div className="diplo-col">
+              <div className="diplo-col-label">현지 대한민국 대사관</div>
+              <div className="diplo-name">{c.diplomaticContact.overseas.missionName}</div>
+              <div className="diplo-detail">
+                {c.diplomaticContact.overseas.address}<br />
+                {c.diplomaticContact.overseas.phone}
+              </div>
+              {c.diplomaticContact.overseas.website && (
+                <a
+                  className="diplo-link"
+                  href={c.diplomaticContact.overseas.website}
+                  target="_blank"
+                  rel="noreferrer"
+                >
+                  대사관 홈페이지 바로가기
+                </a>
+              )}
+            </div>
+
+            {/* 주한 대사관(서울) — 있는 국가만 렌더링 */}
+            {c.diplomaticContact.domestic && (
+              <div className="diplo-col">
+                <div className="diplo-col-label">주한 {c.name} 대사관 (서울)</div>
+                <div className="diplo-name">{c.diplomaticContact.domestic.ambassador}</div>
+                <div className="diplo-detail">
+                  {c.diplomaticContact.domestic.address}<br />
+                  {c.diplomaticContact.domestic.phone}<br />
+                  {c.diplomaticContact.domestic.email}
+                </div>
+              </div>
+            )}
+          </div>
+        </div>
+      )}
+
       {/* 데이터 출처 안내 — 전 국가 공통 (각주형) */}
       <p className="source-footnote">
         <span className="source-footnote-mark">출처</span>
-        인구·언어·수도 외교부 「국가(지역)별 일반현황」(2025.12 갱신) · GDP·1인당 GDP 외교부 「국가(지역)별 경제현황」(2025.09 갱신) · ODA 규모(순수원액·수원국·양자·한국) KOICA 「협력국 통합개발지표」(2025.07 갱신) · KOICA 분야별·누적 지원 KOICA 「국가별 지원실적」(2025.11 갱신) · 보건 세부 지원 현황 KOICA 「ODA 실적보고 로데이터」(2025.11 갱신) · 병상 수·의사 수·전력 접근률·인터넷 이용률 World Bank Open Data. 모든 데이터는 공공데이터포털(data.go.kr) 또는 World Bank 공개 자료이며, 갱신일은 각 포털 기준입니다. 데이터 기준연도는 각 항목에 별도 표기되어 있습니다.
+        인구·언어·수도 외교부 「국가(지역)별 일반현황」(2025.12 갱신) · GDP·1인당 GDP 외교부 「국가(지역)별 경제현황」(2025.09 갱신) · ODA 규모(순수원액·수원국·양자·한국) KOICA 「협력국 통합개발지표」(2025.07 갱신) · KOICA 분야별·누적 지원 KOICA 「국가별 지원실적」(2025.11 갱신) · 보건 세부 지원 현황 KOICA 「ODA 실적보고 로데이터」(2025.11 갱신) · 병상 수·의사 수·전력 접근률·인터넷 이용률 World Bank Open Data · 재외공관·주한공관 연락처 외교부 「국가·지역별 재외공관 정보」·「재외공관 홈페이지 관련 정보」·「주한공관정보」. 모든 데이터는 공공데이터포털(data.go.kr) 또는 World Bank 공개 자료이며, 갱신일은 각 포털 기준입니다. 데이터 기준연도는 각 항목에 별도 표기되어 있습니다.
       </p>
       <p className="source-footnote" style={{ marginTop: 10 }}>
         <span className="source-footnote-mark">산정기준</span>

@@ -152,6 +152,29 @@ export const COUNTRIES_BASE = {
           "amount": "60,666,000 원"
         }
       ]
+    },
+    "diplomaticContact": {
+      "overseas": {
+        "missionName": "주 가나 대한민국 대사관",
+        "missionType": "대사관",
+        "jointCoverage": false,
+        "address": "No.10, Fifth Avenue Extension, Cantonments, P.O.Box GP 13700, Accra, Ghana,",
+        "phone": "(233)302-771-705",
+        "consularCenter": "(82)2-3210-0404",
+        "tollFree": "080-020-0219",
+        "emergency": "(233)244-321-858",
+        "website": "http://overseas.mofa.go.kr/gh-ko/index.do",
+        "lat": 5.575495,
+        "lng": -0.185161
+      },
+      "domestic": {
+        "ambassador": "Charis Margaretha E. Obetsebi-Lamptey Zwennes",
+        "address": "서울특별시 용산구 독서당로 120, C.P.O Box 3887",
+        "phone": "3785-1427 749-8982/3",
+        "email": "ghanaembassy.seoul.kr@gmail.com",
+        "fax": "3785-1428",
+        "updatedAt": "2021-10-20"
+      }
     }
   },
   "가봉": {
@@ -254,22 +277,22 @@ export const COUNTRIES_BASE = {
         "source": "World Bank"
       },
       "physicians": {
-        "value": null,
+        "value": "0.5",
         "unit": "의사 / 1,000명",
-        "year": null,
-        "source": null
+        "year": "2022",
+        "source": "World Bank"
       },
       "electricityAccess": {
-        "value": null,
+        "value": "95.1",
         "unit": "%",
-        "year": null,
-        "source": null
+        "year": "2024",
+        "source": "World Bank"
       },
       "internetPenetration": {
-        "value": null,
+        "value": "68.7",
         "unit": "%",
-        "year": null,
-        "source": null
+        "year": "2024",
+        "source": "World Bank"
       }
     },
     "koicaCumulative": {
@@ -287,6 +310,29 @@ export const COUNTRIES_BASE = {
           "amount": "82,500,000 원"
         }
       ]
+    },
+    "diplomaticContact": {
+      "overseas": {
+        "missionName": "주 가봉 대한민국 대사관",
+        "missionType": "대사관",
+        "jointCoverage": false,
+        "address": "B.P.2620, Libreville, Gabon,",
+        "phone": "(241)6530-1900",
+        "consularCenter": "(82)2-3210-0404",
+        "tollFree": "080-020-0219",
+        "emergency": "(241)7750-7822",
+        "website": "http://overseas.mofa.go.kr/ga-ko/index.do",
+        "lat": 0.477587266,
+        "lng": 9.393928461
+      },
+      "domestic": {
+        "ambassador": "Carlos Victor BOUNGOU",
+        "address": "서울특별시 용산구 이태원로 239, 유성빌딩 4층",
+        "phone": "793-9575/6",
+        "email": "amgabsel@unitel.co.kr",
+        "fax": "793-9574",
+        "updatedAt": "2019-08-02"
+      }
     }
   },
   "감비아": {
@@ -368,10 +414,10 @@ export const COUNTRIES_BASE = {
     },
     "infrastructure": {
       "hospitalBeds": {
-        "value": null,
+        "value": "1.1",
         "unit": "병상 / 1,000명",
-        "year": null,
-        "source": null
+        "year": "2023",
+        "source": "World Bank"
       },
       "physicians": {
         "value": "0.1",
@@ -407,6 +453,22 @@ export const COUNTRIES_BASE = {
           "amount": "15,870,000 원"
         }
       ]
+    },
+    "diplomaticContact": {
+      "overseas": {
+        "missionName": "주 세네갈 대한민국 대사관",
+        "missionType": "대사관",
+        "jointCoverage": true,
+        "address": "Ambassade de la Republique de Coree, Villa Hamoudy, Rue Aime Cesaire, Fann Residence, B.P.5850, Dakar, Senegal,",
+        "phone": "(221)33-824-06-72",
+        "consularCenter": "(82)2-3210-0404",
+        "tollFree": "080-020-0219",
+        "emergency": "(221)77-639-5109",
+        "website": "http://overseas.mofa.go.kr/sn-ko/index.do",
+        "lat": 14.695506,
+        "lng": -17.467318
+      },
+      "domestic": null
     }
   },
   "기니": {
@@ -533,7 +595,23 @@ export const COUNTRIES_BASE = {
       "latestYear": "2023",
       "startYear": "1991"
     },
-    "koicaHealthDetail": null
+    "koicaHealthDetail": null,
+    "diplomaticContact": {
+      "overseas": {
+        "missionName": "주 세네갈 대한민국 대사관",
+        "missionType": "대사관",
+        "jointCoverage": true,
+        "address": "Ambassade de la Republique de Coree, Villa Hamoudy, Rue Aime Cesaire, Fann Residence, B.P.5850, Dakar, Senegal,",
+        "phone": "(221)33-824-06-72",
+        "consularCenter": "(82)2-3210-0404",
+        "tollFree": "080-020-0219",
+        "emergency": "(221)77-639-5109",
+        "website": "http://overseas.mofa.go.kr/sn-ko/index.do",
+        "lat": 14.695506,
+        "lng": -17.467318
+      },
+      "domestic": null
+    }
   },
   "기니비사우": {
     "id": "기니비사우",
@@ -654,7 +732,23 @@ export const COUNTRIES_BASE = {
       "latestYear": "2023",
       "startYear": "1991"
     },
-    "koicaHealthDetail": null
+    "koicaHealthDetail": null,
+    "diplomaticContact": {
+      "overseas": {
+        "missionName": "주 세네갈 대한민국 대사관",
+        "missionType": "대사관",
+        "jointCoverage": true,
+        "address": "Ambassade de la Republique de Coree, Villa Hamoudy, Rue Aime Cesaire, Fann Residence, B.P.5850, Dakar, Senegal,",
+        "phone": "(221)33-824-06-72",
+        "consularCenter": "(82)2-3210-0404",
+        "tollFree": "080-020-0219",
+        "emergency": "(221)77-639-5109",
+        "website": "http://overseas.mofa.go.kr/sn-ko/index.do",
+        "lat": 14.695506,
+        "lng": -17.467318
+      },
+      "domestic": null
+    }
   },
   "나미비아": {
     "id": "나미비아",
@@ -780,7 +874,23 @@ export const COUNTRIES_BASE = {
       "latestYear": "2023",
       "startYear": "1991"
     },
-    "koicaHealthDetail": null
+    "koicaHealthDetail": null,
+    "diplomaticContact": {
+      "overseas": {
+        "missionName": "주 앙골라 대한민국 대사관",
+        "missionType": "대사관",
+        "jointCoverage": true,
+        "address": "Condominio Zenith, Torre 1, 7&ordm; Andar, Via AL 16, Luanda, Angola,",
+        "phone": "(244)222-006-067",
+        "consularCenter": "(82)2-3210-0404",
+        "tollFree": "080-020-0219",
+        "emergency": "(244)938-880-573",
+        "website": "http://overseas.mofa.go.kr/ao-ko/index.do",
+        "lat": -8.920868,
+        "lng": 13.202023
+      },
+      "domestic": null
+    }
   },
   "나이지리아": {
     "id": "나이지리아",
@@ -925,6 +1035,29 @@ export const COUNTRIES_BASE = {
           "amount": "47,610,000 원"
         }
       ]
+    },
+    "diplomaticContact": {
+      "overseas": {
+        "missionName": "주 나이지리아 대한민국 대사관",
+        "missionType": "대사관",
+        "jointCoverage": false,
+        "address": "No.9 Ovia cresent, Off Pope John Paul Ⅱ street, Off Gana street, Maitama, Abuja,",
+        "phone": "(234)810-389-0991",
+        "consularCenter": "(82)2-3210-0404",
+        "tollFree": "080-020-0219",
+        "emergency": "(234)809-998-1726",
+        "website": "http://overseas.mofa.go.kr/ng-ko/index.do",
+        "lat": 9.084108,
+        "lng": 7.49347
+      },
+      "domestic": {
+        "ambassador": "Ali Mohammed MAGASHI",
+        "address": "서울특별시 용산구 장문로6길 13",
+        "phone": "797-2370 / 3280",
+        "email": "chancery@nigerianembassy.or.kr",
+        "fax": "796-1848",
+        "updatedAt": "2021-10-20"
+      }
     }
   },
   "남수단": {
@@ -1041,7 +1174,23 @@ export const COUNTRIES_BASE = {
       "latestYear": "2023",
       "startYear": "1991"
     },
-    "koicaHealthDetail": null
+    "koicaHealthDetail": null,
+    "diplomaticContact": {
+      "overseas": {
+        "missionName": "주 우간다 대한민국 대사관",
+        "missionType": "대사관",
+        "jointCoverage": true,
+        "address": "Plot 14 Ternan Avenue, Kampala, Uganda,",
+        "phone": "(256)414-500-197",
+        "consularCenter": "(82)2-3210-0404",
+        "tollFree": "080-020-0219",
+        "emergency": "(256)774-478-376",
+        "website": null,
+        "lat": 0.320245,
+        "lng": 32.583
+      },
+      "domestic": null
+    }
   },
   "남아프리카공화국": {
     "id": "남아프리카공화국",
@@ -1162,7 +1311,30 @@ export const COUNTRIES_BASE = {
       "latestYear": "2023",
       "startYear": "1991"
     },
-    "koicaHealthDetail": null
+    "koicaHealthDetail": null,
+    "diplomaticContact": {
+      "overseas": {
+        "missionName": "주 남아프리카공화국 대한민국 대사관",
+        "missionType": "대사관",
+        "jointCoverage": false,
+        "address": "265 Melk Street, Nieuw Muckleneuk, Pretoria 0181, South Africa,",
+        "phone": "(27)12-460-2508",
+        "consularCenter": "(82)2-3210-0404",
+        "tollFree": "080-020-0219",
+        "emergency": "(27)66-332-5897",
+        "website": "http://overseas.mofa.go.kr/za-ko/index.do",
+        "lat": -25.773293,
+        "lng": 28.226605
+      },
+      "domestic": {
+        "ambassador": "Zenani Nosizwe DLAMINI",
+        "address": "서울특별시 용산구 독서당로 104",
+        "phone": "2077-5900",
+        "email": "admin.seoul@dirco.gov.za / political.seoul@dirco.gov.za",
+        "fax": "792-4856",
+        "updatedAt": "2020-01-14"
+      }
+    }
   },
   "니제르": {
     "id": "니제르",
@@ -1283,7 +1455,23 @@ export const COUNTRIES_BASE = {
       "latestYear": "2023",
       "startYear": "1991"
     },
-    "koicaHealthDetail": null
+    "koicaHealthDetail": null,
+    "diplomaticContact": {
+      "overseas": {
+        "missionName": "주 코트디부아르 대한민국 대사관",
+        "missionType": "대사관",
+        "jointCoverage": true,
+        "address": "01BP 3950 Abidjan 01, Rue Sainte Marie Lot 18-19, Cocody Sud, Abidjan, Cote d&rsquo;Ivoire,",
+        "phone": "(225)2248-6701",
+        "consularCenter": "(82)2-3210-0404",
+        "tollFree": "080-020-0219",
+        "emergency": "(225)8827-3480",
+        "website": "http://overseas.mofa.go.kr/ci-ko/index.do",
+        "lat": 5.331987,
+        "lng": -3.996877
+      },
+      "domestic": null
+    }
   },
   "라이베리아": {
     "id": "라이베리아",
@@ -1413,6 +1601,22 @@ export const COUNTRIES_BASE = {
           "amount": "29,457,000 원"
         }
       ]
+    },
+    "diplomaticContact": {
+      "overseas": {
+        "missionName": "주 나이지리아 대한민국 대사관",
+        "missionType": "대사관",
+        "jointCoverage": true,
+        "address": "No.9 Ovia cresent, Off Pope John Paul Ⅱ street, Off Gana street, Maitama, Abuja,",
+        "phone": "(234)810-389-0991",
+        "consularCenter": "(82)2-3210-0404",
+        "tollFree": "080-020-0219",
+        "emergency": "(234)809-998-1726",
+        "website": "http://overseas.mofa.go.kr/ng-ko/index.do",
+        "lat": 9.084108,
+        "lng": 7.49347
+      },
+      "domestic": null
     }
   },
   "레소토": {
@@ -1534,7 +1738,23 @@ export const COUNTRIES_BASE = {
       "latestYear": "2023",
       "startYear": "1991"
     },
-    "koicaHealthDetail": null
+    "koicaHealthDetail": null,
+    "diplomaticContact": {
+      "overseas": {
+        "missionName": "주 남아프리카공화국 대한민국 대사관",
+        "missionType": "대사관",
+        "jointCoverage": true,
+        "address": "265 Melk Street, Nieuw Muckleneuk, Pretoria 0181, South Africa,",
+        "phone": "(27)12-460-2508",
+        "consularCenter": "(82)2-3210-0404",
+        "tollFree": "080-020-0219",
+        "emergency": "(27)66-332-5897",
+        "website": "http://overseas.mofa.go.kr/za-ko/index.do",
+        "lat": -25.773293,
+        "lng": 28.226605
+      },
+      "domestic": null
+    }
   },
   "르완다": {
     "id": "르완다",
@@ -1674,6 +1894,29 @@ export const COUNTRIES_BASE = {
           "amount": "63,480,000 원"
         }
       ]
+    },
+    "diplomaticContact": {
+      "overseas": {
+        "missionName": "주 르완다 대한민국 대사관",
+        "missionType": "대사관",
+        "jointCoverage": false,
+        "address": "P.O. Box 6404, 34 KG 13 Ave(Golf Course Road), Nyarutarama, Kigali, Rwanda,",
+        "phone": "(250)252-577-577",
+        "consularCenter": "(82)2-3210-0404",
+        "tollFree": "080-020-0219",
+        "emergency": "(250)780-493-746",
+        "website": "http://overseas.mofa.go.kr/rw-ko/index.do",
+        "lat": -1.938502,
+        "lng": 30.10031
+      },
+      "domestic": {
+        "ambassador": "Dalila Yasmin AMRI SUED",
+        "address": "서울특별시 용산구 한남대로20길 13 수영빌딩 503호",
+        "phone": "798-1052",
+        "email": "infoseoul@embassy.gov.rw",
+        "fax": "798-1054",
+        "updatedAt": "2019-11-15"
+      }
     }
   },
   "리비아": {
@@ -1800,7 +2043,30 @@ export const COUNTRIES_BASE = {
       "latestYear": "2023",
       "startYear": "1991"
     },
-    "koicaHealthDetail": null
+    "koicaHealthDetail": null,
+    "diplomaticContact": {
+      "overseas": {
+        "missionName": "주 리비아 대한민국 대사관",
+        "missionType": "대사관",
+        "jointCoverage": false,
+        "address": "P. O. Box 4781/5160, Abounawas Area, Gargaresh St., Tripoli, Libya,",
+        "phone": "(216)71-274-759",
+        "consularCenter": "(82)2-3210-0404",
+        "tollFree": "080-020-0219",
+        "emergency": "(216)22-575-924",
+        "website": "http://overseas.mofa.go.kr/ly-ko/index.do",
+        "lat": 32.866323,
+        "lng": 13.091041
+      },
+      "domestic": {
+        "ambassador": "Hosameddin M.M. ELNAELI",
+        "address": "서울특별시 용산구 장문로 51",
+        "phone": "797-6001/2",
+        "email": "libya.o.home@gmail.com",
+        "fax": "797-6007",
+        "updatedAt": "2021-07-05"
+      }
+    }
   },
   "마다가스카르": {
     "id": "마다가스카르",
@@ -1921,7 +2187,23 @@ export const COUNTRIES_BASE = {
       "latestYear": "2023",
       "startYear": "1991"
     },
-    "koicaHealthDetail": null
+    "koicaHealthDetail": null,
+    "diplomaticContact": {
+      "overseas": {
+        "missionName": "주 마다가스카르 대한민국 대사관",
+        "missionType": "대사관",
+        "jointCoverage": false,
+        "address": "Immeuble Fitaratra-9eme Etage Nord, Ankorondrano, 101 Antananarivo, Madagascar,",
+        "phone": "(261)20-222-2933",
+        "consularCenter": "(82)2-3210-0404",
+        "tollFree": "080-020-0219",
+        "emergency": "(261)32-781-0874",
+        "website": "http://overseas.mofa.go.kr/mg-ko/index.do",
+        "lat": -18.884792,
+        "lng": 47.522183
+      },
+      "domestic": null
+    }
   },
   "말라위": {
     "id": "말라위",
@@ -2056,6 +2338,22 @@ export const COUNTRIES_BASE = {
           "amount": "63,480,000 원"
         }
       ]
+    },
+    "diplomaticContact": {
+      "overseas": {
+        "missionName": "주 짐바브웨 대한민국 대사관",
+        "missionType": "대사관",
+        "jointCoverage": true,
+        "address": "3rd floor(Bridge-Red light side), Eastgate Building, 3rd Street/Robert Mugabe Rolad, Harare, Zimbavwe(P.O.Box 4970),",
+        "phone": "(263-242)756-541",
+        "consularCenter": "(82)2-3210-0404",
+        "tollFree": "080-020-0219",
+        "emergency": "(263)782-840-787",
+        "website": "http://overseas.mofa.go.kr/zw-ko/index.do",
+        "lat": -17.831424,
+        "lng": 31.052597
+      },
+      "domestic": null
     }
   },
   "말리": {
@@ -2182,7 +2480,23 @@ export const COUNTRIES_BASE = {
       "latestYear": "2023",
       "startYear": "1991"
     },
-    "koicaHealthDetail": null
+    "koicaHealthDetail": null,
+    "diplomaticContact": {
+      "overseas": {
+        "missionName": "주 세네갈 대한민국 대사관",
+        "missionType": "대사관",
+        "jointCoverage": true,
+        "address": "Ambassade de la Republique de Coree, Villa Hamoudy, Rue Aime Cesaire, Fann Residence, B.P.5850, Dakar, Senegal,",
+        "phone": "(221)33-824-06-72",
+        "consularCenter": "(82)2-3210-0404",
+        "tollFree": "080-020-0219",
+        "emergency": "(221)77-639-5109",
+        "website": "http://overseas.mofa.go.kr/sn-ko/index.do",
+        "lat": 14.695506,
+        "lng": -17.467318
+      },
+      "domestic": null
+    }
   },
   "모로코": {
     "id": "모로코",
@@ -2322,6 +2636,29 @@ export const COUNTRIES_BASE = {
           "amount": "15,870,000 원"
         }
       ]
+    },
+    "diplomaticContact": {
+      "overseas": {
+        "missionName": "주 모로코 대한민국 대사관",
+        "missionType": "대사관",
+        "jointCoverage": false,
+        "address": "41 Av. Mehdi Ben Barka, Souissi, Rabat, Morocco,",
+        "phone": "(212)537-75-1767",
+        "consularCenter": "(82)2-3210-0404",
+        "tollFree": "080-020-0219",
+        "emergency": "(212)66-277-2408",
+        "website": "http://overseas.mofa.go.kr/ma-ko/index.do",
+        "lat": 33.978091,
+        "lng": -6.840522
+      },
+      "domestic": {
+        "ambassador": "Chafik RACHADI",
+        "address": "서울특별시 용산구 장문로 32, 1층",
+        "phone": "793-6249/1479/7097",
+        "email": "info@moroccoembassy.kr",
+        "fax": "792-8178",
+        "updatedAt": "2020-01-14"
+      }
     }
   },
   "모리셔스": {
@@ -2448,7 +2785,23 @@ export const COUNTRIES_BASE = {
       "latestYear": "2023",
       "startYear": "1991"
     },
-    "koicaHealthDetail": null
+    "koicaHealthDetail": null,
+    "diplomaticContact": {
+      "overseas": {
+        "missionName": "주 마다가스카르 대한민국 대사관",
+        "missionType": "대사관",
+        "jointCoverage": true,
+        "address": "Immeuble Fitaratra-9eme Etage Nord, Ankorondrano, 101 Antananarivo, Madagascar,",
+        "phone": "(261)20-222-2933",
+        "consularCenter": "(82)2-3210-0404",
+        "tollFree": "080-020-0219",
+        "emergency": "(261)32-781-0874",
+        "website": "http://overseas.mofa.go.kr/mg-ko/index.do",
+        "lat": -18.884792,
+        "lng": 47.522183
+      },
+      "domestic": null
+    }
   },
   "모리타니아": {
     "id": "모리타니아",
@@ -2574,7 +2927,23 @@ export const COUNTRIES_BASE = {
       "latestYear": "2023",
       "startYear": "1991"
     },
-    "koicaHealthDetail": null
+    "koicaHealthDetail": null,
+    "diplomaticContact": {
+      "overseas": {
+        "missionName": "주 모로코 대한민국 대사관",
+        "missionType": "대사관",
+        "jointCoverage": true,
+        "address": "41 Av. Mehdi Ben Barka, Souissi, Rabat, Morocco,",
+        "phone": "(212)537-75-1767",
+        "consularCenter": "(82)2-3210-0404",
+        "tollFree": "080-020-0219",
+        "emergency": "(212)66-277-2408",
+        "website": "http://overseas.mofa.go.kr/ma-ko/index.do",
+        "lat": 33.978091,
+        "lng": -6.840522
+      },
+      "domestic": null
+    }
   },
   "모잠비크": {
     "id": "모잠비크",
@@ -2709,6 +3078,22 @@ export const COUNTRIES_BASE = {
           "amount": "11,484,204,000 원"
         }
       ]
+    },
+    "diplomaticContact": {
+      "overseas": {
+        "missionName": "주 모잠비크공화국 대한민국 대사관",
+        "missionType": "대사관",
+        "jointCoverage": false,
+        "address": "138, Rua D. Maria II , Maputo, Mozambique,",
+        "phone": "(258)21-495-625",
+        "consularCenter": "(82)2-3210-0404",
+        "tollFree": "080-020-0219",
+        "emergency": "(258)84-518-1272",
+        "website": "http://overseas.mofa.go.kr/mz-ko/index.do",
+        "lat": -25.957806,
+        "lng": 32.602585
+      },
+      "domestic": null
     }
   },
   "베냉": {
@@ -2830,7 +3215,23 @@ export const COUNTRIES_BASE = {
       "latestYear": "2023",
       "startYear": "1991"
     },
-    "koicaHealthDetail": null
+    "koicaHealthDetail": null,
+    "diplomaticContact": {
+      "overseas": {
+        "missionName": "주 가나 대한민국 대사관",
+        "missionType": "대사관",
+        "jointCoverage": true,
+        "address": "No.10, Fifth Avenue Extension, Cantonments, P.O.Box GP 13700, Accra, Ghana,",
+        "phone": "(233)302-771-705",
+        "consularCenter": "(82)2-3210-0404",
+        "tollFree": "080-020-0219",
+        "emergency": "(233)244-321-858",
+        "website": "http://overseas.mofa.go.kr/gh-ko/index.do",
+        "lat": 5.575495,
+        "lng": -0.185161
+      },
+      "domestic": null
+    }
   },
   "보츠와나": {
     "id": "보츠와나",
@@ -2965,6 +3366,22 @@ export const COUNTRIES_BASE = {
           "amount": "29,457,000 원"
         }
       ]
+    },
+    "diplomaticContact": {
+      "overseas": {
+        "missionName": "주 남아프리카공화국 대한민국 대사관",
+        "missionType": "대사관",
+        "jointCoverage": true,
+        "address": "265 Melk Street, Nieuw Muckleneuk, Pretoria 0181, South Africa,",
+        "phone": "(27)12-460-2508",
+        "consularCenter": "(82)2-3210-0404",
+        "tollFree": "080-020-0219",
+        "emergency": "(27)66-332-5897",
+        "website": "http://overseas.mofa.go.kr/za-ko/index.do",
+        "lat": -25.773293,
+        "lng": 28.226605
+      },
+      "domestic": null
     }
   },
   "부룬디": {
@@ -3095,6 +3512,22 @@ export const COUNTRIES_BASE = {
           "amount": "63,480,000 원"
         }
       ]
+    },
+    "diplomaticContact": {
+      "overseas": {
+        "missionName": "주 르완다 대한민국 대사관",
+        "missionType": "대사관",
+        "jointCoverage": true,
+        "address": "P.O. Box 6404, 34 KG 13 Ave(Golf Course Road), Nyarutarama, Kigali, Rwanda,",
+        "phone": "(250)252-577-577",
+        "consularCenter": "(82)2-3210-0404",
+        "tollFree": "080-020-0219",
+        "emergency": "(250)780-493-746",
+        "website": "http://overseas.mofa.go.kr/rw-ko/index.do",
+        "lat": -1.938502,
+        "lng": 30.10031
+      },
+      "domestic": null
     }
   },
   "부르키나파소": {
@@ -3221,7 +3654,23 @@ export const COUNTRIES_BASE = {
       "latestYear": "2023",
       "startYear": "1991"
     },
-    "koicaHealthDetail": null
+    "koicaHealthDetail": null,
+    "diplomaticContact": {
+      "overseas": {
+        "missionName": "주 코트디부아르 대한민국 대사관",
+        "missionType": "대사관",
+        "jointCoverage": true,
+        "address": "01BP 3950 Abidjan 01, Rue Sainte Marie Lot 18-19, Cocody Sud, Abidjan, Cote d&rsquo;Ivoire,",
+        "phone": "(225)2248-6701",
+        "consularCenter": "(82)2-3210-0404",
+        "tollFree": "080-020-0219",
+        "emergency": "(225)8827-3480",
+        "website": "http://overseas.mofa.go.kr/ci-ko/index.do",
+        "lat": 5.331987,
+        "lng": -3.996877
+      },
+      "domestic": null
+    }
   },
   "상투메프린시페": {
     "id": "상투메프린시페",
@@ -3332,7 +3781,23 @@ export const COUNTRIES_BASE = {
       "latestYear": "2023",
       "startYear": "1991"
     },
-    "koicaHealthDetail": null
+    "koicaHealthDetail": null,
+    "diplomaticContact": {
+      "overseas": {
+        "missionName": "주 가봉 대한민국 대사관",
+        "missionType": "대사관",
+        "jointCoverage": true,
+        "address": "B.P.2620, Libreville, Gabon,",
+        "phone": "(241)6530-1900",
+        "consularCenter": "(82)2-3210-0404",
+        "tollFree": "080-020-0219",
+        "emergency": "(241)7750-7822",
+        "website": "http://overseas.mofa.go.kr/ga-ko/index.do",
+        "lat": 0.477587266,
+        "lng": 9.393928461
+      },
+      "domestic": null
+    }
   },
   "세네갈": {
     "id": "세네갈",
@@ -3472,6 +3937,29 @@ export const COUNTRIES_BASE = {
           "amount": "155,998,500 원"
         }
       ]
+    },
+    "diplomaticContact": {
+      "overseas": {
+        "missionName": "주 세네갈 대한민국 대사관",
+        "missionType": "대사관",
+        "jointCoverage": false,
+        "address": "Ambassade de la Republique de Coree, Villa Hamoudy, Rue Aime Cesaire, Fann Residence, B.P.5850, Dakar, Senegal,",
+        "phone": "(221)33-824-06-72",
+        "consularCenter": "(82)2-3210-0404",
+        "tollFree": "080-020-0219",
+        "emergency": "(221)77-639-5109",
+        "website": "http://overseas.mofa.go.kr/sn-ko/index.do",
+        "lat": 14.695506,
+        "lng": -17.467318
+      },
+      "domestic": {
+        "ambassador": "Mamadou Gueye FAYE",
+        "address": "서울특별시 중구 퇴계로 97 대연각 타워 501호",
+        "phone": "745-5554",
+        "email": "senegalembassyseoul@gmail.com",
+        "fax": "745-5524",
+        "updatedAt": "2020-01-14"
+      }
     }
   },
   "세이셸": {
@@ -3562,7 +4050,23 @@ export const COUNTRIES_BASE = {
       "latestYear": "2023",
       "startYear": "1991"
     },
-    "koicaHealthDetail": null
+    "koicaHealthDetail": null,
+    "diplomaticContact": {
+      "overseas": {
+        "missionName": "주 에티오피아 대한민국 대사관",
+        "missionType": "대사관",
+        "jointCoverage": true,
+        "address": "Embassy of the Repulic of Korea House No. 856, Kebele 04, Nefas Silk Lafto, Addis Ababa, Ethiopia,",
+        "phone": "(251)113-72-81-11",
+        "consularCenter": "(82)2-3210-0404",
+        "tollFree": "080-020-0219",
+        "emergency": "(251)92-217-4741",
+        "website": "http://overseas.mofa.go.kr/et-ko/index.do",
+        "lat": 9.051879,
+        "lng": 38.727486
+      },
+      "domestic": null
+    }
   },
   "소말리아": {
     "id": "소말리아",
@@ -3678,7 +4182,23 @@ export const COUNTRIES_BASE = {
       "latestYear": "2023",
       "startYear": "1991"
     },
-    "koicaHealthDetail": null
+    "koicaHealthDetail": null,
+    "diplomaticContact": {
+      "overseas": {
+        "missionName": "주 케냐 대한민국 대사관",
+        "missionType": "대사관",
+        "jointCoverage": true,
+        "address": "Misha Towers, Westlands Road, Nairobi, Kenya,",
+        "phone": "(254)20-361-5109",
+        "consularCenter": "(82)2-3210-0404",
+        "tollFree": "080-020-0219",
+        "emergency": "(254)708-984-891",
+        "website": "http://overseas.mofa.go.kr/ke-ko/index.do",
+        "lat": -1.270147,
+        "lng": 36.810002
+      },
+      "domestic": null
+    }
   },
   "수단": {
     "id": "수단",
@@ -3804,7 +4324,30 @@ export const COUNTRIES_BASE = {
       "latestYear": "2023",
       "startYear": "1991"
     },
-    "koicaHealthDetail": null
+    "koicaHealthDetail": null,
+    "diplomaticContact": {
+      "overseas": {
+        "missionName": "주 수단 대한민국 대사관",
+        "missionType": "대사관",
+        "jointCoverage": false,
+        "address": "House No.55, Al-Jazira Street 56, Khartoum 2, P.O.Box 2414, Khartoum, Sudan,",
+        "phone": "(249)1-8358-0031",
+        "consularCenter": "(82)2-3210-0404",
+        "tollFree": "080-020-0219",
+        "emergency": "(249)9-1217-2813",
+        "website": "http://overseas.mofa.go.kr/sd-ko/index.do",
+        "lat": 15.501577,
+        "lng": 32.572596
+      },
+      "domestic": {
+        "ambassador": "Elham Kamal Ahmed",
+        "address": "서울특별시 용산구 서빙고로51길 52 비비안 빌딩 3층",
+        "phone": "793-8692 / 749-1090",
+        "email": "embsudankr@gmail.com",
+        "fax": "793-8693",
+        "updatedAt": "2021-02-23"
+      }
+    }
   },
   "시에라리온": {
     "id": "시에라리온",
@@ -3934,6 +4477,29 @@ export const COUNTRIES_BASE = {
           "amount": "31,740,000 원"
         }
       ]
+    },
+    "diplomaticContact": {
+      "overseas": {
+        "missionName": "주 나이지리아 대한민국 대사관",
+        "missionType": "대사관",
+        "jointCoverage": true,
+        "address": "No.9 Ovia cresent, Off Pope John Paul Ⅱ street, Off Gana street, Maitama, Abuja,",
+        "phone": "(234)810-389-0991",
+        "consularCenter": "(82)2-3210-0404",
+        "tollFree": "080-020-0219",
+        "emergency": "(234)809-998-1726",
+        "website": "http://overseas.mofa.go.kr/ng-ko/index.do",
+        "lat": 9.084108,
+        "lng": 7.49347
+      },
+      "domestic": {
+        "ambassador": "Kathos Jibao MATTAI",
+        "address": "서울특별시 용산구 이태원로 54길 63-3",
+        "phone": "792-8911/2",
+        "email": "info@sierra-leone.or.kr",
+        "fax": "792-7781",
+        "updatedAt": "2020-01-14"
+      }
     }
   },
   "알제리": {
@@ -4074,6 +4640,29 @@ export const COUNTRIES_BASE = {
           "amount": "15,870,000 원"
         }
       ]
+    },
+    "diplomaticContact": {
+      "overseas": {
+        "missionName": "주 알제리 대한민국 대사관",
+        "missionType": "대사관",
+        "jointCoverage": false,
+        "address": "23, Chemin de la Madeleine Chekiken,Hydra, Alger, Algeria,",
+        "phone": "(213)23-47-28-38",
+        "consularCenter": "(82)2-3210-0404",
+        "tollFree": "080-020-0219",
+        "emergency": "(213)770-11-44-00",
+        "website": "http://overseas.mofa.go.kr/dz-ko/index.do",
+        "lat": 36.755049,
+        "lng": 3.02583
+      },
+      "domestic": {
+        "ambassador": "Nabil TIBOURTINE",
+        "address": "서울특별시 용산구 회나무로 81",
+        "phone": "794-5034/5",
+        "email": "dzemb@algerianemb.or.kr",
+        "fax": "794-5040",
+        "updatedAt": "2021-11-15"
+      }
     }
   },
   "앙골라": {
@@ -4209,6 +4798,29 @@ export const COUNTRIES_BASE = {
           "amount": "606,352,500 원"
         }
       ]
+    },
+    "diplomaticContact": {
+      "overseas": {
+        "missionName": "주 앙골라 대한민국 대사관",
+        "missionType": "대사관",
+        "jointCoverage": false,
+        "address": "Condominio Zenith, Torre 1, 7&ordm; Andar, Via AL 16, Luanda, Angola,",
+        "phone": "(244)222-006-067",
+        "consularCenter": "(82)2-3210-0404",
+        "tollFree": "080-020-0219",
+        "emergency": "(244)938-880-573",
+        "website": "http://overseas.mofa.go.kr/ao-ko/index.do",
+        "lat": -8.920868,
+        "lng": 13.202023
+      },
+      "domestic": {
+        "ambassador": "Edgar Augusto Brandão Gaspar Martins",
+        "address": "서울특별시 성북구 선잠로5길 14",
+        "phone": "792-8463",
+        "email": "secretariado@angolaembassy.or.kr",
+        "fax": "792-8467",
+        "updatedAt": "2020-01-13"
+      }
     }
   },
   "에리트레아": {
@@ -4335,7 +4947,23 @@ export const COUNTRIES_BASE = {
       "latestYear": "2023",
       "startYear": "1991"
     },
-    "koicaHealthDetail": null
+    "koicaHealthDetail": null,
+    "diplomaticContact": {
+      "overseas": {
+        "missionName": "주 수단 대한민국 대사관",
+        "missionType": "대사관",
+        "jointCoverage": true,
+        "address": "House No.55, Al-Jazira Street 56, Khartoum 2, P.O.Box 2414, Khartoum, Sudan,",
+        "phone": "(249)1-8358-0031",
+        "consularCenter": "(82)2-3210-0404",
+        "tollFree": "080-020-0219",
+        "emergency": "(249)9-1217-2813",
+        "website": "http://overseas.mofa.go.kr/sd-ko/index.do",
+        "lat": 15.501577,
+        "lng": 32.572596
+      },
+      "domestic": null
+    }
   },
   "에스와티니": {
     "id": "에스와티니",
@@ -4434,6 +5062,22 @@ export const COUNTRIES_BASE = {
           "amount": "217,117,500 원"
         }
       ]
+    },
+    "diplomaticContact": {
+      "overseas": {
+        "missionName": "주 남아프리카공화국 대한민국 대사관",
+        "missionType": "대사관",
+        "jointCoverage": true,
+        "address": "265 Melk Street, Nieuw Muckleneuk, Pretoria 0181, South Africa,",
+        "phone": "(27)12-460-2508",
+        "consularCenter": "(82)2-3210-0404",
+        "tollFree": "080-020-0219",
+        "emergency": "(27)66-332-5897",
+        "website": "http://overseas.mofa.go.kr/za-ko/index.do",
+        "lat": -25.773293,
+        "lng": 28.226605
+      },
+      "domestic": null
     }
   },
   "에티오피아": {
@@ -4584,6 +5228,29 @@ export const COUNTRIES_BASE = {
           "amount": "346,662,000 원"
         }
       ]
+    },
+    "diplomaticContact": {
+      "overseas": {
+        "missionName": "주 에티오피아 대한민국 대사관",
+        "missionType": "대사관",
+        "jointCoverage": false,
+        "address": "Embassy of the Repulic of Korea House No. 856, Kebele 04, Nefas Silk Lafto, Addis Ababa, Ethiopia,",
+        "phone": "(251)113-72-81-11",
+        "consularCenter": "(82)2-3210-0404",
+        "tollFree": "080-020-0219",
+        "emergency": "(251)92-217-4741",
+        "website": "http://overseas.mofa.go.kr/et-ko/index.do",
+        "lat": 9.051879,
+        "lng": 38.727486
+      },
+      "domestic": {
+        "ambassador": "Shiferaw Shigutie WOLASSA",
+        "address": "서울특별시 용산구 회나무로44길 20",
+        "phone": "790-9766/7",
+        "email": "embassyethio@gmail.com",
+        "fax": "790-0156",
+        "updatedAt": "2020-01-14"
+      }
     }
   },
   "우간다": {
@@ -4734,6 +5401,22 @@ export const COUNTRIES_BASE = {
           "amount": "15,870,000 원"
         }
       ]
+    },
+    "diplomaticContact": {
+      "overseas": {
+        "missionName": "주 우간다 대한민국 대사관",
+        "missionType": "대사관",
+        "jointCoverage": false,
+        "address": "Plot 14 Ternan Avenue, Kampala, Uganda,",
+        "phone": "(256)414-500-197",
+        "consularCenter": "(82)2-3210-0404",
+        "tollFree": "080-020-0219",
+        "emergency": "(256)774-478-376",
+        "website": null,
+        "lat": 0.320245,
+        "lng": 32.583
+      },
+      "domestic": null
     }
   },
   "이집트": {
@@ -4869,6 +5552,29 @@ export const COUNTRIES_BASE = {
           "amount": "31,740,000 원"
         }
       ]
+    },
+    "diplomaticContact": {
+      "overseas": {
+        "missionName": "주 이집트 대한민국 대사관",
+        "missionType": "대사관",
+        "jointCoverage": false,
+        "address": "3 Boulos Hanna Street, Dokki, Cairo, Arab Republic of Egypt,",
+        "phone": "(20)2-3761-1234",
+        "consularCenter": "(82)2-3210-0404",
+        "tollFree": "080-020-0219",
+        "emergency": "(20)12-8333-3236",
+        "website": "http://overseas.mofa.go.kr/eg-ko/index.do",
+        "lat": 30.041069,
+        "lng": 31.215145
+      },
+      "domestic": {
+        "ambassador": "Hazem Mostafa Ibrahim FAHMY",
+        "address": "서울특별시 용산구 독서당로 114",
+        "phone": "749-0787/9",
+        "email": "embassy.seoul@mfa.gov.eg / egyptian.embassy.seoul@gmail.com",
+        "fax": "795-2588",
+        "updatedAt": "2020-04-06"
+      }
     }
   },
   "잠비아": {
@@ -4995,7 +5701,30 @@ export const COUNTRIES_BASE = {
       "latestYear": "2023",
       "startYear": "1991"
     },
-    "koicaHealthDetail": null
+    "koicaHealthDetail": null,
+    "diplomaticContact": {
+      "overseas": {
+        "missionName": "주 짐바브웨 대한민국 대사관",
+        "missionType": "대사관",
+        "jointCoverage": true,
+        "address": "3rd floor(Bridge-Red light side), Eastgate Building, 3rd Street/Robert Mugabe Rolad, Harare, Zimbavwe(P.O.Box 4970),",
+        "phone": "(263-242)756-541",
+        "consularCenter": "(82)2-3210-0404",
+        "tollFree": "080-020-0219",
+        "emergency": "(263)782-840-787",
+        "website": "http://overseas.mofa.go.kr/zw-ko/index.do",
+        "lat": -17.831424,
+        "lng": 31.052597
+      },
+      "domestic": {
+        "ambassador": "Wylbur Chisiya SIMUUSA",
+        "address": "서울특별시 용산구 이태원로 27길 56",
+        "phone": "793-1961",
+        "email": "zamembseoul@gmail.com",
+        "fax": "793-1969",
+        "updatedAt": "2020-10-19"
+      }
+    }
   },
   "적도기니": {
     "id": "적도기니",
@@ -5111,7 +5840,23 @@ export const COUNTRIES_BASE = {
       "latestYear": "2023",
       "startYear": "1991"
     },
-    "koicaHealthDetail": null
+    "koicaHealthDetail": null,
+    "diplomaticContact": {
+      "overseas": {
+        "missionName": "주 적도기니공화국 대한민국 대사관 말라보 분관",
+        "missionType": "대사관 말라보 분관",
+        "jointCoverage": false,
+        "address": "Villa 14, Hotel 3 de Agosto, Malabo, Guinea Ecuatorial,",
+        "phone": "(240)333-090-775",
+        "consularCenter": "(82)2-3210-0404",
+        "tollFree": "080-020-0219",
+        "emergency": "(240)222-433-173",
+        "website": "http://overseas.mofa.go.kr/gq-ko/index.do",
+        "lat": 3.7535273,
+        "lng": 8.7069704
+      },
+      "domestic": null
+    }
   },
   "중앙아프리카": {
     "id": "중앙아프리카",
@@ -5237,7 +5982,23 @@ export const COUNTRIES_BASE = {
       "latestYear": "2023",
       "startYear": "1991"
     },
-    "koicaHealthDetail": null
+    "koicaHealthDetail": null,
+    "diplomaticContact": {
+      "overseas": {
+        "missionName": "주 카메룬 대한민국 대사관",
+        "missionType": "대사관",
+        "jointCoverage": true,
+        "address": "House NO. 85, Rosa Park Avenue, Ntougou-Golf, P.O.Box, 13286, Yaounde, Cameroon,",
+        "phone": "(237)2-2220-3756",
+        "consularCenter": "(82)2-3210-0404",
+        "tollFree": "080-020-0219",
+        "emergency": "(237)694-873-695",
+        "website": "http://overseas.mofa.go.kr/cm-ko/index.do",
+        "lat": 3.896586103,
+        "lng": 11.51830304
+      },
+      "domestic": null
+    }
   },
   "지부티": {
     "id": "지부티",
@@ -5358,7 +6119,23 @@ export const COUNTRIES_BASE = {
       "latestYear": "2023",
       "startYear": "1991"
     },
-    "koicaHealthDetail": null
+    "koicaHealthDetail": null,
+    "diplomaticContact": {
+      "overseas": {
+        "missionName": "주 에티오피아 대한민국 대사관",
+        "missionType": "대사관",
+        "jointCoverage": true,
+        "address": "Embassy of the Repulic of Korea House No. 856, Kebele 04, Nefas Silk Lafto, Addis Ababa, Ethiopia,",
+        "phone": "(251)113-72-81-11",
+        "consularCenter": "(82)2-3210-0404",
+        "tollFree": "080-020-0219",
+        "emergency": "(251)92-217-4741",
+        "website": "http://overseas.mofa.go.kr/et-ko/index.do",
+        "lat": 9.051879,
+        "lng": 38.727486
+      },
+      "domestic": null
+    }
   },
   "짐바브웨": {
     "id": "짐바브웨",
@@ -5493,6 +6270,22 @@ export const COUNTRIES_BASE = {
           "amount": "31,740,000 원"
         }
       ]
+    },
+    "diplomaticContact": {
+      "overseas": {
+        "missionName": "주 짐바브웨 대한민국 대사관",
+        "missionType": "대사관",
+        "jointCoverage": false,
+        "address": "3rd floor(Bridge-Red light side), Eastgate Building, 3rd Street/Robert Mugabe Rolad, Harare, Zimbavwe(P.O.Box 4970),",
+        "phone": "(263-242)756-541",
+        "consularCenter": "(82)2-3210-0404",
+        "tollFree": "080-020-0219",
+        "emergency": "(263)782-840-787",
+        "website": "http://overseas.mofa.go.kr/zw-ko/index.do",
+        "lat": -17.831424,
+        "lng": 31.052597
+      },
+      "domestic": null
     }
   },
   "차드": {
@@ -5619,7 +6412,23 @@ export const COUNTRIES_BASE = {
       "latestYear": "2023",
       "startYear": "1991"
     },
-    "koicaHealthDetail": null
+    "koicaHealthDetail": null,
+    "diplomaticContact": {
+      "overseas": {
+        "missionName": "주 카메룬 대한민국 대사관",
+        "missionType": "대사관",
+        "jointCoverage": true,
+        "address": "House NO. 85, Rosa Park Avenue, Ntougou-Golf, P.O.Box, 13286, Yaounde, Cameroon,",
+        "phone": "(237)2-2220-3756",
+        "consularCenter": "(82)2-3210-0404",
+        "tollFree": "080-020-0219",
+        "emergency": "(237)694-873-695",
+        "website": "http://overseas.mofa.go.kr/cm-ko/index.do",
+        "lat": 3.896586103,
+        "lng": 11.51830304
+      },
+      "domestic": null
+    }
   },
   "카메룬": {
     "id": "카메룬",
@@ -5764,6 +6573,22 @@ export const COUNTRIES_BASE = {
           "amount": "22,881,000 원"
         }
       ]
+    },
+    "diplomaticContact": {
+      "overseas": {
+        "missionName": "주 카메룬 대한민국 대사관",
+        "missionType": "대사관",
+        "jointCoverage": false,
+        "address": "House NO. 85, Rosa Park Avenue, Ntougou-Golf, P.O.Box, 13286, Yaounde, Cameroon,",
+        "phone": "(237)2-2220-3756",
+        "consularCenter": "(82)2-3210-0404",
+        "tollFree": "080-020-0219",
+        "emergency": "(237)694-873-695",
+        "website": "http://overseas.mofa.go.kr/cm-ko/index.do",
+        "lat": 3.896586103,
+        "lng": 11.51830304
+      },
+      "domestic": null
     }
   },
   "카보베르데": {
@@ -5875,7 +6700,23 @@ export const COUNTRIES_BASE = {
       "latestYear": "2023",
       "startYear": "1991"
     },
-    "koicaHealthDetail": null
+    "koicaHealthDetail": null,
+    "diplomaticContact": {
+      "overseas": {
+        "missionName": "주 세네갈 대한민국 대사관",
+        "missionType": "대사관",
+        "jointCoverage": true,
+        "address": "Ambassade de la Republique de Coree, Villa Hamoudy, Rue Aime Cesaire, Fann Residence, B.P.5850, Dakar, Senegal,",
+        "phone": "(221)33-824-06-72",
+        "consularCenter": "(82)2-3210-0404",
+        "tollFree": "080-020-0219",
+        "emergency": "(221)77-639-5109",
+        "website": "http://overseas.mofa.go.kr/sn-ko/index.do",
+        "lat": 14.695506,
+        "lng": -17.467318
+      },
+      "domestic": null
+    }
   },
   "케냐": {
     "id": "케냐",
@@ -6020,6 +6861,29 @@ export const COUNTRIES_BASE = {
           "amount": "15,870,000 원"
         }
       ]
+    },
+    "diplomaticContact": {
+      "overseas": {
+        "missionName": "주 케냐 대한민국 대사관",
+        "missionType": "대사관",
+        "jointCoverage": false,
+        "address": "Misha Towers, Westlands Road, Nairobi, Kenya,",
+        "phone": "(254)20-361-5109",
+        "consularCenter": "(82)2-3210-0404",
+        "tollFree": "080-020-0219",
+        "emergency": "(254)708-984-891",
+        "website": "http://overseas.mofa.go.kr/ke-ko/index.do",
+        "lat": -1.270147,
+        "lng": 36.810002
+      },
+      "domestic": {
+        "ambassador": "Mwende MWINZI",
+        "address": "서울특별시 용산구 회나무로44길 38",
+        "phone": "3785-2903/4",
+        "email": "info@kenya-embassy.or.kr",
+        "fax": "3785-2905",
+        "updatedAt": "2021-02-23"
+      }
     }
   },
   "코모로": {
@@ -6131,7 +6995,23 @@ export const COUNTRIES_BASE = {
       "latestYear": "2023",
       "startYear": "1991"
     },
-    "koicaHealthDetail": null
+    "koicaHealthDetail": null,
+    "diplomaticContact": {
+      "overseas": {
+        "missionName": "주 마다가스카르 대한민국 대사관",
+        "missionType": "대사관",
+        "jointCoverage": true,
+        "address": "Immeuble Fitaratra-9eme Etage Nord, Ankorondrano, 101 Antananarivo, Madagascar,",
+        "phone": "(261)20-222-2933",
+        "consularCenter": "(82)2-3210-0404",
+        "tollFree": "080-020-0219",
+        "emergency": "(261)32-781-0874",
+        "website": "http://overseas.mofa.go.kr/mg-ko/index.do",
+        "lat": -18.884792,
+        "lng": 47.522183
+      },
+      "domestic": null
+    }
   },
   "코트디부아르": {
     "id": "코트디부아르",
@@ -6266,6 +7146,29 @@ export const COUNTRIES_BASE = {
           "amount": "164,307,000 원"
         }
       ]
+    },
+    "diplomaticContact": {
+      "overseas": {
+        "missionName": "주 코트디부아르 대한민국 대사관",
+        "missionType": "대사관",
+        "jointCoverage": false,
+        "address": "01BP 3950 Abidjan 01, Rue Sainte Marie Lot 18-19, Cocody Sud, Abidjan, Cote d&rsquo;Ivoire,",
+        "phone": "(225)2248-6701",
+        "consularCenter": "(82)2-3210-0404",
+        "tollFree": "080-020-0219",
+        "emergency": "(225)8827-3480",
+        "website": "http://overseas.mofa.go.kr/ci-ko/index.do",
+        "lat": 5.331987,
+        "lng": -3.996877
+      },
+      "domestic": {
+        "ambassador": "Sylvere ABBA",
+        "address": "서울특별시 중구 세종대로 55 부영태평빌딩 19층",
+        "phone": "3785-0561/2",
+        "email": "info.seoul@diplomatie.gouv.ci",
+        "fax": "3785-0564",
+        "updatedAt": "2021-12-01"
+      }
     }
   },
   "콩고": {
@@ -6392,7 +7295,23 @@ export const COUNTRIES_BASE = {
       "latestYear": "2023",
       "startYear": "1991"
     },
-    "koicaHealthDetail": null
+    "koicaHealthDetail": null,
+    "diplomaticContact": {
+      "overseas": {
+        "missionName": "주 콩고민주공화국 대한민국 대사관",
+        "missionType": "대사관",
+        "jointCoverage": true,
+        "address": "63 Av De 1a Justice Gombe Kinshasa,",
+        "phone": "(243)1-503-5001",
+        "consularCenter": "(82)2-3210-0404",
+        "tollFree": "080-020-0219",
+        "emergency": "(243)85-110-7971",
+        "website": "http://overseas.mofa.go.kr/cd-ko/index.do",
+        "lat": -4.3123424,
+        "lng": 15.2847223
+      },
+      "domestic": null
+    }
   },
   "콩고민주공화국": {
     "id": "콩고민주공화국",
@@ -6501,6 +7420,22 @@ export const COUNTRIES_BASE = {
           "amount": "79,350,000 원"
         }
       ]
+    },
+    "diplomaticContact": {
+      "overseas": {
+        "missionName": "주 콩고민주공화국 대한민국 대사관",
+        "missionType": "대사관",
+        "jointCoverage": false,
+        "address": "63 Av De 1a Justice Gombe Kinshasa,",
+        "phone": "(243)1-503-5001",
+        "consularCenter": "(82)2-3210-0404",
+        "tollFree": "080-020-0219",
+        "emergency": "(243)85-110-7971",
+        "website": "http://overseas.mofa.go.kr/cd-ko/index.do",
+        "lat": -4.3123424,
+        "lng": 15.2847223
+      },
+      "domestic": null
     }
   },
   "탄자니아": {
@@ -6666,6 +7601,29 @@ export const COUNTRIES_BASE = {
           "amount": "28,600,500 원"
         }
       ]
+    },
+    "diplomaticContact": {
+      "overseas": {
+        "missionName": "주 탄자니아 대한민국 대사관",
+        "missionType": "대사관",
+        "jointCoverage": false,
+        "address": "19th floor, Golden Jubilee Towers, Ohio street, City Centre, P.O. Box 1154, Dar es Salaam, Tanzania,",
+        "phone": "(255)22-211-6086",
+        "consularCenter": "(82)2-3210-0404",
+        "tollFree": "080-020-0219",
+        "emergency": "(255)743-8282-04",
+        "website": "http://overseas.mofa.go.kr/tz-ko/index.do",
+        "lat": -6.813547,
+        "lng": 39.289251
+      },
+      "domestic": {
+        "ambassador": "Togolani Edriss Mavura",
+        "address": "서울특별시 용산구 서빙고로 51길 52 비비안빌딩 4층",
+        "phone": "02-793-7007",
+        "email": "info@tanzaniaembassy.kr",
+        "fax": "02-795-8990",
+        "updatedAt": "2021-11-09"
+      }
     }
   },
   "토고": {
@@ -6787,7 +7745,23 @@ export const COUNTRIES_BASE = {
       "latestYear": "2023",
       "startYear": "1991"
     },
-    "koicaHealthDetail": null
+    "koicaHealthDetail": null,
+    "diplomaticContact": {
+      "overseas": {
+        "missionName": "주 가나 대한민국 대사관",
+        "missionType": "대사관",
+        "jointCoverage": true,
+        "address": "No.10, Fifth Avenue Extension, Cantonments, P.O.Box GP 13700, Accra, Ghana,",
+        "phone": "(233)302-771-705",
+        "consularCenter": "(82)2-3210-0404",
+        "tollFree": "080-020-0219",
+        "emergency": "(233)244-321-858",
+        "website": "http://overseas.mofa.go.kr/gh-ko/index.do",
+        "lat": 5.575495,
+        "lng": -0.185161
+      },
+      "domestic": null
+    }
   },
   "튀니지": {
     "id": "튀니지",
@@ -6927,6 +7901,29 @@ export const COUNTRIES_BASE = {
           "amount": "25,999,500 원"
         }
       ]
+    },
+    "diplomaticContact": {
+      "overseas": {
+        "missionName": "주 튀니지 대한민국 대사관",
+        "missionType": "대사관",
+        "jointCoverage": false,
+        "address": "Immeuble BLUE SQUARE, Avenue de la Bourse, les Jardins du Lac 2, 1053 Tunis, Tunisia,",
+        "phone": "(216)71-198-595",
+        "consularCenter": "(82)2-3210-0404",
+        "tollFree": "080-020-0219",
+        "emergency": "(216)99-567-040",
+        "website": "http://overseas.mofa.go.kr/tn-ko/index.do",
+        "lat": 36.83541,
+        "lng": 10.1674
+      },
+      "domestic": {
+        "ambassador": "Nabih EL ABED",
+        "address": "서울특별시 용산구 장문로6길 8",
+        "phone": "790-4334/5",
+        "email": "at.seoul@diplomatie.gov.tn",
+        "fax": "790-4333",
+        "updatedAt": "2018-01-03"
+      }
     }
   }
 };

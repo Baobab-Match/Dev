@@ -197,6 +197,14 @@ ul { list-style: none; }
 .eco-empty { font-size: var(--fs-sm); color: var(--ink-soft); opacity: 0.7; flex: none; }
 .eco-foot { margin-top: 16px; padding-top: 4px; font-size: var(--fs-xs); line-height: 1.7; color: var(--ink-soft); opacity: 0.8; }
 .eco-foot div { margin-bottom: 2px; }
+
+/* 실제 협력 창구 — 재외공관·주한공관 2단 블록 (CountryDetail.jsx) */
+.diplo-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 28px; margin-top: 12px; }
+.diplo-col-label { font-size: var(--fs-xs); font-weight: 700; color: var(--green-600); letter-spacing: 0.5px; margin-bottom: 8px; }
+.diplo-name { font-weight: 700; color: var(--ink); margin-bottom: 4px; }
+.diplo-detail { font-size: var(--fs-sm); color: var(--ink-soft); line-height: 1.7; }
+.diplo-link { display: inline-block; margin-top: 8px; font-size: var(--fs-sm); font-weight: 700; color: var(--green-700); }
+.diplo-link:hover { text-decoration: underline; }
 .source-footnote { margin-top: 44px; padding-top: 18px; border-top: 1px solid var(--bone-dark); font-size: var(--fs-xs); line-height: 1.75; color: var(--ink-soft); opacity: 0.55; word-break: keep-all; }
 .source-footnote-mark { font-weight: 700; color: var(--ink-soft); margin-right: 7px; padding: 1px 7px; border: 1px solid var(--bone-dark); border-radius: 0; font-size: 10px; vertical-align: 1px; }
 /* 8. 국가 상세페이지 (히어로 스탯·정보 블록·KOICA) */
@@ -277,6 +285,15 @@ ul { list-style: none; }
 .reason-tier.tier-good { color: var(--green-700); }
 .reason-tier.tier-fair { color: var(--ink-soft); }
 .reason-tier.tier-weak { color: var(--danger); font-weight: 600; }
+
+/* 협력 문의처 — 순위별 추천 근거 카드 하단, 텍스트로 전부 적는 방식 (MatchResults.jsx) */
+.match-reasons-contact { margin-top: 18px; padding-top: 16px; border-top: 1px solid var(--bone-dark); }
+.mrc-title { font-size: var(--fs-xs); font-weight: 800; color: var(--green-600); letter-spacing: 0.5px; margin-bottom: 10px; }
+.mrc-line { display: flex; flex-direction: column; gap: 2px; font-size: var(--fs-sm); margin-bottom: 10px; }
+.mrc-line:last-child { margin-bottom: 0; }
+.mrc-label { font-weight: 700; color: var(--ink); }
+.mrc-value { color: var(--ink-soft); line-height: 1.6; }
+
 .report-actions { margin-top: 22px; display: flex; gap: 12px; flex-wrap: wrap; }
 .report-btn { display: inline-flex; align-items: center; gap: 8px; padding: 14px 26px; border-radius: 0; background: var(--green-700); color: #fff; font-size: var(--fs-md); font-weight: 700; text-decoration: none; cursor: pointer; transition: background 0.16s, transform 0.08s ease; }
 .report-btn:hover { background: var(--green-800); }

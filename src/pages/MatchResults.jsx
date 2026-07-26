@@ -475,6 +475,35 @@ export default function MatchResults({ openCountry, field, profile, user, favori
                   ))}
                 </ul>
               )}
+
+              {/* 협력 문의처 — 추천만 받고 끝나지 않도록, 근거 카드 바로 아래에
+                  연락처를 전부 텍스트로 적어둠 (버튼으로 상세 페이지 넘기지 않음) */}
+              {c.diplomaticContact && (
+                <div className="match-reasons-contact">
+                  <div className="mrc-title">협력 문의처</div>
+
+                  <div className="mrc-line">
+                    <span className="mrc-label">현지 대한민국 대사관</span>
+                    <span className="mrc-value">
+                      {c.diplomaticContact.overseas.missionName} · {c.diplomaticContact.overseas.phone}
+                      <br />
+                      {c.diplomaticContact.overseas.address}
+                    </span>
+                  </div>
+
+                  {/* 주한공관이 있으면(19/54개국)만 렌더링 */}
+                  {c.diplomaticContact.domestic && (
+                    <div className="mrc-line">
+                      <span className="mrc-label">주한 {c.name} 대사관 (서울)</span>
+                      <span className="mrc-value">
+                        {c.diplomaticContact.domestic.phone} · {c.diplomaticContact.domestic.email}
+                        <br />
+                        {c.diplomaticContact.domestic.address}
+                      </span>
+                    </div>
+                  )}
+                </div>
+              )}
             </div>
           );
         })}
