@@ -69,16 +69,16 @@ const NOTICE_COPY = {
   recommend: {
     title: "다음 장부터 국가별 상세 분석이 이어집니다.",
     desc: [
-      "각 국가는 ① 국가 상세 정보 → ② 매칭 적합도·추천 근거 순으로 2개 면에 걸쳐 정리됩니다.",
-      "① 국가 상세 정보에는 기후 취약도·중점협력국 여부·외교 친밀도 등 핵심 지표와 기초 국가 정보, 경제 및 ODA 규모, 인프라 현황, KOICA 지원 현황이 담겨 있습니다.",
+      "각 국가는 ① 국가 상세 정보 → ② 매칭 적합도·추천 근거 순으로 정리됩니다. 국가별 정보량에 따라 페이지 수는 다를 수 있습니다.",
+      "① 국가 상세 정보에는 기후 취약도·중점협력국 여부·외교 친밀도 등 핵심 지표와 기초 국가 정보, 경제 및 ODA 규모, 인프라 현황, KOICA 지원 현황, 협력 문의처가 담겨 있습니다.",
       "② 매칭 페이지에는 7개 지표별 적합도 막대그래프와 이 국가를 추천하는 구체적인 근거가 정리되어 있어, 순위표의 점수가 어떻게 산정됐는지 바로 확인하실 수 있습니다.",
     ],
   },
   favorite: {
     title: "다음 장부터 관심 국가별 상세 설명이 이어집니다.",
     desc: [
-      "즐겨찾기하신 각 국가는 ① 국가 상세 정보 → ② 매칭 적합도·추천 근거 순으로 2개 면에 걸쳐 정리됩니다.",
-      "① 국가 상세 정보에는 기후 취약도·중점협력국 여부·외교 친밀도 등 핵심 지표와 기초 국가 정보, 경제 및 ODA 규모, 인프라 현황, KOICA 지원 현황이 담겨 있습니다.",
+      "즐겨찾기하신 각 국가는 ① 국가 상세 정보 → ② 매칭 적합도·추천 근거 순으로 정리됩니다. 국가별 정보량에 따라 페이지 수는 다를 수 있습니다.",
+      "① 국가 상세 정보에는 기후 취약도·중점협력국 여부·외교 친밀도 등 핵심 지표와 기초 국가 정보, 경제 및 ODA 규모, 인프라 현황, KOICA 지원 현황, 협력 문의처가 담겨 있습니다.",
       "② 매칭 페이지에는 선택하신 분야를 기준으로 한 7개 지표별 적합도와 근거가 정리되어 있어, 즐겨찾기하신 국가가 왜 이 점수·순위로 나왔는지 바로 확인하실 수 있습니다.",
     ],
   },
@@ -293,6 +293,15 @@ const styles = StyleSheet.create({
   basicCellLast: { borderBottomWidth: 0 },
   basicKey: { fontSize: 11, fontWeight: 700, color: C.green700, marginBottom: 3 },
   basicVal: { fontSize: 11.5, color: C.inkSoft },
+
+  // 협력 문의처 — 재외공관 · 주한공관 2단 (홈페이지 주소는 PDF 특성상 제외, 연락처 위주로만 구성)
+  diploBox: {
+    flexDirection: "row", backgroundColor: C.paper, borderRadius: 0,
+    borderWidth: 0.5, borderColor: C.boneDark, paddingVertical: 10, paddingHorizontal: 16, marginBottom: 12,
+  },
+  diploCol: { flex: 1, paddingRight: 12 },
+  diploColLast: { paddingRight: 0, paddingLeft: 12, borderLeftWidth: 0.5, borderLeftColor: C.boneDark },
+  diploVal: { fontSize: 11.5, color: C.inkSoft, marginTop: 2, lineHeight: 1.5 },
 
   // 경제·ODA 풀와이드 표
   ecoRow: { position: "relative", height: 48, marginBottom: 0 },
@@ -702,6 +711,35 @@ function CountryDetailPage({ r, country, rankLabel, field, showMatchedField, inf
           </>
         ) : null}
       </View>
+      {/* 협력 문의처 — 현지 한국 대사관(전 국가) + 서울 소재 대사관(있는 국가만).
+          홈페이지 주소는 "바로가기" 링크라 인쇄물엔 어색해서 제외하고 연락처만 담음.
+          출처는 다른 섹션과 통일해서 제목 옆이 아니라 마지막 "데이터 출처" 페이지에서 안내.
+          바로 전에 있던 NOTES 필러는 지웠음 — KOICA 뒤에 필러 하나가 더 끼면서 내용이
+          다음 장으로 밀려 사실상 텅 빈 장이 하나 더 생겼었음 */}
+      {country?.diplomaticContact ? (
+        <View wrap={false} style={{ marginTop: 22 }}>
+          <SecHead title="협력 문의처" />
+          <View style={styles.diploBox}>
+            <View style={styles.diploCol}>
+              <Text style={styles.basicKey}>현지 대한민국 대사관</Text>
+              <Text style={styles.basicVal}>{country.diplomaticContact.overseas.missionName}</Text>
+              <Text style={styles.diploVal}>{country.diplomaticContact.overseas.phone}</Text>
+              <Text style={styles.diploVal}>{country.diplomaticContact.overseas.address}</Text>
+            </View>
+            {country.diplomaticContact.domestic ? (
+              <View style={[styles.diploCol, styles.diploColLast]}>
+                <Text style={styles.basicKey}>주한 {country.name} 대사관 (서울)</Text>
+                <Text style={styles.basicVal}>{country.diplomaticContact.domestic.ambassador}</Text>
+                <Text style={styles.diploVal}>{country.diplomaticContact.domestic.phone}</Text>
+                {country.diplomaticContact.domestic.email ? (
+                  <Text style={styles.diploVal}>{country.diplomaticContact.domestic.email}</Text>
+                ) : null}
+                <Text style={styles.diploVal}>{country.diplomaticContact.domestic.address}</Text>
+              </View>
+            ) : null}
+          </View>
+        </View>
+      ) : null}
       <View style={{ marginTop: 14, flexGrow: 1 }}>
         <SectionMemo />
       </View>
@@ -922,7 +960,8 @@ export default function MatchReportPDF({
             인구·언어·수도 외교부 「국가(지역)별 일반현황」(2025.12 갱신) · GDP·1인당 GDP 외교부
             「국가(지역)별 경제현황」(2025.09 갱신) · ODA 규모(순수원액·수원국·양자·한국) KOICA
             「협력국 통합개발지표」(2025.07 갱신) · KOICA 분야별·누적 지원 KOICA 「국가별 지원실적」
-            (2025.11 갱신) · 병상 수·의사 수·전력 접근률·인터넷 이용률 World Bank Open Data.
+            (2025.11 갱신) · 병상 수·의사 수·전력 접근률·인터넷 이용률 World Bank Open Data ·
+            재외공관·주한공관 연락처 외교부 「국가·지역별 재외공관 정보」·「재외공관 홈페이지 관련 정보」·「주한공관정보」.
             모든 데이터는 공공데이터포털(data.go.kr) 또는 World Bank 공개 자료이며, 갱신일은
             각 포털 기준입니다. 데이터 기준연도는 각 항목에 별도 표기되어 있습니다.
           </Text>
