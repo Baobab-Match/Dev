@@ -819,7 +819,6 @@ export default function MatchReportPDF({
   showMatchedField = false,
   isAiResult = false, // AI 매칭이 실제로 반영됐는지 — 데이터 출처 페이지 문구 분기용
 }) {
-  console.log("🔵 MatchReportPDF 진입!", { ranked: ranked?.length, countries: !!countries });
   const shownField = field || "전체";
   const infraAvg = computeInfraAvg(countries);
   const climateRank = buildRankMap(countries, "climateScore");

@@ -567,6 +567,8 @@ textarea.field { resize: vertical; min-height: 64px; }
 
 /* ── 핵심 기능(why) 탭 — 박스형 카드 2열 ── */
 .about-why { display: grid; grid-template-columns: repeat(2, 1fr); gap: 24px; margin-bottom: 50px; }
+.about-data-sources { padding: 48px 0 64px; border-top: 1px solid var(--bone-dark); }
+.about-data-sources-title { font-family: var(--font-display); font-weight: 900; font-size: clamp(24px, 2.8vw, 34px); line-height: 1.4; color: var(--green-900); margin: 4px 0 22px; letter-spacing: -0.01em; word-break: keep-all; }
 .why-row { padding: 28px 24px; background: var(--paper); border: 1px solid var(--bone-dark); }
 .why-row h3 { font-size: var(--fs-xl); font-weight: 800; color: var(--ink); margin: 0 0 10px; }
 .why-row p { font-size: var(--fs-lg); color: var(--ink-soft); line-height: 1.75; margin: 0; }

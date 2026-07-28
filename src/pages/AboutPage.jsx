@@ -155,6 +155,30 @@ const WHY_DETAIL = [
   },
 ];
 
+// 실제 가공한 데이터 16종 — 기관별로 묶어서 "핵심 기능" 탭 하단에 전부 나열
+const DATA_SOURCES = [
+  {
+    tag: "외교부",
+    items: [
+      "국가표준코드", "국가(지역)별 일반현황", "국가(지역)별 경제현황",
+      "국가(지역)별 우리나라기관 진출현황", "국가(지역)별 우리나라와의 관계", "국가(지역)별 우리나라와의 무역관계",
+      "국가·지역별 재외공관 정보", "재외공관 홈페이지 관련 정보", "주한공관정보",
+    ],
+  },
+  {
+    tag: "KOICA",
+    items: ["국가코드 테이블", "협력국 통합개발지표", "국가별 지원실적", "ODA 실적보고 로데이터"],
+  },
+  {
+    tag: "World Bank",
+    items: ["Climate Change Knowledge Portal(CCKP) API"],
+  },
+  {
+    tag: "한아프리카재단",
+    items: ["아프리카대륙 250대기업", "아프리카혁신 스타트업 디렉터리"],
+  },
+];
+
 // 이런 분들께 추천합니다 — 정부·공공기관 / 기업이 메인 타겟, 개인은 부가 설명
 const AUDIENCE = [
   {
@@ -178,7 +202,7 @@ const AUDIENCE = [
 // ⚠️ 이용료·업데이트 주기 등은 실제 정책 확정 후 문구 다시 확인할 것
 const FAQ = [
   { q: "이용료가 있나요?", a: "현재는 무료로 이용하실 수 있습니다. (추후 정책 변경 시 별도 공지 예정)" },
-  { q: "국가 데이터는 어디서 가져오나요?", a: "외교부 일반현황·경제현황, KOICA 통합개발지표·지원실적 등 공공데이터를 기반으로 구성했습니다." },
+  { q: "국가 데이터는 어디서 가져오나요?", a: "외교부·KOICA·World Bank·한아프리카재단 4개 기관의 공공데이터 16종을 가공해 구성했습니다. 전체 목록은 '핵심 기능' 탭 하단에서 확인하실 수 있습니다." },
   { q: "추천(매칭)은 어떤 기준으로 이뤄지나요?", a: "분야 적합도, 기후기술 적합도, 기후위기 긴급도, 외교 기반, 개발 필요성, 수출 연계성 6가지 축을 회원 유형별 가중치로 계산해 산출합니다." },
   { q: "개인 회원도 매칭 리포트를 받을 수 있나요?", a: "네, 회원 유형과 관계없이 관심 분야를 입력하면 동일한 방식으로 추천받고 PDF 보고서로 저장할 수 있습니다." },
   { q: "사업자등록번호는 어떻게 확인하나요?", a: "사업자등록번호, 대표자 성명, 개업일자를 입력하시면 국세청 사업자등록정보 진위확인 API를 통해 실시간으로 대조하여 실제 등록된 사업자인지 엄격하게 검증합니다. 입력하신 정보가 국세청 등록 정보와 일치하지 않으면 가입이 제한됩니다." },
@@ -360,6 +384,27 @@ export function AboutPage({ go }) {
                   <p style={INDENT}>{w.desc}</p>
                 </div>
               ))}
+            </div>
+
+            {/* 실제 가공한 데이터 16종 — 기관별로 묶어서 전부 나열 (랜딩 페이지엔 요약+링크만) */}
+            <div className="about-data-sources">
+              <p className="about-mission-eyebrow">DATA SOURCES</p>
+              <h3 className="about-data-sources-title">바오밥매치가 가공한 데이터 16종</h3>
+              <div className="about-fields-groups">
+                {DATA_SOURCES.map((g) => (
+                  <div className="about-fields-group-row" key={g.tag}>
+                    <div className="about-fields-group-tag">{g.tag}</div>
+                    <div className="about-fields-chip-set">
+                      {g.items.map((item) => (
+                        <span className="about-fields-chip" key={item}>{item}</span>
+                      ))}
+                    </div>
+                  </div>
+                ))}
+              </div>
+              <p className="eco-foot" style={{ marginTop: "16px" }}>
+                모든 데이터는 공공데이터포털(data.go.kr) 또는 각 기관의 공개 자료이며, World Bank CCKP만 자체 API로 제공됩니다.
+              </p>
             </div>
           </section>
         )}
