@@ -88,29 +88,33 @@ function biggestInfraGap(c) {
   return worst;
 }
 
+// 국가에 인프라 데이터 자체가 있는지 (격차가 없는 것과 데이터가 아예 없는 것을 구분하기 위함)
+function hasInfraData(c) {
+  return INFRA_FIELDS.some((f) => c.infrastructure && c.infrastructure[f] && c.infrastructure[f].value != null);
+}
+
 function buildSummary(c) {
   const sentences = [];
 
   const climateRank = CLIMATE_RANK[c.id];
   const diploRank = DIPLOMACY_RANK[c.id];
 
-  // 기후 취약도는 점수가 높을수록 "안 좋은" 지표라, "상위권/하위권" 같은 성적 표현 대신
-  // 위험도를 직접 말로 풀어써서 방향을 헷갈리지 않게 함
+  // 1. 기후 취약도 + World Bank 전망을 진짜 한 문장으로 연결 ("-며"로 이어서 마침표가 중간에 끊기지 않게)
   if (c.climateScore != null && climateRank) {
     const level = climateRank.rank <= climateRank.total * 0.3 ? "기후 위험이 큰 편"
       : climateRank.rank <= climateRank.total * 0.6 ? "중간 수준"
       : "비교적 안정적인 편";
-    sentences.push(`${c.name}는 기후 변화에 취약한 정도가 54개국 중 ${climateRank.rank}위(${c.climateScore}점)로, ${level}에 속합니다.`);
-  }
-  // World Bank 기후 API 기반 구체적 전망 문장 — "협력이 시급하다"는 두루뭉술한 말 대신
-  // "기온이 몇 도 오른다"처럼 실제 근거를 그대로 보여주되, 출처를 붙여 자연스럽게 이어지게 함
-  if (c.climateReason) {
-    sentences.push(`World Bank 기후 전망에 따르면 ${c.climateReason}`);
-  } else if (c.mainClimateIssue) {
-    sentences.push(`가장 두드러진 기후 문제는 ${c.mainClimateIssue}입니다.`);
+    const lead = `${c.name}는 기후 변화에 취약한 정도가 54개국 중 ${climateRank.rank}위(${c.climateScore}점)로 ${level}에 속`;
+    if (c.climateReason) {
+      sentences.push(`${lead}하며, World Bank 기후 전망에 따르면 ${c.climateReason}`);
+    } else if (c.mainClimateIssue) {
+      sentences.push(`${lead}하며, 가장 두드러진 기후 문제는 ${c.mainClimateIssue}입니다.`);
+    } else {
+      sentences.push(`${lead}합니다.`);
+    }
   }
 
-  // 외교 친밀도는 점수가 높을수록 "좋은" 지표라 순위 표현이 그대로 직관과 일치함
+  // 2. 외교 친밀도 — "한편"으로 앞 문장과 자연스럽게 연결
   if (c.diplomacyScore != null && diploRank) {
     const tier = diploRank.rank <= diploRank.total * 0.3 ? "높은 편" : diploRank.rank <= diploRank.total * 0.6 ? "중간 수준" : "낮은 편";
     const implication = diploRank.rank <= diploRank.total * 0.3
@@ -118,16 +122,29 @@ function buildSummary(c) {
       : diploRank.rank <= diploRank.total * 0.6
       ? "협력을 시작하기에 무난한 여건입니다"
       : "협력 관계를 새로 다져나가야 하는 단계일 수 있습니다";
-    sentences.push(`외교 친밀도는 54개국 중 ${diploRank.rank}위(${c.diplomacyScore}점)로 ${tier}이며, ${implication}.`);
+    sentences.push(`한편 외교 친밀도는 54개국 중 ${diploRank.rank}위(${c.diplomacyScore}점)로 ${tier}이며, ${implication}.`);
   }
 
+  // 3. 협력 이력 — KOICA 누적 지원액이 있으면 가장 구체적으로, 없으면 중점협력국·ODA 이력 여부로,
+  //    그마저 없으면 "아직 이력이 없다"는 것도 하나의 정보로 명시 (문장이 통째로 사라지지 않게)
   const track = [];
   if (c.priorityPartner) track.push("KOICA 중점협력국");
   if (c.koreaOdaHistory) track.push("한국 ODA 지원 이력");
-  if (track.length) sentences.push(`${track.join(" · ")}이 있어, 실무 차원의 협력 경험과 신뢰 기반이 이미 어느 정도 마련되어 있는 국가입니다.`);
+  if (c.koicaCumulative && c.koicaCumulative.total) {
+    sentences.push(`KOICA는 ${c.koicaCumulative.startYear}년 이후 이 나라에 누적 ${c.koicaCumulative.total}을 지원해 왔습니다.`);
+  } else if (track.length) {
+    sentences.push(`${track.join(" · ")}이 있어, 실무 차원의 협력 경험과 신뢰 기반이 이미 어느 정도 마련되어 있는 국가입니다.`);
+  } else {
+    sentences.push("다만 아직 한국과의 공식적인 협력 이력은 확인되지 않아, 앞으로 새롭게 관계를 쌓아나갈 수 있는 국가입니다.");
+  }
 
+  // 4. 인프라 — 눈에 띄는 격차가 있으면 구체적으로, 데이터는 있는데 격차가 없으면 "평균 수준"이라는 것도 정보로 제공
   const gap = biggestInfraGap(c);
-  if (gap) sentences.push(`${INFRA_LABEL[gap.field]}은 아프리카 평균보다 낮은 수준으로, 이 분야에서 한국이 실질적으로 기여할 수 있는 협력 여지가 있는 것으로 보입니다.`);
+  if (gap) {
+    sentences.push(`인프라 면에서는 ${INFRA_LABEL[gap.field]}이 아프리카 평균보다 낮은 수준으로, 이 분야에서 한국이 실질적으로 기여할 수 있는 협력 여지가 있는 것으로 보입니다.`);
+  } else if (hasInfraData(c)) {
+    sentences.push("인프라 지표는 아프리카 평균과 비슷한 수준으로 확인됩니다.");
+  }
 
   return sentences.join(" ") || null;
 }
