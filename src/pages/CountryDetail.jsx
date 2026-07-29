@@ -70,6 +70,68 @@ function buildRankMap(scoreKey) {
 const CLIMATE_RANK = buildRankMap("climateScore");
 const DIPLOMACY_RANK = buildRankMap("diplomacyScore");
 
+// 국가 정보 요약 — 아래 세부 항목을 다 읽기 전에, 이미 계산해둔 순위·비교 데이터로 핵심만 먼저 전달
+// 인프라 라벨 — 요약 문장에서 "아프리카 평균보다 부족한 항목"을 짚을 때 재사용
+const INFRA_LABEL = { hospitalBeds: "병상 수", physicians: "의사 수", electricityAccess: "전력 접근률", internetPenetration: "인터넷 이용률" };
+
+// 아프리카 평균보다 가장 많이 부족한 인프라 항목 하나를 찾음 (5% 이상 낮은 것 중 가장 큰 격차)
+function biggestInfraGap(c) {
+  let worst = null;
+  INFRA_FIELDS.forEach((f) => {
+    const raw = c.infrastructure && c.infrastructure[f] && c.infrastructure[f].value;
+    const val = raw != null ? parseFloat(raw) : null;
+    const avg = AFRICA_INFRA_STATS[f] && AFRICA_INFRA_STATS[f].avg;
+    if (val == null || avg == null || isNaN(val)) return;
+    const diff = (val - avg) / avg; // 음수 = 평균보다 낮음
+    if (diff < -0.05 && (!worst || diff < worst.diff)) worst = { field: f, diff };
+  });
+  return worst;
+}
+
+function buildSummary(c) {
+  const sentences = [];
+
+  const climateRank = CLIMATE_RANK[c.id];
+  const diploRank = DIPLOMACY_RANK[c.id];
+
+  // 기후 취약도는 점수가 높을수록 "안 좋은" 지표라, "상위권/하위권" 같은 성적 표현 대신
+  // 위험도를 직접 말로 풀어써서 방향을 헷갈리지 않게 함
+  if (c.climateScore != null && climateRank) {
+    const level = climateRank.rank <= climateRank.total * 0.3 ? "기후 위험이 큰 편"
+      : climateRank.rank <= climateRank.total * 0.6 ? "중간 수준"
+      : "비교적 안정적인 편";
+    sentences.push(`${c.name}는 기후 변화에 취약한 정도가 54개국 중 ${climateRank.rank}위(${c.climateScore}점)로, ${level}에 속합니다.`);
+  }
+  // World Bank 기후 API 기반 구체적 전망 문장 — "협력이 시급하다"는 두루뭉술한 말 대신
+  // "기온이 몇 도 오른다"처럼 실제 근거를 그대로 보여주되, 출처를 붙여 자연스럽게 이어지게 함
+  if (c.climateReason) {
+    sentences.push(`World Bank 기후 전망에 따르면 ${c.climateReason}`);
+  } else if (c.mainClimateIssue) {
+    sentences.push(`가장 두드러진 기후 문제는 ${c.mainClimateIssue}입니다.`);
+  }
+
+  // 외교 친밀도는 점수가 높을수록 "좋은" 지표라 순위 표현이 그대로 직관과 일치함
+  if (c.diplomacyScore != null && diploRank) {
+    const tier = diploRank.rank <= diploRank.total * 0.3 ? "높은 편" : diploRank.rank <= diploRank.total * 0.6 ? "중간 수준" : "낮은 편";
+    const implication = diploRank.rank <= diploRank.total * 0.3
+      ? "정부 간 협력 채널이 비교적 잘 갖춰져 있는 편입니다"
+      : diploRank.rank <= diploRank.total * 0.6
+      ? "협력을 시작하기에 무난한 여건입니다"
+      : "협력 관계를 새로 다져나가야 하는 단계일 수 있습니다";
+    sentences.push(`외교 친밀도는 54개국 중 ${diploRank.rank}위(${c.diplomacyScore}점)로 ${tier}이며, ${implication}.`);
+  }
+
+  const track = [];
+  if (c.priorityPartner) track.push("KOICA 중점협력국");
+  if (c.koreaOdaHistory) track.push("한국 ODA 지원 이력");
+  if (track.length) sentences.push(`${track.join(" · ")}이 있어, 실무 차원의 협력 경험과 신뢰 기반이 이미 어느 정도 마련되어 있는 국가입니다.`);
+
+  const gap = biggestInfraGap(c);
+  if (gap) sentences.push(`${INFRA_LABEL[gap.field]}은 아프리카 평균보다 낮은 수준으로, 이 분야에서 한국이 실질적으로 기여할 수 있는 협력 여지가 있는 것으로 보입니다.`);
+
+  return sentences.join(" ") || null;
+}
+
 // 상세 페이지 전용 — 히어로 스탯 한 칸
 // rankHint: "1위=가장 취약"처럼 순위 방향을 직접 명시하는 문구.
 // "순위가 낮을수록/높을수록"은 사람마다 반대로 해석하기 쉬워 일부러 쓰지 않음.
@@ -316,6 +378,7 @@ export default function CountryDetail({ id, go, from = "search", isFavorite, tog
   const hasHealthDetail = !!healthDetailRows;
 
   const backLabel = from === "match" ? "추천 결과로" : from === "mypage" ? "내 정보로" : "국가 목록으로";
+  const summary = buildSummary(c);
 
   return (
     <main className="page">
@@ -342,11 +405,19 @@ export default function CountryDetail({ id, go, from = "search", isFavorite, tog
             {stats.map((s) => <StatItem key={s.label} {...s} />)}
           </div>
         </div>
+
+        {/* 국가 정보 요약 — 히어로 구분선(border-bottom) 위, 실루엣 밑까지 가로로 꽉 차게 (그리드 두 칸 모두 걸침) */}
+        {summary && (
+          <div className="summary-card">
+            <div className="summary-tag">국가 정보 요약</div>
+            <p style={{ textIndent: "1em" }}>{summary}</p>
+          </div>
+        )}
       </div>
 
       <div className="detail-grid">
         <div>
-          {/* 1. 기초 국가 정보 */}
+          {/* 1. 기초 국가 정보 — "이 나라는 어떤 곳인가" */}
           <div className="info-block">
             <div className="block-tag">기초 국가 정보</div>
             {infoRows.map(([k, val]) => (
@@ -354,7 +425,7 @@ export default function CountryDetail({ id, go, from = "search", isFavorite, tog
             ))}
           </div>
 
-          {/* 2. KOICA 지원 규모 — 도넛(위) + 범례(아래) */}
+          {/* 2. KOICA 지원 규모 — "그동안의 협력" (도넛 위 + 범례 아래) */}
           <div className="info-block">
             <div className="block-tag">한국국제협력단(KOICA) 지원 규모</div>
 
@@ -405,7 +476,7 @@ export default function CountryDetail({ id, go, from = "search", isFavorite, tog
         </div>
 
         <div>
-          {/* 3. 경제 및 ODA 규모 정보 */}
+          {/* 3. 경제 및 ODA 규모 정보 — "이 나라에 필요한 것" */}
           <div className="info-block">
             <div className="block-tag">경제 및 ODA 규모 정보</div>
             {ecoRows.map(([label, v, defaultSource]) => <EcoItem key={label} label={label} v={v} defaultSource={defaultSource} />)}
@@ -416,7 +487,7 @@ export default function CountryDetail({ id, go, from = "search", isFavorite, tog
             </div>
           </div>
 
-          {/* 4. 인프라 정보 — 경제/ODA와 성격이 달라 별도 블록으로 분리 */}
+          {/* 4. 인프라 정보 — 경제/ODA와 같은 "이 나라에 필요한 것" 질문에 속하지만, 성격이 달라 별도 블록으로 분리 */}
           <div className="info-block">
             <div className="block-tag">인프라 정보</div>
             {infraRows.map(([label, v, fieldKey]) => (
@@ -433,7 +504,7 @@ export default function CountryDetail({ id, go, from = "search", isFavorite, tog
         </div>
       </div>
 
-      {/* 5. 보건 세부 지원 현황 — KOICA ODA 로데이터, 기존 KOICA 도넛과 독립된 전체 폭 블록 */}
+      {/* 5. 보건 세부 지원 현황 — "그동안의 협력"에 속하는 KOICA ODA 로데이터, 독립된 전체 폭 블록 */}
       {hasHealthDetail && (
         <div className="info-block info-block--wide">
           <div className="block-tag">보건 세부 지원 현황</div>
