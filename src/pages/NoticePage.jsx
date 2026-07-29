@@ -1,12 +1,18 @@
 import { useState } from "react";
 
-// 공지사항 
+// 공지사항
 const NOTICES = [
+  {
+    id: 8,
+    title: "국가 상세 페이지 '국가 정보 요약' 신설 및 화면 개선",
+    date: "2026-07-29",
+    body: "국가 상세 페이지 상단에 기후 취약도, 외교 친밀도, 기후 전망, 협력 이력을 한 문단으로 정리해 보여주는 '국가 정보 요약' 카드가 추가되었습니다. 기존 인프라 정보(전력 접근률, 인터넷 이용률 등)는 막대그래프로 아프리카 평균과 비교해 보실 수 있습니다. 국가 정보 찾기 페이지에는 전체·추천국·중점협력국 필터가 추가되어 원하는 국가를 더 빠르게 찾으실 수 있습니다.",
+  },
   {
     id: 7,
     title: "국가 상세·추천 결과 페이지 '협력 문의처' 정보 추가",
     date: "2026-07-26",
-    body: "국가 상세 페이지와 추천 결과 페이지에 현지 대한민국 대사관, 그리고 서울 소재 각국 대사관 연락처를 담은 '협력 문의처' 정보가 추가되었습니다.\n현지 대한민국 대사관 정보는 아프리카 54개국 전체에서 확인하실 수 있으며, 서울 소재 대사관 연락처는 19개국에서 함께 제공됩니다.",
+    body: "국가 상세 페이지와 추천 결과 페이지에 현지 대한민국 대사관, 그리고 서울 소재 각국 대사관 연락처를 담은 '협력 문의처' 정보가 추가되었습니다. 현지 대한민국 대사관 정보는 아프리카 54개국 전체에서 확인하실 수 있으며, 서울 소재 대사관 연락처는 19개국에서 함께 제공됩니다.",
   },
   {
     id: 6,
@@ -18,7 +24,7 @@ const NOTICES = [
     id: 5,
     title: "산업 동향 페이지 신설",
     date: "2026-07-15",
-    body: "아프리카 산업·경제 뉴스를 모아볼 수 있는 '산업 동향' 메뉴가 신설되었습니다.\n로그인 후 관심 분야를 등록하시면 관련 뉴스를 함께 확인하실 수 있으며, 모든 뉴스는 접속 시점 기준 실시간으로 불러옵니다. 제목을 누르면 원문 기사로 연결됩니다.",
+    body: "아프리카 산업·경제 뉴스를 모아볼 수 있는 '산업 동향' 메뉴가 신설되었습니다. 로그인 후 관심 분야를 등록하시면 관련 뉴스를 함께 확인하실 수 있으며, 모든 뉴스는 접속 시점 기준 실시간으로 불러옵니다. 제목을 누르면 원문 기사로 연결됩니다.",
   },
   {
     id: 4,
@@ -30,7 +36,7 @@ const NOTICES = [
     id: 3,
     title: "바오밥매치 베타 서비스 오픈 안내",
     date: "2026-06-01",
-    body: "안녕하세요, 바오밥매치입니다.\n한국 녹색기술과 아프리카 국가를 잇는 매칭 플랫폼 바오밥매치의 베타 서비스가 오픈되었습니다. 공공기관·기업·일반 회원으로 가입하시면 맞춤형 국가 추천과 상세 국가 정보를 이용하실 수 있습니다. 많은 관심 부탁드립니다.",
+    body: "안녕하세요, 바오밥매치입니다. 한국 녹색기술과 아프리카 국가를 잇는 매칭 플랫폼 바오밥매치의 베타 서비스가 오픈되었습니다. 공공기관·기업·일반 회원으로 가입하시면 맞춤형 국가 추천과 상세 국가 정보를 이용하실 수 있습니다. 많은 관심 부탁드립니다.",
   },
   {
     id: 2,
@@ -46,8 +52,21 @@ const NOTICES = [
   },
 ];
 
+const PER_PAGE = 5; // 한 페이지에 보여줄 공지 개수
+
 export function NoticePage() {
   const [openId, setOpenId] = useState(null);
+  const [page, setPage] = useState(1);
+  const totalPages = Math.max(1, Math.ceil(NOTICES.length / PER_PAGE));
+  const pageItems = NOTICES.slice((page - 1) * PER_PAGE, page * PER_PAGE);
+
+  const goPage = (p) => {
+    const next = Math.min(totalPages, Math.max(1, p));
+    setPage(next);
+    setOpenId(null); // 페이지 넘기면 열려있던 항목은 접어둠
+    window.scrollTo(0, 0);
+  };
+
   return (
     <main className="page">
       <div className="page-head">
@@ -57,7 +76,7 @@ export function NoticePage() {
       </div>
 
       <ul className="notice-list">
-        {NOTICES.map((n) => {
+        {pageItems.map((n) => {
           const isOpen = openId === n.id;
           return (
             <li key={n.id} className={"notice-item" + (isOpen ? " open" : "")}>
@@ -70,13 +89,34 @@ export function NoticePage() {
               </button>
               {isOpen && (
                 <div className="notice-body">
-                  {n.body.split("\n").map((line, i) => <p key={i}>{line}</p>)}
+                  <p style={{ textIndent: "1em" }}>{n.body}</p>
                 </div>
               )}
             </li>
           );
         })}
       </ul>
+
+      {/* 페이지네이션 — 공지가 늘어나도 한 화면에 다 몰리지 않도록 */}
+      {totalPages > 1 && (
+        <nav className="pagination" aria-label="공지사항 페이지 이동">
+          <button type="button" className="page-btn" onClick={() => goPage(1)} disabled={page === 1} aria-label="첫 페이지">«</button>
+          <button type="button" className="page-btn" onClick={() => goPage(page - 1)} disabled={page === 1} aria-label="이전 페이지">‹</button>
+          {Array.from({ length: totalPages }, (_, i) => i + 1).map((p) => (
+            <button
+              key={p}
+              type="button"
+              className={"page-btn" + (p === page ? " active" : "")}
+              onClick={() => goPage(p)}
+              aria-current={p === page ? "page" : undefined}
+            >
+              {p}
+            </button>
+          ))}
+          <button type="button" className="page-btn" onClick={() => goPage(page + 1)} disabled={page === totalPages} aria-label="다음 페이지">›</button>
+          <button type="button" className="page-btn" onClick={() => goPage(totalPages)} disabled={page === totalPages} aria-label="마지막 페이지">»</button>
+        </nav>
+      )}
     </main>
   );
 }
