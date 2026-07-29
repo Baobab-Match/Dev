@@ -51,6 +51,7 @@ function matchesQuery(label, q) {
 export default function CountrySearch({ openCountry, user, profile }) {
   const [q, setQ] = useState("");
   const [sel, setSel] = useState(null);
+  const [filterMode, setFilterMode] = useState("all"); // "all" | "rec" | "priority"
 
   // 로그인(프로필 보유) 상태에서만 추천국 표시 — 매칭 엔진 상위 5개국
   const recIds = useMemo(
@@ -58,7 +59,13 @@ export default function CountrySearch({ openCountry, user, profile }) {
     [user, profile]
   );
 
-  const filtered = COUNTRY_LIST.filter((c) => matchesQuery(c, q));
+  const filtered = COUNTRY_LIST.filter((c) => matchesQuery(c, q)).filter((label) => {
+    if (filterMode === "all") return true;
+    const id = idOf(label);
+    if (filterMode === "rec") return recIds.includes(id);
+    if (filterMode === "priority") return COUNTRIES[id]?.priorityPartner;
+    return true;
+  });
 
   // id 선택 공통 처리: 상세 데이터 있으면 열고, 없으면 선택 표시
   const pick = (id) => (COUNTRIES[id] ? openCountry(id) : setSel(id));
@@ -95,6 +102,33 @@ export default function CountrySearch({ openCountry, user, profile }) {
               value={q}
               onChange={(e) => setQ(e.target.value)}
             />
+          </div>
+
+          {/* 필터 칩 — 실제 데이터 필드(추천국·중점협력국)만 사용 */}
+          <div className="filter-chips">
+            <button
+              type="button"
+              className={"chip" + (filterMode === "all" ? " active" : "")}
+              onClick={() => setFilterMode("all")}
+            >
+              전체
+            </button>
+            {user && recIds.length > 0 && (
+              <button
+                type="button"
+                className={"chip" + (filterMode === "rec" ? " active" : "")}
+                onClick={() => setFilterMode("rec")}
+              >
+                추천국
+              </button>
+            )}
+            <button
+              type="button"
+              className={"chip" + (filterMode === "priority" ? " active" : "")}
+              onClick={() => setFilterMode("priority")}
+            >
+              중점협력국
+            </button>
           </div>
           <div className="country-list">
             {filtered.map((label) => {

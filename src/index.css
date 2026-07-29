@@ -38,6 +38,9 @@
   --green-600: #4a6b4f;
   --green-500: #5a7d5a;
   --green-300: #9cb39c;
+  /* 장식용 강조색이 아니라, 값과 기준선(평균)처럼 서로 다른 두 데이터를 구분해야 하는 비교 차트에서만
+     예외적으로 쓰는 기능색. 다른 곳(배너·안내 문구 등)은 전부 초록으로 통일하고, 여기서만 유지함. */
+  --benchmark: #cf6a3a;
   --sage-100: var(--paper);
 
   --bone: #ffffff;
@@ -47,7 +50,6 @@
   --gray-100: var(--paper);
 
   --danger: #a8503a;
-  --gold: #cf6a3a;
 
   --ink: #1b1f23;
   --ink-soft: #57606a;
@@ -178,6 +180,12 @@ ul { list-style: none; }
 .search-box:focus-within { border-color: var(--green-700); }
 .search-box input { flex: 1; border: none; outline: none; font-size: var(--fs-md); background: none; color: var(--ink); }
 .search-box svg { flex: none; color: var(--green-700); }
+
+/* 필터 칩 — 정렬 탭(sort-tab)과 같은 톤으로 통일 */
+.filter-chips { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 14px; }
+.chip { font-size: var(--fs-sm); font-weight: 700; color: var(--ink-soft); background: var(--paper); border: 1.5px solid var(--bone-dark); border-radius: var(--r-sm); padding: 7px 15px; cursor: pointer; transition: border-color 0.15s, color 0.15s, background 0.15s; }
+.chip:hover { border-color: var(--green-500); color: var(--green-700); }
+.chip.active { background: var(--green-700); border-color: var(--green-700); color: #fff; }
 .search-panel { display: flex; flex-direction: column; min-height: 0; height: 100%; background: var(--bone); border: 1.5px solid var(--green-700); border-radius: var(--r-lg); padding: 20px; }
 .country-empty { padding: 26px; text-align: center; color: var(--ink-soft); font-size: var(--fs-sm); }
 .country-list { flex: 1 1 0; min-height: 240px; overflow-y: auto; border: none; border-radius: 0; background: none; }
@@ -242,6 +250,13 @@ ul { list-style: none; }
 .eco-val { display: flex; flex-direction: column; align-items: flex-end; text-align: right; flex: none; }
 .eco-val .krw-main { font-size: var(--fs-lg); font-weight: 800; color: var(--ink); letter-spacing: -0.01em; line-height: 1.25; }
 .eco-val .usd-sub { font-size: var(--fs-xs); font-weight: 500; color: var(--ink-soft); opacity: 0.8; margin-top: 6px; }
+
+/* 인프라 막대그래프 (전력 접근률 등) — 경제/ODA 항목(EcoItem)은 텍스트만 쓰므로 이 modifier가 없으면 영향받지 않음 */
+.eco-item--bar { display: block; }
+.eco-item--bar .eco-item-top { display: flex; justify-content: space-between; align-items: baseline; gap: 16px; }
+.eco-bar { position: relative; height: 6px; background: var(--paper); border: 1px solid var(--bone-dark); margin-top: 10px; }
+.eco-bar-fill { display: block; height: 100%; background: var(--green-500); }
+.eco-bar-avg { position: absolute; top: -3px; width: 2px; height: 12px; background: var(--benchmark); }
 .koica-sub-title { font-size: var(--fs-sm); font-weight: 600; color: var(--ink); padding: 4px 0 14px; line-height: 1.5; }
 .koica-sub-desc { display: block; margin-top: 4px; font-size: var(--fs-xs); font-weight: 400; color: var(--ink-soft); opacity: 0.7; word-break: keep-all; }
 .koica-wrap { display: flex; flex-direction: column; gap: 20px; }
@@ -302,9 +317,9 @@ ul { list-style: none; }
 .report-btn--outline:hover { background: var(--green-700); color: #fff; }
 /* AI 서버 콜드 스타트 안내 — 30초 넘게 응답이 없을 때 표시 */
 .cold-start-notice {
-  background: color-mix(in srgb, var(--gold) 10%, white);
-  border: 0.5px solid color-mix(in srgb, var(--gold) 40%, transparent);
-  color: var(--gold);
+  background: color-mix(in srgb, var(--green-700) 10%, white);
+  border: 0.5px solid color-mix(in srgb, var(--green-700) 40%, transparent);
+  color: var(--green-800);
   font-size: var(--fs-sm);
   padding: 12px 16px;
   border-radius: 10px;
@@ -523,7 +538,7 @@ textarea.field { resize: vertical; min-height: 64px; }
 .awa-num-suffix { color: var(--ink-soft); font-weight: 700; font-size: 0.55em; margin-left: 2px; }
 .awa-trend { width: 26px; height: 26px; border-radius: 50%; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
 .awa-trend--up { background: rgba(45, 90, 64, 0.1); color: var(--green-700); }
-.awa-trend--down { background: rgba(207, 106, 58, 0.12); color: var(--gold); }
+.awa-trend--down { background: rgba(45, 74, 50, 0.12); color: var(--green-800); }
 .awa-card-desc { font-size: var(--fs-sm); color: var(--ink-soft); line-height: 1.65; margin-top: auto; word-break: keep-all; text-indent: 1em; }
 
 /* ── 이런 분들께(for-whom) 탭 — 비대칭 리스트형 ── */

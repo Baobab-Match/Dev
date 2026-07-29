@@ -4,28 +4,33 @@ import { CountrySilhouette, DonutChart, DONUT_COLORS, Icons } from "../component
 const EMPTY = "아직 정보가 없습니다";
 const isNil = (v) => v === null || v === undefined;
 
-// 인프라 지표별 아프리카 54개국 평균 계산 (모듈 로드 시 1회만 계산)
+// 인프라 지표별 아프리카 54개국 평균·최댓값 계산 (모듈 로드 시 1회만 계산)
+// 최댓값은 막대그래프 폭(0~100%) 산출에, 평균은 비교 문구·평균선 표시에 쓴다.
 const INFRA_FIELDS = ["hospitalBeds", "physicians", "electricityAccess", "internetPenetration"];
-const AFRICA_INFRA_AVG = (() => {
-  const sums = {}, counts = {};
-  INFRA_FIELDS.forEach((f) => { sums[f] = 0; counts[f] = 0; });
+const AFRICA_INFRA_STATS = (() => {
+  const vals = {};
+  INFRA_FIELDS.forEach((f) => { vals[f] = []; });
 
   Object.values(COUNTRIES).forEach((c) => {
     const infra = c.infrastructure || {};
     INFRA_FIELDS.forEach((f) => {
       const raw = infra[f] && infra[f].value;
       const num = raw != null ? parseFloat(raw) : null;
-      if (num != null && !isNaN(num)) {
-        sums[f] += num;
-        counts[f] += 1;
-      }
+      if (num != null && !isNaN(num)) vals[f].push(num);
     });
   });
 
-  const avg = {};
-  INFRA_FIELDS.forEach((f) => { avg[f] = counts[f] ? sums[f] / counts[f] : null; });
-  return avg;
+  const stats = {};
+  INFRA_FIELDS.forEach((f) => {
+    const arr = vals[f];
+    stats[f] = {
+      avg: arr.length ? arr.reduce((a, b) => a + b, 0) / arr.length : null,
+      max: arr.length ? Math.max(...arr) : null,
+    };
+  });
+  return stats;
 })();
+const AFRICA_INFRA_AVG = Object.fromEntries(Object.entries(AFRICA_INFRA_STATS).map(([k, v]) => [k, v.avg]));
 
 // 인프라 값 vs 아프리카 평균 비교 문구 생성 (±5% 이내는 "평균 수준"으로 처리)
 function infraCompareText(fieldKey, valueStr) {
@@ -37,6 +42,17 @@ function infraCompareText(fieldKey, valueStr) {
   const avgLabel = `아프리카 평균 ${avg.toFixed(1)}`;
   if (Math.abs(diff) < 0.05) return `${avgLabel} · 평균 수준입니다`;
   return diff > 0 ? `${avgLabel} · 평균보다 높습니다` : `${avgLabel} · 평균보다 낮습니다`;
+}
+
+// 인프라 막대 폭(0~100%)과 평균선 위치 계산 — 54개국 중 최댓값을 100%로 두고 상대 비교
+function infraBarStats(fieldKey, valueStr) {
+  const { avg, max } = AFRICA_INFRA_STATS[fieldKey] || {};
+  const val = valueStr != null ? parseFloat(valueStr) : null;
+  if (max == null || val == null || isNaN(val)) return null;
+  return {
+    pct: Math.max(0, Math.min(100, (val / max) * 100)),
+    avgPct: avg != null ? Math.max(0, Math.min(100, (avg / max) * 100)) : null,
+  };
 }
 
 // climateScore/diplomacyScore 상대 순위 계산 (모듈 로드 시 1회만) — 점수 높은 국가가 1위
@@ -203,7 +219,7 @@ function EcoItem({ label, v, defaultSource }) {
 }
 
 // 인프라 항목 한 줄 — v: { value, unit, year?, source? }, compare: 아프리카 평균 비교 문구
-function InfraItem({ label, v, compare }) {
+function InfraItem({ label, v, compare, fieldKey }) {
   if (!v) return (
     <div className="eco-item">
       <div className="eco-label">{label}</div>
@@ -214,20 +230,29 @@ function InfraItem({ label, v, compare }) {
   const src = v.year && v.source ? `(${v.year} · ${v.source})` : v.year ? `(${v.year})` : v.source ? `(${v.source})` : null;
   // %는 붙여서, 그 외 단위(병상 / 1,000명 등)는 띄어서 값과 한 줄에 표시
   const valueLine = v.value ? (v.unit === "%" ? `${v.value}%` : `${v.value}${v.unit ? ` ${v.unit}` : ""}`) : null;
+  const bar = fieldKey && v.value ? infraBarStats(fieldKey, v.value) : null;
 
   return (
-    <div className="eco-item">
-      <div className="eco-label">
-        {label}
-        {src && <span className="eco-src">{src}</span>}
-      </div>
-      {valueLine ? (
-        <div className="eco-val">
-          <span className="krw-main">{valueLine}</span>
-          {compare && <span className="usd-sub">{compare}</span>}
+    <div className={"eco-item" + (bar ? " eco-item--bar" : "")}>
+      <div className="eco-item-top">
+        <div className="eco-label">
+          {label}
+          {src && <span className="eco-src">{src}</span>}
         </div>
-      ) : (
-        <div className="eco-empty">{EMPTY}</div>
+        {valueLine ? (
+          <div className="eco-val">
+            <span className="krw-main">{valueLine}</span>
+            {compare && <span className="usd-sub">{compare}</span>}
+          </div>
+        ) : (
+          <div className="eco-empty">{EMPTY}</div>
+        )}
+      </div>
+      {bar && (
+        <div className="eco-bar" title="아프리카 54개국 중 최댓값 대비 상대 규모 · 주황선 = 평균">
+          <span className="eco-bar-fill" style={{ width: `${bar.pct}%` }} />
+          {bar.avgPct != null && <span className="eco-bar-avg" style={{ left: `${bar.avgPct}%` }} />}
+        </div>
       )}
     </div>
   );
@@ -399,9 +424,11 @@ export default function CountryDetail({ id, go, from = "search", isFavorite, tog
                 key={label}
                 label={label}
                 v={v}
+                fieldKey={fieldKey}
                 compare={v ? infraCompareText(fieldKey, v.value) : null}
               />
             ))}
+            <div className="eco-foot"><div>※ 막대의 주황선은 아프리카 54개국 평균 위치입니다.</div></div>
           </div>
         </div>
       </div>
