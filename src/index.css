@@ -698,7 +698,7 @@ textarea.field { resize: vertical; min-height: 64px; }
 .fav-empty-star { width: 30px; height: 30px; color: var(--green-300); }
 .fav-empty p { font-size: var(--fs-md); font-weight: 600; margin: 14px 0 4px; color: var(--ink); }
 .fav-empty small { font-size: var(--fs-sm); }
-.detail-fav { display: inline-flex; align-items: center; gap: 6px; margin-left: 16px; vertical-align: middle; padding: 9px 17px; font-size: var(--fs-sm); font-weight: 700; color: var(--green-700); background: var(--paper); border: 1.5px solid var(--green-300); border-radius: 0; cursor: pointer; transition: border-color 0.15s, color 0.15s, background 0.15s, transform 0.08s ease; }
+.detail-fav { display: inline-flex; align-items: center; gap: 6px; margin-left: 16px; vertical-align: middle; padding: 9px 17px; min-height: 38px; box-sizing: border-box; font-size: var(--fs-sm); font-weight: 700; color: var(--green-700); background: var(--paper); border: 1.5px solid var(--green-300); border-radius: 0; cursor: pointer; transition: border-color 0.15s, color 0.15s, background 0.15s, transform 0.08s ease; }
 .detail-fav:active { transform: scale(0.97); }
 .detail-fav:hover { border-color: var(--green-700); color: var(--green-700); }
 .detail-fav.active { background: var(--green-700); border-color: var(--green-700); color: #fff; }

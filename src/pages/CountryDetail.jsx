@@ -1,5 +1,23 @@
+import { useState } from "react";
+import { pdf } from "@react-pdf/renderer";
 import { COUNTRIES } from "../data";
 import { CountrySilhouette, DonutChart, DONUT_COLORS, Icons } from "../components/ui";
+import CountryInfoPDF from "../components/CountryInfoPDF";
+
+// PDF Document를 그 자리에서 새로 빌드해 blob으로 만들고 바로 다운로드.
+// MatchResults.jsx의 downloadPdf와 동일한 방식 — 매 클릭마다 완전히 새로 렌더링해
+// PDFDownloadLink의 캐싱 버그를 피한다.
+async function downloadPdf(documentElement, fileName) {
+  const blob = await pdf(documentElement).toBlob();
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement("a");
+  a.href = url;
+  a.download = fileName;
+  document.body.appendChild(a);
+  a.click();
+  a.remove();
+  URL.revokeObjectURL(url);
+}
 
 const EMPTY = "아직 정보가 없습니다";
 const isNil = (v) => v === null || v === undefined;
@@ -338,6 +356,9 @@ function InfraItem({ label, v, compare, fieldKey }) {
 }
 
 export default function CountryDetail({ id, go, from = "search", isFavorite, toggleFavorite }) {
+  // Hooks 규칙상 아래 "c 없으면 return null"보다 먼저 호출되어야 함
+  const [pdfLoading, setPdfLoading] = useState(false);
+
   const c = COUNTRIES[id];
   if (!c) return null;
 
@@ -397,6 +418,21 @@ export default function CountryDetail({ id, go, from = "search", isFavorite, tog
   const backLabel = from === "match" ? "추천 결과로" : from === "mypage" ? "내 정보로" : "국가 목록으로";
   const summary = buildSummary(c);
 
+  async function handleDownloadPdf() {
+    if (pdfLoading) return;
+    setPdfLoading(true);
+    try {
+      await downloadPdf(
+        <CountryInfoPDF country={c} countries={COUNTRIES} summary={summary} />,
+        `바오밥매치_${c.name}_국가정보.pdf`
+      );
+    } catch (err) {
+      console.error("국가 상세 정보 PDF 생성 실패:", err);
+    } finally {
+      setPdfLoading(false);
+    }
+  }
+
   return (
     <main className="page">
       <button className="back-btn" onClick={() => go(from, from === "match")}>
@@ -417,6 +453,14 @@ export default function CountryDetail({ id, go, from = "search", isFavorite, tog
                 <Icons.star filled={fav} /> {fav ? "즐겨찾기됨" : "즐겨찾기"}
               </button>
             )}
+            <button
+              className="detail-fav"
+              onClick={handleDownloadPdf}
+              disabled={pdfLoading}
+              aria-label="국가 정보 PDF 보고서 다운받기"
+            >
+              {pdfLoading ? "보고서 준비 중…" : "국가 정보 PDF 보고서 다운받기"}
+            </button>
           </h1>
           <div className="stat-strip">
             {stats.map((s) => <StatItem key={s.label} {...s} />)}
