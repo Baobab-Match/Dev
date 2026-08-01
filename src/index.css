@@ -223,9 +223,17 @@ ul { list-style: none; }
 .detail-name span { font-size: 0.5em; color: var(--green-500); font-weight: 600; margin-left: 10px; font-family: var(--font-body); }
 .market-entry-group { margin-top: 4px; }
 .market-entry-label { font-size: var(--fs-sm); font-weight: 700; color: var(--green-700); margin-bottom: 10px; }
-.market-tag-row { display: flex; flex-wrap: wrap; gap: 8px; }
-.market-tag { display: inline-flex; align-items: center; gap: 5px; padding: 6px 12px; background: var(--paper); border: 1px solid var(--bone-dark); border-radius: 0; font-size: var(--fs-xs); color: var(--ink-soft); }
+.market-tag-row { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 4px; }
+.market-tag { display: inline-flex; align-items: center; gap: 6px; padding: 10px 18px; background: var(--paper); border: 1px solid var(--bone-dark); border-radius: 0; font-size: var(--fs-sm); color: var(--ink-soft); }
 .market-tag b { color: var(--green-700); font-weight: 700; }
+.market-tag--btn { font-weight: 600; transition: background 0.15s, border-color 0.15s, color 0.15s, transform 0.08s ease; }
+.market-tag--btn:hover { border-color: var(--green-700); color: var(--green-700); }
+.market-tag--btn:active { transform: scale(0.97); }
+.market-tag--btn.active { background: var(--green-700); border-color: var(--green-700); color: #fff; }
+.market-tag--btn.active b { color: #fff; }
+.market-filter-hint { font-size: var(--fs-sm); color: var(--ink-soft); opacity: 0.8; margin-bottom: 10px; }
+.market-more-btn { display: block; margin: 14px auto 0; padding: 8px 4px; font-size: var(--fs-xs); font-weight: 700; color: var(--green-700); }
+.market-more-btn:hover { text-decoration: underline; }
 
 /* 진출 기업·스타트업 개별 카드 — 업종별 개수 태그 아래, 2열 그리드로 배치 */
 .market-card-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-top: 16px; }
@@ -255,7 +263,6 @@ ul { list-style: none; }
 .summary-tag { display: inline-block; font-size: var(--fs-sm); font-weight: 800; color: var(--green-800); border: 2px solid var(--green-700); border-radius: var(--r-sm); padding: 5px 13px; margin-bottom: 12px; }
 .summary-card p { margin: 0; font-size: var(--fs-md); line-height: 1.75; color: var(--ink); }
 
-.detail-grid .block-tag { font-size: var(--fs-md); }
 .detail-grid .info-row { font-size: var(--fs-lg); }
 .detail-grid .eco-label { font-size: var(--fs-md); }
 .detail-grid .eco-val .krw-main { font-size: var(--fs-xl); }
@@ -266,7 +273,7 @@ ul { list-style: none; }
 .detail-grid { display: block; }
 .detail-grid > div + div { margin-top: 44px; }
 .info-block { margin-bottom: 30px; }
-.block-tag { display: inline-block; font-size: var(--fs-sm); font-weight: 800; color: var(--green-800); border: 2px solid var(--green-700); border-radius: var(--r-sm); padding: 5px 13px; margin-bottom: 18px; }
+.block-tag { display: inline-block; font-size: var(--fs-md); font-weight: 800; color: var(--green-800); border: 2px solid var(--green-700); border-radius: var(--r-sm); padding: 5px 13px; margin-bottom: 18px; }
 .info-row { display: flex; gap: 12px; padding: 7px 0; font-size: var(--fs-md); }
 .info-row b { color: var(--ink); min-width: 92px; font-weight: 700; }
 .info-row span { color: var(--ink-soft); }
@@ -287,7 +294,7 @@ ul { list-style: none; }
 /* 인프라 정보 — 12개로 늘어난 지표를 보건/전력·에너지/통신·디지털/수자원·위생 4개 서브섹션으로 분리, 2열 그리드로 배치 */
 .info-subgroups-grid { display: grid; grid-template-columns: 1fr 1fr; column-gap: 40px; }
 .info-subgroup:nth-child(n+3) { margin-top: 44px; }
-.info-subhead { display: flex; align-items: center; gap: 8px; font-size: 17px; font-weight: 800; color: var(--green-700); letter-spacing: 0.01em; margin-bottom: 8px; }
+.info-subhead { display: flex; align-items: center; gap: 8px; font-size: var(--fs-sm); font-weight: 800; color: var(--green-700); letter-spacing: 0.01em; margin-bottom: 8px; }
 .info-subhead::before { content: ""; flex: none; width: 4px; height: 15px; background: var(--green-700); }
 
 /* 경제 및 ODA 규모 정보 — 6개 항목도 인프라와 나란히 세로 길이를 맞추기 위해 2열 그리드로 배치 */

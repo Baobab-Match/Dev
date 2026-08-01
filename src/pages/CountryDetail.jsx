@@ -439,6 +439,10 @@ function InfraItem({ label, v, compare, fieldKey }) {
 export default function CountryDetail({ id, go, from = "search", isFavorite, toggleFavorite }) {
   // Hooks 규칙상 아래 "c 없으면 return null"보다 먼저 호출되어야 함
   const [pdfLoading, setPdfLoading] = useState(false);
+  const [companyFilter, setCompanyFilter] = useState(null);
+  const [companyExpanded, setCompanyExpanded] = useState(false);
+  const [startupFilter, setStartupFilter] = useState(null);
+  const [startupExpanded, setStartupExpanded] = useState(false);
 
   const c = COUNTRIES[id];
   if (!c) return null;
@@ -497,6 +501,18 @@ export default function CountryDetail({ id, go, from = "search", isFavorite, tog
   // 시장 진입 용이도(marketEntry) — 한아프리카재단 250대기업·스타트업 디렉터리 집계 (23/54개국만 존재)
   const me = c.marketEntry || null;
   const hasMarketEntry = !!(me && (me.companyCount > 0 || me.startupCount > 0));
+
+  // 진출 기업/스타트업 — 업종·분야 필터링 후, 접힌 상태면 6개까지만 노출
+  const MARKET_VISIBLE = 6;
+  const filteredCompanies = me?.companies
+    ? (companyFilter ? me.companies.filter((comp) => comp.industry === companyFilter) : me.companies)
+    : [];
+  const visibleCompanies = companyExpanded ? filteredCompanies : filteredCompanies.slice(0, MARKET_VISIBLE);
+
+  const filteredStartups = me?.startups
+    ? (startupFilter ? me.startups.filter((s) => s.field === startupFilter) : me.startups)
+    : [];
+  const visibleStartups = startupExpanded ? filteredStartups : filteredStartups.slice(0, MARKET_VISIBLE);
 
   const backLabel = from === "match" ? "추천 결과로" : from === "mypage" ? "내 정보로" : "국가 목록으로";
   const summary = buildSummary(c);
@@ -616,15 +632,30 @@ export default function CountryDetail({ id, go, from = "search", isFavorite, tog
           {me.companyCount > 0 && (
             <div className="market-entry-group">
               <div className="market-entry-label">진출 기업 {me.companyCount}개</div>
+              <p className="market-filter-hint">업종을 누르면 해당 기업만 모아볼 수 있어요.</p>
               <div className="market-tag-row">
                 {me.industries.map((ind) => (
-                  <span className="market-tag" key={ind.name}>{ind.name} <b>{ind.count}</b></span>
+                  <button
+                    type="button"
+                    key={ind.name}
+                    className={"market-tag market-tag--btn" + (companyFilter === ind.name ? " active" : "")}
+                    onClick={() => setCompanyFilter((prev) => (prev === ind.name ? null : ind.name))}
+                  >
+                    {ind.name} <b>{ind.count}</b>
+                  </button>
                 ))}
               </div>
-              {me.companies && me.companies.length > 0 && (
-                <div className="market-card-grid">
-                  {me.companies.map((comp, i) => <CompanyCard key={comp.nameKo || i} c={comp} />)}
-                </div>
+              {visibleCompanies.length > 0 && (
+                <>
+                  <div className="market-card-grid">
+                    {visibleCompanies.map((comp, i) => <CompanyCard key={comp.nameKo || i} c={comp} />)}
+                  </div>
+                  {filteredCompanies.length > MARKET_VISIBLE && (
+                    <button type="button" className="market-more-btn" onClick={() => setCompanyExpanded((e) => !e)}>
+                      {companyExpanded ? "접기" : `전체 ${filteredCompanies.length}개 더보기`}
+                    </button>
+                  )}
+                </>
               )}
             </div>
           )}
@@ -632,15 +663,30 @@ export default function CountryDetail({ id, go, from = "search", isFavorite, tog
           {me.startupCount > 0 && (
             <div className="market-entry-group" style={{ marginTop: me.companyCount > 0 ? 18 : 0 }}>
               <div className="market-entry-label">스타트업 {me.startupCount}개</div>
+              <p className="market-filter-hint">분야를 누르면 해당 분야의 스타트업만 모아볼 수 있어요.</p>
               <div className="market-tag-row">
                 {me.startupFields.map((f) => (
-                  <span className="market-tag" key={f.name}>{f.name} <b>{f.count}</b></span>
+                  <button
+                    type="button"
+                    key={f.name}
+                    className={"market-tag market-tag--btn" + (startupFilter === f.name ? " active" : "")}
+                    onClick={() => setStartupFilter((prev) => (prev === f.name ? null : f.name))}
+                  >
+                    {f.name} <b>{f.count}</b>
+                  </button>
                 ))}
               </div>
-              {me.startups && me.startups.length > 0 && (
-                <div className="market-card-grid">
-                  {me.startups.map((s, i) => <StartupCard key={s.nameKo || i} s={s} />)}
-                </div>
+              {visibleStartups.length > 0 && (
+                <>
+                  <div className="market-card-grid">
+                    {visibleStartups.map((s, i) => <StartupCard key={s.nameKo || i} s={s} />)}
+                  </div>
+                  {filteredStartups.length > MARKET_VISIBLE && (
+                    <button type="button" className="market-more-btn" onClick={() => setStartupExpanded((e) => !e)}>
+                      {startupExpanded ? "접기" : `전체 ${filteredStartups.length}개 더보기`}
+                    </button>
+                  )}
+                </>
               )}
             </div>
           )}
