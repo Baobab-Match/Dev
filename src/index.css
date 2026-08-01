@@ -199,23 +199,12 @@ ul { list-style: none; }
 .country-row.is-disabled:hover { background: transparent; }
 .soon-pill { font-size: var(--fs-xs); font-weight: 600; color: var(--ink-soft); background: var(--bone-dark); padding: 3px 9px; border-radius: 0; }
 /* 7. 경제·ODA 항목 (출처/연도·USD·각주) */
-.eco-val .usd { color: var(--ink-soft); font-size: var(--fs-sm); }
 .eco-src { font-family: var(--font-body); font-size: var(--fs-xs); font-weight: 400; color: var(--ink-soft); opacity: 0.7; margin-left: 7px; white-space: nowrap; }
 .eco-mark { color: var(--green-700); font-weight: 700; margin-left: 3px; }
 .eco-empty { font-size: var(--fs-sm); color: var(--ink-soft); opacity: 0.7; flex: none; }
 .eco-foot { margin-top: 16px; padding-top: 4px; font-size: var(--fs-xs); line-height: 1.7; color: var(--ink-soft); opacity: 0.8; }
 .detail-grid .eco-foot { text-align: right; }
 .eco-foot div { margin-bottom: 2px; }
-
-/* 실제 협력 창구 — 재외공관·주한공관 2단 블록 (CountryDetail.jsx) */
-.diplo-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 28px; margin-top: 12px; }
-.diplo-col-label { font-size: var(--fs-xs); font-weight: 700; color: var(--green-600); letter-spacing: 0.5px; margin-bottom: 8px; }
-.diplo-name { font-weight: 700; color: var(--ink); margin-bottom: 4px; }
-.diplo-detail { font-size: var(--fs-sm); color: var(--ink-soft); line-height: 1.7; }
-.diplo-link { display: inline-block; margin-top: 8px; font-size: var(--fs-sm); font-weight: 700; color: var(--green-700); }
-.diplo-link:hover { text-decoration: underline; }
-.source-footnote { margin-top: 44px; padding-top: 18px; border-top: 1px solid var(--bone-dark); font-size: var(--fs-xs); line-height: 1.75; color: var(--ink-soft); opacity: 0.55; word-break: keep-all; }
-.source-footnote-mark { font-weight: 700; color: var(--ink-soft); margin-right: 7px; padding: 1px 7px; border: 1px solid var(--bone-dark); border-radius: 0; font-size: 10px; vertical-align: 1px; }
 /* 8. 국가 상세페이지 (히어로 스탯·정보 블록·KOICA) */
 .detail-hero { display: grid; grid-template-columns: auto 1fr; gap: clamp(24px, 4vw, 50px); align-items: center; padding-bottom: 34px; border-bottom: 2px solid var(--bone-dark); margin-bottom: 38px; }
 .detail-silhouette { width: clamp(120px, 16vw, 180px); aspect-ratio: 1; height: auto; color: var(--green-900); }
@@ -256,27 +245,20 @@ ul { list-style: none; }
 .stat-label { font-size: var(--fs-sm); color: var(--ink-soft); margin-top: 8px; font-weight: 600; letter-spacing: 0.02em; }
 /* 히어로 스탯 아래 — 54개국 내 상대 순위(기후 취약도·외교 친밀도) 및 산정기준 안내 캡션 */
 .stat-rank { margin-top: 3px; font-size: var(--fs-xs); color: var(--ink-soft); opacity: 0.75; }
-.stat-strip-note { margin-top: 8px; font-size: var(--fs-xs); color: var(--ink-soft); opacity: 0.7; }
 
 /* 국가 정보 요약 카드 — 페이지 톤(각진 테두리, 옅은 배경) 그대로, 새 색을 더하지 않음 */
 .summary-card { grid-column: 1 / -1; background: var(--paper); border: 1px solid var(--bone-dark); padding: 20px 24px; margin-top: 26px; }
 .summary-tag { display: inline-block; font-size: var(--fs-sm); font-weight: 800; color: var(--green-800); border: 2px solid var(--green-700); border-radius: var(--r-sm); padding: 5px 13px; margin-bottom: 12px; }
 .summary-card p { margin: 0; font-size: var(--fs-md); line-height: 1.75; color: var(--ink); }
 
-.detail-grid .info-row { font-size: var(--fs-lg); }
 .detail-grid .eco-label { font-size: var(--fs-md); }
 .detail-grid .eco-val .krw-main { font-size: var(--fs-xl); }
 .detail-grid .eco-val .usd-sub { font-size: var(--fs-sm); }
 .detail-grid .eco-empty { font-size: var(--fs-md); }
-.detail-grid .koica-li,
-.detail-grid .koica-total { font-size: var(--fs-lg); }
 .detail-grid { display: block; }
 .detail-grid > div + div { margin-top: 44px; }
 .info-block { margin-bottom: 30px; }
 .block-tag { display: inline-block; font-size: var(--fs-md); font-weight: 800; color: var(--green-800); border: 2px solid var(--green-700); border-radius: var(--r-sm); padding: 5px 13px; margin-bottom: 18px; }
-.info-row { display: flex; gap: 12px; padding: 7px 0; font-size: var(--fs-md); }
-.info-row b { color: var(--ink); min-width: 92px; font-weight: 700; }
-.info-row span { color: var(--ink-soft); }
 .eco-item { display: flex; justify-content: space-between; align-items: baseline; gap: 16px; padding: 15px 0; border-bottom: 1px solid var(--bone-dark); }
 .eco-item:last-child { border-bottom: none; }
 .eco-label { font-size: var(--fs-sm); font-weight: 600; color: var(--ink); }
@@ -300,22 +282,20 @@ ul { list-style: none; }
 /* 경제 및 ODA 규모 정보 — 6개 항목도 인프라와 나란히 세로 길이를 맞추기 위해 2열 그리드로 배치 */
 .eco-items-grid { display: grid; grid-template-columns: 1fr 1fr; column-gap: 40px; }
 .eco-items-grid .eco-item:nth-last-child(-n+2) { border-bottom: none; }
-.koica-sub-title { font-size: var(--fs-sm); font-weight: 600; color: var(--ink); padding: 4px 0 14px; line-height: 1.5; }
-.koica-sub-desc { display: block; margin-top: 4px; font-size: var(--fs-xs); font-weight: 400; color: var(--ink-soft); opacity: 0.7; word-break: keep-all; }
-.koica-wrap { display: flex; flex-direction: column; gap: 20px; }
-.donut { width: 260px; height: 260px; flex: none; align-self: center; }
-.koica-legend { width: 100%; }
-.koica-li { display: flex; align-items: center; gap: 14px; font-size: var(--fs-md); padding: 6px 0; }
-.koica-sw { width: 12px; height: 12px; border-radius: 0; flex: none; }
-.koica-li .koica-nm { flex: 1; min-width: 0; padding-right: 6px; word-break: keep-all; line-height: 1.25; }
-.koica-li .pc { flex: none; font-weight: 700; color: var(--green-800); min-width: 52px; text-align: right; }
-.koica-li .amt { color: var(--ink-soft); font-size: var(--fs-sm); min-width: 100px; text-align: right; }
-.koica-total { margin-top: 14px; padding-top: 14px; border-top: 2px solid var(--bone-dark); font-weight: 800; color: var(--green-900); display: flex; justify-content: space-between; font-size: var(--fs-md); }
-.koica-cum { padding: 4px 0 18px; margin-bottom: 18px; border-bottom: 1px solid var(--bone-dark); }
-.koica-cum-big { font-size: 33px; font-weight: 800; line-height: 1.2; color: var(--green-700); letter-spacing: -0.02em; }
-.koica-cum-meta { margin-top: 7px; font-size: var(--fs-xs); color: var(--ink-soft); opacity: 0.85; }
-.koica-cum-dot { margin: 0 6px; opacity: 0.5; }
-.koica-nodonut { padding: 22px 0; text-align: center; font-size: var(--fs-sm); color: var(--ink-soft); opacity: 0.7; }
+
+/* 실제 협력 창구 — 재외공관·주한공관 2단 블록 (CountryDetail.jsx) */
+.diplo-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 28px; margin-top: 12px; }
+.diplo-col-label { font-size: var(--fs-xs); font-weight: 700; color: var(--green-600); letter-spacing: 0.5px; margin-bottom: 8px; }
+.diplo-name { font-weight: 700; color: var(--ink); margin-bottom: 4px; }
+.diplo-detail { font-size: var(--fs-sm); color: var(--ink-soft); line-height: 1.7; }
+.diplo-link { display: inline-block; margin-top: 8px; font-size: var(--fs-sm); font-weight: 700; color: var(--green-700); }
+.diplo-link:hover { text-decoration: underline; }
+.source-footnote { margin-top: 44px; padding-top: 18px; border-top: 1px solid var(--bone-dark); font-size: var(--fs-xs); line-height: 1.75; color: var(--ink-soft); opacity: 0.55; word-break: keep-all; }
+.source-footnote-mark { font-weight: 700; color: var(--ink-soft); margin-right: 7px; padding: 1px 7px; border: 1px solid var(--bone-dark); border-radius: 0; font-size: 10px; vertical-align: 1px; }
+
+/* 보건 세부 지원 현황 · 진출 현황 · 관련 뉴스처럼 전체 폭을 쓰는 정보 블록 공통 래퍼 */
+.info-block--wide { margin-top: 44px; }
+.health-detail-desc { font-family: var(--font-body); font-size: var(--fs-sm); color: var(--ink-soft); margin-bottom: 24px; }
 /* 9. 매칭 결과 (순위 카드·이유 목록) */
 .match-podium { display: grid; grid-template-columns: repeat(3, 1fr); gap: clamp(16px, 3vw, 30px); margin-bottom: 50px; }
 .podium-card { background: var(--paper); border: 1px solid var(--bone-dark); border-radius: var(--r-lg); padding: 28px 22px; text-align: center; position: relative; overflow: hidden; transition: transform 0.18s, box-shadow 0.18s; cursor: pointer; }
@@ -371,7 +351,7 @@ ul { list-style: none; }
 }
 /* 다양성 안내 — 추천 국가가 순수 점수 1등이 아니라 다양성을 고려해 선정된 결과임을 명시 */
 .diversity-note {
-  font-size: var(--fs-xs, 12px);
+  font-size: var(--fs-xs);
   color: var(--ink-soft);
   margin: -6px 0 24px;
   line-height: 1.6;
@@ -441,6 +421,9 @@ textarea.field { resize: vertical; min-height: 64px; }
 .field-count { text-align: center; font-size: var(--fs-sm); color: var(--ink-soft); margin-top: 4px; }
 .field-chip:disabled { opacity: 0.4; cursor: not-allowed; }
 .field-chip:disabled:hover { border-color: var(--bone-dark); color: var(--ink-soft); }
+.field-group { margin-bottom: 26px; }
+.field-group:last-child { margin-bottom: 0; }
+.field-group-tag { font-size: var(--fs-sm); font-weight: 800; color: var(--green-700); letter-spacing: 0.02em; margin-bottom: 12px; }
 .confirm-q { text-align: center; padding: 16px 0 30px; }
 .confirm-q p { font-size: var(--fs-lg); color: var(--ink-soft); }
 .confirm-q .big { font-family: var(--font-display); font-weight: 900; font-size: clamp(24px, 3.5vw, 34px); color: var(--green-700); margin: 14px 0; }
@@ -493,9 +476,6 @@ textarea.field { resize: vertical; min-height: 64px; }
 .page-btn:hover:not(:disabled) { border-color: var(--green-500); color: var(--green-700); }
 .page-btn.active { background: var(--green-700); border-color: var(--green-700); color: #fff; }
 .page-btn:disabled { color: var(--green-300); cursor: not-allowed; opacity: 0.6; }
-
-/* 공지사항 상세 페이지 — 아코디언 대신 별도 페이지로 들어왔을 때의 레이아웃 */
-
 /* 14. 사이트소개 (About) */
 
 .about-intro { max-width: none; background: none; border: none; border-radius: 0; padding: 0; margin: 0; }
@@ -533,11 +513,11 @@ textarea.field { resize: vertical; min-height: 64px; }
 .about-landing-fields-img { width: 100%; height: 100%; object-fit: cover; display: block; }
 .about-landing-fields-title { font-family: var(--font-display); font-weight: 900; font-size: clamp(24px, 2.8vw, 34px); line-height: 1.4; color: var(--green-900); margin: 0 0 18px; letter-spacing: -0.01em; word-break: keep-all; }
 .about-landing-fields-desc { font-size: var(--fs-lg); color: var(--ink-soft); line-height: 1.85; margin: 0 0 28px; word-break: keep-all; }
-.about-fields-groups { display: flex; flex-direction: column; gap: 18px; }
+.about-fields-groups { display: flex; flex-direction: column; gap: 28px; }
 .about-fields-group-row { display: flex; align-items: flex-start; gap: 18px; padding-top: 16px; border-top: 1px solid var(--bone-dark); }
 .about-fields-group-row:first-child { padding-top: 0; border-top: none; }
 .about-fields-group-tag { flex: none; width: 92px; font-size: var(--fs-sm); font-weight: 800; letter-spacing: 0.06em; color: var(--green-700); padding-top: 9px; }
-.about-fields-chip-set { display: flex; flex-wrap: wrap; gap: 8px; flex: 1; }
+.about-fields-chip-set { display: flex; flex-wrap: wrap; gap: 24px 8px; flex: 1; }
 .about-fields-chip { padding: 9px 16px; font-size: var(--fs-sm); font-weight: 700; color: var(--green-700); background: var(--paper); border: 1px solid var(--bone-dark); border-radius: 0; white-space: nowrap; }
 
 .about-landing-hero { position: relative; width: 100vw; margin-left: calc(50% - 50vw); margin-right: calc(50% - 50vw); margin-top: calc(-1 * var(--page-pad-y)); height: clamp(420px, 54vw, 640px); overflow: hidden; margin-bottom: 120px; }
@@ -655,7 +635,7 @@ textarea.field { resize: vertical; min-height: 64px; }
 .how-stage-body p { font-size: var(--fs-lg); color: var(--ink-soft); line-height: 1.7; margin: 0; max-width: 30ch; margin-inline: auto; }
 
 /* ── 이용 방법(how) 탭 — 4단계 흐름과 별개인 부가 기능 카드 (산업 동향 등) ── */
-.how-extra { display: flex; align-items: flex-start; gap: 20px; margin: -24px 0 50px; padding: 26px 28px; background: var(--paper); border: 1px dashed var(--green-600); }
+.how-extra { display: flex; align-items: flex-start; gap: 20px; margin: -24px 0 50px; padding: 26px 28px; background: var(--paper); border: 1px solid var(--bone-dark); }
 .how-extra-badge { flex: none; font-size: var(--fs-sm); font-weight: 800; letter-spacing: 0.04em; color: var(--green-700); background: var(--gray-100); border: 1px solid var(--green-600); border-radius: 0; padding: 6px 14px; white-space: nowrap; }
 .how-extra-body h4 { font-size: var(--fs-lg); font-weight: 800; color: var(--green-900); margin: 0 0 6px; }
 .how-extra-body p { font-size: var(--fs-md); color: var(--ink-soft); line-height: 1.7; margin: 0; }
@@ -836,11 +816,10 @@ textarea.field { resize: vertical; min-height: 64px; }
   transition: opacity 0.26s ease, transform 0.26s ease;
 }
 .ai-loading-msg.is-visible { opacity: 1; transform: translateY(0); }
-
 /* 21. 반응형 (태블릿·모바일) — 전 섹션 공통 */
 
 @media (max-width: 900px) {
-  .search-layout, .detail-grid, .koica-wrap { grid-template-columns: 1fr; }
+  .search-layout, .detail-grid { grid-template-columns: 1fr; }
   .detail-hero { grid-template-columns: 1fr; text-align: center; justify-items: center; }
   .detail-hero > div { width: 100%; }
   .match-podium { grid-template-columns: 1fr; }
@@ -942,10 +921,6 @@ textarea.field { resize: vertical; min-height: 64px; }
   .profile-row b { width: auto; font-size: var(--fs-sm); }
   .profile-row--interest, .profile-row--interest:has(.interest-edit) { align-items: flex-start; }
   .profile-row--interest b, .profile-row--interest:has(.interest-edit) b { padding-top: 0; }
-  .koica-total { display: none; }
-  .koica-wrap { flex-direction: column; align-items: center; }
-  .donut { width: 220px; height: 220px; }
-  .koica-legend { width: 100%; }
   .modal-title { word-break: keep-all; }
   .footer-div { display: none; }
   .footer-info p span:not(.footer-div), .footer-info p { display: block; }
@@ -968,7 +943,6 @@ textarea.field { resize: vertical; min-height: 64px; }
   .eco-val .krw-main { font-size: var(--fs-md); }
   .eco-val .usd-sub, .detail-grid .eco-val .usd-sub { font-size: var(--fs-xs); }
   .eco-src { font-size: 11px; display: inline; margin-left: 6px; margin-top: 0; white-space: normal; }
-  .detail-grid .info-row { font-size: var(--fs-md); }
 
   .page-title { font-size: 28px; }
   .page-desc { font-size: var(--fs-md); }
@@ -1017,7 +991,6 @@ textarea.field { resize: vertical; min-height: 64px; }
 .country-row { word-break: keep-all; }
 .confirm-yes, .confirm-no, .form-actions .confirm-yes { word-break: keep-all; }
 .fav-note { word-break: keep-all; }
-
 /* 22. 산업 동향 (Industry News) */
 .news-block-title {
   font-size: var(--fs-sm);
@@ -1033,34 +1006,11 @@ textarea.field { resize: vertical; min-height: 64px; }
 .news-list {
   border-top: 1px solid var(--bone-dark);
 }
-.news-row {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 12px;
-  padding: 14px 4px;
-  border-bottom: 1px solid var(--bone-dark);
-  color: var(--ink);
-  text-decoration: none;
-  transition: background-color 0.15s ease;
-}
-.news-row:hover {
-  background: var(--paper);
-}
-.news-row-title {
-  font-size: var(--fs-md);
-  color: var(--ink);
-  margin-bottom: 4px;
-}
-.news-row-meta {
-  font-size: var(--fs-xs);
-  color: var(--ink-soft);
-}
-.news-row-arrow {
-  flex-shrink: 0;
-  color: var(--green-500);
-  font-size: var(--fs-lg);
-}
+.news-row { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 14px 4px; border-bottom: 1px solid var(--bone-dark); color: var(--ink); text-decoration: none; transition: background-color 0.15s ease; }
+.news-row:hover { background: var(--paper); }
+.news-row-title { font-size: var(--fs-md); color: var(--ink); margin-bottom: 4px; }
+.news-row-meta { font-size: var(--fs-xs); color: var(--ink-soft); }
+.news-row-arrow { flex-shrink: 0; color: var(--green-500); font-size: var(--fs-lg); }
 .news-status {
   font-size: var(--fs-sm);
   color: var(--ink-soft);
@@ -1131,24 +1081,3 @@ textarea.field { resize: vertical; min-height: 64px; }
 .mf-reason.active { background: transparent; }
 .mf-reason.active .mf-reason-num { background: var(--green-700); border-color: var(--green-700); color: #fff; }
 .mf-reason.active .mf-reason-label { color: var(--ink); font-weight: 700; }
-
-/* ── 보건 세부 지원 현황 — 국가 상세 페이지 하단, 전체 폭 막대그래프 ── */
-.info-block--wide { margin-top: 44px; }
-.health-detail-desc { font-family: var(--font-body); font-size: var(--fs-sm); color: var(--ink-soft); margin-bottom: 24px; }
-.health-bar-row { display: flex; align-items: center; gap: 16px; padding: 11px 0; }
-.health-bar-row:last-child { border-bottom: none; }
-.health-bar-label { width: 200px; flex-shrink: 0; font-family: var(--font-body); font-size: var(--fs-sm); font-weight: 600; color: var(--ink); }
-.health-bar-track { flex: 1; height: 22px; background: var(--paper); }
-.health-bar-fill { height: 100%; background: var(--green-600); }
-.health-bar-pct { width: 64px; flex-shrink: 0; text-align: right; font-family: var(--font-display); font-size: var(--fs-lg); font-weight: 800; color: var(--green-700); }
-.health-bar-amt { width: 130px; flex-shrink: 0; text-align: right; font-family: var(--font-body); font-size: var(--fs-xs); color: var(--ink-soft); }
-
-@media (max-width: 640px) {
-  .health-bar-row { flex-wrap: wrap; gap: 6px 16px; }
-  .health-bar-label { width: 100%; }
-  .health-bar-amt { display: none; }
-}
-
-.field-group { margin-bottom: 26px; }
-.field-group:last-child { margin-bottom: 0; }
-.field-group-tag { font-size: var(--fs-sm); font-weight: 800; color: var(--green-700); letter-spacing: 0.02em; margin-bottom: 12px; }
