@@ -204,6 +204,7 @@ ul { list-style: none; }
 .eco-mark { color: var(--green-700); font-weight: 700; margin-left: 3px; }
 .eco-empty { font-size: var(--fs-sm); color: var(--ink-soft); opacity: 0.7; flex: none; }
 .eco-foot { margin-top: 16px; padding-top: 4px; font-size: var(--fs-xs); line-height: 1.7; color: var(--ink-soft); opacity: 0.8; }
+.detail-grid .eco-foot { text-align: right; }
 .eco-foot div { margin-bottom: 2px; }
 
 /* 실제 협력 창구 — 재외공관·주한공관 2단 블록 (CountryDetail.jsx) */
@@ -220,6 +221,25 @@ ul { list-style: none; }
 .detail-silhouette { width: clamp(120px, 16vw, 180px); aspect-ratio: 1; height: auto; color: var(--green-900); }
 .detail-name { font-family: var(--font-display); font-weight: 900; font-size: clamp(34px, 4.4vw, 52px); color: var(--green-900); margin-bottom: 6px; }
 .detail-name span { font-size: 0.5em; color: var(--green-500); font-weight: 600; margin-left: 10px; font-family: var(--font-body); }
+.market-entry-group { margin-top: 4px; }
+.market-entry-label { font-size: var(--fs-sm); font-weight: 700; color: var(--green-700); margin-bottom: 10px; }
+.market-tag-row { display: flex; flex-wrap: wrap; gap: 8px; }
+.market-tag { display: inline-flex; align-items: center; gap: 5px; padding: 6px 12px; background: var(--paper); border: 1px solid var(--bone-dark); border-radius: 0; font-size: var(--fs-xs); color: var(--ink-soft); }
+.market-tag b { color: var(--green-700); font-weight: 700; }
+
+/* 진출 기업·스타트업 개별 카드 — 업종별 개수 태그 아래, 2열 그리드로 배치 */
+.market-card-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-top: 16px; }
+.market-card { border: 1px solid var(--bone-dark); padding: 16px 18px; }
+.market-card-head { display: flex; justify-content: space-between; align-items: baseline; gap: 12px; margin-bottom: 8px; }
+.market-card-name { font-size: var(--fs-md); font-weight: 700; color: var(--ink); }
+.market-card-name-en { font-size: var(--fs-xs); color: var(--ink-soft); margin-top: 2px; }
+.market-card-link { flex: none; font-size: var(--fs-xs); font-weight: 600; color: var(--green-700); white-space: nowrap; }
+.market-card-link:hover { text-decoration: underline; }
+.market-card-meta { font-size: var(--fs-xs); color: var(--ink-soft); margin-bottom: 10px; line-height: 1.6; }
+.market-card-stats { display: flex; gap: 20px; padding: 10px 0; border-top: 1px solid var(--bone-dark); border-bottom: 1px solid var(--bone-dark); margin-bottom: 10px; }
+.market-card-stat-label { font-size: 10.5px; color: var(--ink-soft); margin-bottom: 2px; }
+.market-card-stat-val { font-size: var(--fs-sm); font-weight: 700; color: var(--ink); }
+.market-card-desc { font-size: var(--fs-xs); color: var(--ink-soft); line-height: 1.6; }
 .stat-strip { display: grid; grid-template-columns: repeat(5, 1fr); gap: clamp(16px, 3vw, 40px); margin-top: 22px; }
 .stat-strip > * { text-align: center; }
 .stat-val { font-family: var(--font-display); font-weight: 900; font-size: clamp(32px, 3.8vw, 48px); color: var(--green-700); line-height: 1; }
@@ -243,7 +263,8 @@ ul { list-style: none; }
 .detail-grid .eco-empty { font-size: var(--fs-md); }
 .detail-grid .koica-li,
 .detail-grid .koica-total { font-size: var(--fs-lg); }
-.detail-grid { display: grid; grid-template-columns: 1fr 1fr; gap: clamp(24px, 4vw, 48px); }
+.detail-grid { display: block; }
+.detail-grid > div + div { margin-top: 44px; }
 .info-block { margin-bottom: 30px; }
 .block-tag { display: inline-block; font-size: var(--fs-sm); font-weight: 800; color: var(--green-800); border: 2px solid var(--green-700); border-radius: var(--r-sm); padding: 5px 13px; margin-bottom: 18px; }
 .info-row { display: flex; gap: 12px; padding: 7px 0; font-size: var(--fs-md); }
@@ -261,7 +282,17 @@ ul { list-style: none; }
 .eco-item--bar .eco-item-top { display: flex; justify-content: space-between; align-items: baseline; gap: 16px; }
 .eco-bar { position: relative; height: 6px; background: var(--paper); border: 1px solid var(--bone-dark); margin-top: 10px; }
 .eco-bar-fill { display: block; height: 100%; background: var(--green-500); }
-.eco-bar-avg { position: absolute; top: -3px; width: 2px; height: 12px; background: var(--benchmark); }
+.eco-bar-avg { position: absolute; top: -4px; width: 4px; height: 14px; background: var(--benchmark); border-radius: 1px; }
+
+/* 인프라 정보 — 12개로 늘어난 지표를 보건/전력·에너지/통신·디지털/수자원·위생 4개 서브섹션으로 분리, 2열 그리드로 배치 */
+.info-subgroups-grid { display: grid; grid-template-columns: 1fr 1fr; column-gap: 40px; }
+.info-subgroup:nth-child(n+3) { margin-top: 44px; }
+.info-subhead { display: flex; align-items: center; gap: 8px; font-size: 17px; font-weight: 800; color: var(--green-700); letter-spacing: 0.01em; margin-bottom: 8px; }
+.info-subhead::before { content: ""; flex: none; width: 4px; height: 15px; background: var(--green-700); }
+
+/* 경제 및 ODA 규모 정보 — 6개 항목도 인프라와 나란히 세로 길이를 맞추기 위해 2열 그리드로 배치 */
+.eco-items-grid { display: grid; grid-template-columns: 1fr 1fr; column-gap: 40px; }
+.eco-items-grid .eco-item:nth-last-child(-n+2) { border-bottom: none; }
 .koica-sub-title { font-size: var(--fs-sm); font-weight: 600; color: var(--ink); padding: 4px 0 14px; line-height: 1.5; }
 .koica-sub-desc { display: block; margin-top: 4px; font-size: var(--fs-xs); font-weight: 400; color: var(--ink-soft); opacity: 0.7; word-break: keep-all; }
 .koica-wrap { display: flex; flex-direction: column; gap: 20px; }
@@ -818,6 +849,14 @@ textarea.field { resize: vertical; min-height: 64px; }
   .stat-strip > * { text-align: left; background: var(--paper); border: 1px solid var(--bone-dark); border-radius: var(--r-md); padding: 14px 16px; }
   .stat-strip > :last-child { grid-column: auto; }
   .stat-label { margin-top: 6px; }
+
+  /* 인프라 서브섹션·경제 항목 2열 그리드 → 1열로 복귀 */
+  .info-subgroups-grid, .eco-items-grid { grid-template-columns: 1fr; }
+  .market-card-grid { grid-template-columns: 1fr; }
+  .info-subgroup:nth-child(n+3) { margin-top: 0; }
+  .info-subgroup:not(:first-child) { margin-top: 26px; }
+  .eco-items-grid .eco-item:nth-last-child(-n+2) { border-bottom: 1px solid var(--bone-dark); }
+  .eco-items-grid .eco-item:last-child { border-bottom: none; }
 }
 @media (max-width: 768px) {
   .home-section { padding: 64px 20px; }

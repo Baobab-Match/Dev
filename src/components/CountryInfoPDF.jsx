@@ -42,7 +42,12 @@ const EMPTY_TEXT = "아직 정보가 없습니다";
 const CONTENT_W = 495; // A4(595.28) - 좌우 패딩(50*2)
 
 // 인프라 지표별 아프리카 54개국 평균 계산
-const INFRA_FIELDS = ["hospitalBeds", "physicians", "electricityAccess", "internetPenetration"];
+const INFRA_FIELDS = [
+  "hospitalBeds", "physicians", "nursesMidwives",
+  "electricityAccess", "renewableEnergyShare", "cleanCookingAccess",
+  "internetPenetration", "mobileSubscriptions",
+  "basicWater", "basicSanitation", "renewableWaterPerCapita",
+];
 function computeInfraAvg(countries) {
   const sums = {}, counts = {};
   INFRA_FIELDS.forEach((f) => { sums[f] = 0; counts[f] = 0; });
@@ -169,6 +174,13 @@ const styles = StyleSheet.create({
   ecoLine: { position: "absolute", left: 0, right: 0, bottom: 0, borderBottomWidth: 0.5, borderBottomColor: C.boneDark },
   ecoGroup: { marginBottom: 22 },
 
+  // 섹션 뒤 메모칸 — 이번엔 섹션마다 별도 페이지(break)라 그 페이지에 남는 여백 전체를 혼자 채운다
+  memoGroup: { flexGrow: 1, flexDirection: "column", marginTop: 4, marginBottom: 14 },
+  memoGroupLabel: { fontSize: 10.5, fontWeight: 700, letterSpacing: 2, color: C.green500, marginBottom: 6 },
+  memoGroupBox: { flexGrow: 1, minHeight: 26, borderWidth: 1, borderColor: C.green700, borderRadius: 0 },
+  infraSubhead: { fontSize: 11, fontWeight: 800, color: C.green700, letterSpacing: 0.2, marginTop: 16, marginBottom: 5 },
+  infraSubheadFirst: { marginTop: 0 },
+
   // 보건 세부 지원 현황
   healthDesc: { fontSize: 10.5, color: C.inkSoft, marginBottom: 12, lineHeight: 1.6 },
   healthRow: { position: "relative", height: 30, marginBottom: 10 },
@@ -196,13 +208,13 @@ const styles = StyleSheet.create({
   legendGridName: { flex: 1, fontSize: 12.5, color: C.inkSoft, marginLeft: 9, lineHeight: 1.2 },
   legendGridPct: { fontSize: 13.5, fontWeight: 800, color: C.green800, lineHeight: 1 },
 
-  // 협력 문의처
+  // 협력 문의처 — 좌우 2단이 아니라 위아래로 쌓아 공간을 넓게 씀
   diploBox: {
-    flexDirection: "row", backgroundColor: C.paper,
-    borderWidth: 0.5, borderColor: C.boneDark, paddingVertical: 10, paddingHorizontal: 16, marginTop: 4,
+    flexDirection: "column", backgroundColor: C.paper,
+    borderWidth: 0.5, borderColor: C.boneDark, paddingVertical: 16, paddingHorizontal: 18, marginTop: 4,
   },
-  diploCol: { flex: 1, paddingRight: 12 },
-  diploColLast: { paddingRight: 0, paddingLeft: 12, borderLeftWidth: 0.5, borderLeftColor: C.boneDark },
+  diploCol: { paddingBottom: 16, marginBottom: 16, borderBottomWidth: 0.5, borderBottomColor: C.boneDark },
+  diploColLast: { paddingBottom: 0, marginBottom: 0, borderBottomWidth: 0 },
   diploVal: { fontSize: 11.5, color: C.inkSoft, marginTop: 2, lineHeight: 1.5 },
 
   // 출처 페이지
@@ -295,6 +307,16 @@ function EcoRow({ label, v, defaultSrc, isLast }) {
   );
 }
 
+// 섹션 뒤에 붙는 메모칸 — 라벨 + 초록 테두리 박스 (flexGrow로 남는 공간만큼 자동 확장)
+function SectionMemo() {
+  return (
+    <View style={styles.memoGroup}>
+      <Text style={styles.memoGroupLabel}>NOTES</Text>
+      <View style={styles.memoGroupBox} />
+    </View>
+  );
+}
+
 function InfraRow({ label, v, compare, isLast }) {
   let src = null;
   if (v) src = v.year && v.source ? `(${v.year} · ${v.source})` : v.year ? `(${v.year})` : v.source ? `(${v.source})` : null;
@@ -369,11 +391,26 @@ export default function CountryInfoPDF({ country, countries, summary }) {
     ["양자 지원 규모", eco.bilateral, ODA],
     ["한국 ODA 규모", eco.koreaOda, ODA],
   ];
-  const infraRows = [
-    ["병상 수", infra.hospitalBeds, "hospitalBeds"],
-    ["의사 수", infra.physicians, "physicians"],
-    ["전력 접근률", infra.electricityAccess, "electricityAccess"],
-    ["인터넷 이용률", infra.internetPenetration, "internetPenetration"],
+  const infraGroups = [
+    { label: "보건", rows: [
+      ["병상 수", infra.hospitalBeds, "hospitalBeds"],
+      ["의사 수", infra.physicians, "physicians"],
+      ["간호사·조산사 수", infra.nursesMidwives, "nursesMidwives"],
+    ] },
+    { label: "전력·에너지", rows: [
+      ["전력 접근률", infra.electricityAccess, "electricityAccess"],
+      ["재생에너지 발전 비중", infra.renewableEnergyShare, "renewableEnergyShare"],
+      ["청정 취사연료 접근률", infra.cleanCookingAccess, "cleanCookingAccess"],
+    ] },
+    { label: "통신·디지털", rows: [
+      ["인터넷 이용률", infra.internetPenetration, "internetPenetration"],
+      ["이동통신 가입자 수", infra.mobileSubscriptions, "mobileSubscriptions"],
+    ] },
+    { label: "수자원·위생", rows: [
+      ["식수 접근률", infra.basicWater, "basicWater"],
+      ["위생시설 접근률", infra.basicSanitation, "basicSanitation"],
+      ["1인당 재생가능 담수자원량", infra.renewableWaterPerCapita, "renewableWaterPerCapita"],
+    ] },
   ];
 
   return (
@@ -441,7 +478,7 @@ export default function CountryInfoPDF({ country, countries, summary }) {
         {summary ? (
           <View wrap={false} style={styles.summaryBox}>
             <Text style={styles.summaryTag}>국가 정보 요약</Text>
-            <Text style={styles.summaryText}>{summary}</Text>
+            <Text style={styles.summaryText}>{"\u3000"}{summary}</Text>
           </View>
         ) : null}
 
@@ -458,8 +495,8 @@ export default function CountryInfoPDF({ country, countries, summary }) {
           </View>
         </View>
 
-        {/* 경제 및 ODA 규모 */}
-        <View wrap={false}>
+        {/* 경제 및 ODA 규모 — 새 페이지에서 시작 (이전 섹션에 붙어서 페이지 하단이 비는 문제 방지) */}
+        <View wrap={false} break>
           <SecHead title="경제 및 ODA 규모" />
           <View style={styles.ecoGroup}>
             {ecoRows.map(([label, v, ds], i) => (
@@ -467,36 +504,45 @@ export default function CountryInfoPDF({ country, countries, summary }) {
             ))}
           </View>
         </View>
+        <SectionMemo />
 
-        {/* 인프라 현황 */}
-        <View wrap={false}>
+        {/* 인프라 현황 — 새 페이지에서 시작. 12개 지표로 페이지가 이미 꽉 차서 메모칸은 안 붙임 */}
+        <View wrap={false} break>
           <SecHead title="인프라 현황" />
           <View style={styles.ecoGroup}>
-            {infraRows.map(([label, v, fieldKey], i) => (
-              <InfraRow
-                key={label}
-                label={label}
-                v={v}
-                compare={v ? infraCompareText(infraAvg, fieldKey, v.value) : null}
-                isLast={i === infraRows.length - 1}
-              />
+            {infraGroups.map((g, gi) => (
+              <View key={g.label}>
+                <Text style={[styles.infraSubhead, gi === 0 && styles.infraSubheadFirst]}>{g.label}</Text>
+                {g.rows.map(([label, v, fieldKey], i) => (
+                  <InfraRow
+                    key={label}
+                    label={label}
+                    v={v}
+                    compare={v ? infraCompareText(infraAvg, fieldKey, v.value) : null}
+                    isLast={i === g.rows.length - 1}
+                  />
+                ))}
+              </View>
             ))}
           </View>
         </View>
 
-        {/* 보건 세부 지원 현황 — 데이터 있는 국가만 */}
+        {/* 보건 세부 지원 현황 — 데이터 있는 국가만, 새 페이지에서 시작 */}
         {healthDetailRows ? (
-          <View wrap={false} style={{ marginBottom: 22 }}>
-            <SecHead title="보건 세부 지원 현황" src={healthDetail.year ? `(${healthDetail.year} · KOICA ODA)` : null} />
-            <Text style={styles.healthDesc}>
-              KOICA ODA 세부 사업분야 데이터를 기준으로, 보건 분야 지원이 실제로 어디에 쓰였는지 보여줍니다.
-            </Text>
-            {healthDetailRows.map((row) => <HealthRow key={row.name} {...row} />)}
-          </View>
+          <>
+            <View wrap={false} break style={{ marginBottom: 22 }}>
+              <SecHead title="보건 세부 지원 현황" src={healthDetail.year ? `(${healthDetail.year} · KOICA ODA)` : null} />
+              <Text style={styles.healthDesc}>
+                KOICA ODA 세부 사업분야 데이터를 기준으로, 보건 분야 지원이 실제로 어디에 쓰였는지 보여줍니다.
+              </Text>
+              {healthDetailRows.map((row) => <HealthRow key={row.name} {...row} />)}
+            </View>
+            <SectionMemo />
+          </>
         ) : null}
 
-        {/* KOICA 지원 규모 */}
-        <View wrap={false}>
+        {/* KOICA 지원 규모 — 새 페이지에서 시작 */}
+        <View wrap={false} break>
           <SecHead title="한국국제협력단(KOICA) 지원 규모" />
           {cum.total ? (
             <View style={styles.koicaCumRow}>
@@ -536,31 +582,35 @@ export default function CountryInfoPDF({ country, countries, summary }) {
             !cum.total && <Text style={styles.ecoEmpty}>{EMPTY_TEXT}</Text>
           )}
         </View>
+        <SectionMemo />
 
-        {/* 협력 문의처 */}
+        {/* 협력 문의처 — 새 페이지에서 시작 */}
         {c.diplomaticContact ? (
-          <View wrap={false} style={{ marginTop: 22 }}>
-            <SecHead title="협력 문의처" />
-            <View style={styles.diploBox}>
-              <View style={styles.diploCol}>
-                <Text style={styles.basicKey}>현지 대한민국 대사관</Text>
-                <Text style={styles.basicVal}>{c.diplomaticContact.overseas.missionName}</Text>
-                <Text style={styles.diploVal}>{c.diplomaticContact.overseas.phone}</Text>
-                <Text style={styles.diploVal}>{c.diplomaticContact.overseas.address}</Text>
-              </View>
-              {c.diplomaticContact.domestic ? (
-                <View style={[styles.diploCol, styles.diploColLast]}>
-                  <Text style={styles.basicKey}>주한 {c.name} 대사관 (서울)</Text>
-                  <Text style={styles.basicVal}>{c.diplomaticContact.domestic.ambassador}</Text>
-                  <Text style={styles.diploVal}>{c.diplomaticContact.domestic.phone}</Text>
-                  {c.diplomaticContact.domestic.email ? (
-                    <Text style={styles.diploVal}>{c.diplomaticContact.domestic.email}</Text>
-                  ) : null}
-                  <Text style={styles.diploVal}>{c.diplomaticContact.domestic.address}</Text>
+          <>
+            <View wrap={false} break>
+              <SecHead title="협력 문의처" />
+              <View style={styles.diploBox}>
+                <View style={styles.diploCol}>
+                  <Text style={styles.basicKey}>현지 대한민국 대사관</Text>
+                  <Text style={styles.basicVal}>{c.diplomaticContact.overseas.missionName}</Text>
+                  <Text style={styles.diploVal}>{c.diplomaticContact.overseas.phone}</Text>
+                  <Text style={styles.diploVal}>{c.diplomaticContact.overseas.address}</Text>
                 </View>
-              ) : null}
+                {c.diplomaticContact.domestic ? (
+                  <View style={[styles.diploCol, styles.diploColLast]}>
+                    <Text style={styles.basicKey}>주한 {c.name} 대사관 (서울)</Text>
+                    <Text style={styles.basicVal}>{c.diplomaticContact.domestic.ambassador}</Text>
+                    <Text style={styles.diploVal}>{c.diplomaticContact.domestic.phone}</Text>
+                    {c.diplomaticContact.domestic.email ? (
+                      <Text style={styles.diploVal}>{c.diplomaticContact.domestic.email}</Text>
+                    ) : null}
+                    <Text style={styles.diploVal}>{c.diplomaticContact.domestic.address}</Text>
+                  </View>
+                ) : null}
+              </View>
             </View>
-          </View>
+            <SectionMemo />
+          </>
         ) : null}
 
         <PageFooter />
@@ -579,7 +629,7 @@ export default function CountryInfoPDF({ country, countries, summary }) {
             「국가(지역)별 경제현황」(2025.09 갱신) · ODA 규모(순수원액·수원국·양자·한국) KOICA
             「협력국 통합개발지표」(2025.07 갱신) · KOICA 분야별·누적 지원 KOICA 「국가별 지원실적」
             (2025.11 갱신) · 보건 세부 지원 현황 KOICA 「ODA 실적보고 로데이터」(2025.11 갱신) ·
-            병상 수·의사 수·전력 접근률·인터넷 이용률 World Bank Open Data ·
+            인프라 지표 11종(병상 수·의사 수·간호사·조산사 수·전력 접근률·재생에너지 발전 비중·청정 취사연료 접근률·인터넷 이용률·이동통신 가입자 수·식수 접근률·위생시설 접근률·1인당 재생가능 담수자원량) World Bank Open Data ·
             재외공관·주한공관 연락처 외교부 「국가·지역별 재외공관 정보」·「재외공관 홈페이지 관련 정보」·「주한공관정보」.
             모든 데이터는 공공데이터포털(data.go.kr) 또는 World Bank 공개 자료이며, 갱신일은
             각 포털 기준입니다. 데이터 기준연도는 각 항목에 별도 표기되어 있습니다.

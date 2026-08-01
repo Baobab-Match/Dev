@@ -96,7 +96,12 @@ const AXIS_LABEL = {
 };
 
 // 인프라 지표별 아프리카 54개국 평균 계산 (countries 전체 맵을 받아 1회 계산)
-const INFRA_FIELDS = ["hospitalBeds", "physicians", "electricityAccess", "internetPenetration"];
+const INFRA_FIELDS = [
+  "hospitalBeds", "physicians", "nursesMidwives",
+  "electricityAccess", "renewableEnergyShare", "cleanCookingAccess",
+  "internetPenetration", "mobileSubscriptions",
+  "basicWater", "basicSanitation", "renewableWaterPerCapita",
+];
 function computeInfraAvg(countries) {
   const sums = {}, counts = {};
   INFRA_FIELDS.forEach((f) => { sums[f] = 0; counts[f] = 0; });
@@ -294,13 +299,13 @@ const styles = StyleSheet.create({
   basicKey: { fontSize: 11, fontWeight: 700, color: C.green700, marginBottom: 3 },
   basicVal: { fontSize: 11.5, color: C.inkSoft },
 
-  // 협력 문의처 — 재외공관 · 주한공관 2단 (홈페이지 주소는 PDF 특성상 제외, 연락처 위주로만 구성)
+  // 협력 문의처 — 재외공관 · 주한공관을 위아래로 쌓아 공간을 넓게 씀
   diploBox: {
-    flexDirection: "row", backgroundColor: C.paper, borderRadius: 0,
-    borderWidth: 0.5, borderColor: C.boneDark, paddingVertical: 10, paddingHorizontal: 16, marginBottom: 12,
+    flexDirection: "column", backgroundColor: C.paper, borderRadius: 0,
+    borderWidth: 0.5, borderColor: C.boneDark, paddingVertical: 16, paddingHorizontal: 18, marginBottom: 12,
   },
-  diploCol: { flex: 1, paddingRight: 12 },
-  diploColLast: { paddingRight: 0, paddingLeft: 12, borderLeftWidth: 0.5, borderLeftColor: C.boneDark },
+  diploCol: { paddingBottom: 16, marginBottom: 16, borderBottomWidth: 0.5, borderBottomColor: C.boneDark },
+  diploColLast: { paddingBottom: 0, marginBottom: 0, borderBottomWidth: 0 },
   diploVal: { fontSize: 11.5, color: C.inkSoft, marginTop: 2, lineHeight: 1.5 },
 
   // 경제·ODA 풀와이드 표
@@ -312,6 +317,8 @@ const styles = StyleSheet.create({
   ecoEmpty: { position: "absolute", right: 0, top: 8, fontSize: 10, color: C.inkSoft, lineHeight: 1 },
   ecoLine: { position: "absolute", left: 0, right: 0, bottom: 0, borderBottomWidth: 0.5, borderBottomColor: C.boneDark },
   ecoGroup: { marginBottom: 18 },
+  infraSubhead: { fontSize: 11, fontWeight: 800, color: C.green700, letterSpacing: 0.2, marginTop: 16, marginBottom: 5 },
+  infraSubheadFirst: { marginTop: 0 },
 
   // KOICA 누적
   koicaCumRow: { position: "relative", height: 24, marginBottom: 8 },
@@ -581,11 +588,26 @@ function CountryDetailPage({ r, country, rankLabel, field, showMatchedField, inf
     ["양자 지원 규모", eco.bilateral, ODA],
     ["한국 ODA 규모", eco.koreaOda, ODA],
   ];
-  const infraRows = [
-    ["병상 수", infra.hospitalBeds, "hospitalBeds"],
-    ["의사 수", infra.physicians, "physicians"],
-    ["전력 접근률", infra.electricityAccess, "electricityAccess"],
-    ["인터넷 이용률", infra.internetPenetration, "internetPenetration"],
+  const infraGroups = [
+    { label: "보건", rows: [
+      ["병상 수", infra.hospitalBeds, "hospitalBeds"],
+      ["의사 수", infra.physicians, "physicians"],
+      ["간호사·조산사 수", infra.nursesMidwives, "nursesMidwives"],
+    ] },
+    { label: "전력·에너지", rows: [
+      ["전력 접근률", infra.electricityAccess, "electricityAccess"],
+      ["재생에너지 발전 비중", infra.renewableEnergyShare, "renewableEnergyShare"],
+      ["청정 취사연료 접근률", infra.cleanCookingAccess, "cleanCookingAccess"],
+    ] },
+    { label: "통신·디지털", rows: [
+      ["인터넷 이용률", infra.internetPenetration, "internetPenetration"],
+      ["이동통신 가입자 수", infra.mobileSubscriptions, "mobileSubscriptions"],
+    ] },
+    { label: "수자원·위생", rows: [
+      ["식수 접근률", infra.basicWater, "basicWater"],
+      ["위생시설 접근률", infra.basicSanitation, "basicSanitation"],
+      ["1인당 재생가능 담수자원량", infra.renewableWaterPerCapita, "renewableWaterPerCapita"],
+    ] },
   ];
 
   return (
@@ -655,23 +677,28 @@ function CountryDetailPage({ r, country, rankLabel, field, showMatchedField, inf
       </View>
       <SectionMemo />
 
-      {/* 인프라 현황 — 병상 수·의사 수·전력 접근률·인터넷 이용률 (World Bank) */}
+      {/* 인프라 현황 — 보건/전력·에너지/통신·디지털/수자원·위생 4개 서브섹션 (World Bank) */}
       <View wrap={false}>
         <SecHead title="인프라 현황" />
         <View style={styles.ecoGroup}>
-          {infraRows.map(([label, v, fieldKey], i) => (
-            <InfraRow
-              key={label}
-              label={label}
-              v={v}
-              compare={v ? infraCompareText(infraAvg, fieldKey, v.value) : null}
-              isLast={i === infraRows.length - 1}
-            />
+          {infraGroups.map((g, gi) => (
+            <View key={g.label}>
+              <Text style={[styles.infraSubhead, gi === 0 && styles.infraSubheadFirst]}>{g.label}</Text>
+              {g.rows.map(([label, v, fieldKey], i) => (
+                <InfraRow
+                  key={label}
+                  label={label}
+                  v={v}
+                  compare={v ? infraCompareText(infraAvg, fieldKey, v.value) : null}
+                  isLast={i === g.rows.length - 1}
+                />
+              ))}
+            </View>
           ))}
         </View>
       </View>
-      <SectionMemo />
-
+      {/* 인프라 현황 뒤 메모칸은 뺐음 — 지표가 11개로 늘어나 페이지 하단 여백이 거의 없어서,
+          메모 박스(라벨만 이전 페이지에 남고 빈 박스만 다음 페이지 전체를 채우는) 오류가 생겼었음 */}
       {/* KOICA — 누적 + 도넛 중앙 + 범례 (통째로 다음 페이지로 넘어가도록 wrap=false) */}
       <View wrap={false}>
         <SecHead title="한국국제협력단(KOICA) 지원 규모" />
@@ -959,7 +986,7 @@ export default function MatchReportPDF({
             인구·언어·수도 외교부 「국가(지역)별 일반현황」(2025.12 갱신) · GDP·1인당 GDP 외교부
             「국가(지역)별 경제현황」(2025.09 갱신) · ODA 규모(순수원액·수원국·양자·한국) KOICA
             「협력국 통합개발지표」(2025.07 갱신) · KOICA 분야별·누적 지원 KOICA 「국가별 지원실적」
-            (2025.11 갱신) · 병상 수·의사 수·전력 접근률·인터넷 이용률 World Bank Open Data ·
+            (2025.11 갱신) · 인프라 지표 11종(병상 수·의사 수·간호사·조산사 수·전력 접근률·재생에너지 발전 비중·청정 취사연료 접근률·인터넷 이용률·이동통신 가입자 수·식수 접근률·위생시설 접근률·1인당 재생가능 담수자원량) World Bank Open Data ·
             재외공관·주한공관 연락처 외교부 「국가·지역별 재외공관 정보」·「재외공관 홈페이지 관련 정보」·「주한공관정보」.
             모든 데이터는 공공데이터포털(data.go.kr) 또는 World Bank 공개 자료이며, 갱신일은
             각 포털 기준입니다. 데이터 기준연도는 각 항목에 별도 표기되어 있습니다.

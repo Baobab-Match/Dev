@@ -1,8 +1,9 @@
 import { useState } from "react";
 import { pdf } from "@react-pdf/renderer";
 import { COUNTRIES } from "../data";
-import { CountrySilhouette, DonutChart, DONUT_COLORS, Icons } from "../components/ui";
+import { CountrySilhouette, Icons } from "../components/ui";
 import CountryInfoPDF from "../components/CountryInfoPDF";
+import CountryNews from "../components/CountryNews";
 
 // PDF Document를 그 자리에서 새로 빌드해 blob으로 만들고 바로 다운로드.
 // MatchResults.jsx의 downloadPdf와 동일한 방식 — 매 클릭마다 완전히 새로 렌더링해
@@ -24,7 +25,12 @@ const isNil = (v) => v === null || v === undefined;
 
 // 인프라 지표별 아프리카 54개국 평균·최댓값 계산 (모듈 로드 시 1회만 계산)
 // 최댓값은 막대그래프 폭(0~100%) 산출에, 평균은 비교 문구·평균선 표시에 쓴다.
-const INFRA_FIELDS = ["hospitalBeds", "physicians", "electricityAccess", "internetPenetration"];
+const INFRA_FIELDS = [
+  "hospitalBeds", "physicians", "nursesMidwives",
+  "electricityAccess", "renewableEnergyShare", "cleanCookingAccess",
+  "internetPenetration", "mobileSubscriptions",
+  "basicWater", "basicSanitation", "renewableWaterPerCapita",
+];
 const AFRICA_INFRA_STATS = (() => {
   const vals = {};
   INFRA_FIELDS.forEach((f) => { vals[f] = []; });
@@ -90,7 +96,20 @@ const DIPLOMACY_RANK = buildRankMap("diplomacyScore");
 
 // 국가 정보 요약 — 아래 세부 항목을 다 읽기 전에, 이미 계산해둔 순위·비교 데이터로 핵심만 먼저 전달
 // 인프라 라벨 — 요약 문장에서 "아프리카 평균보다 부족한 항목"을 짚을 때 재사용
-const INFRA_LABEL = { hospitalBeds: "병상 수", physicians: "의사 수", electricityAccess: "전력 접근률", internetPenetration: "인터넷 이용률" };
+const INFRA_LABEL = {
+  hospitalBeds: "병상 수", physicians: "의사 수", nursesMidwives: "간호사·조산사 수",
+  electricityAccess: "전력 접근률", renewableEnergyShare: "재생에너지 발전 비중", cleanCookingAccess: "청정 취사연료 접근률",
+  internetPenetration: "인터넷 이용률", mobileSubscriptions: "이동통신 가입자 수",
+  basicWater: "식수 접근률", basicSanitation: "위생시설 접근률", renewableWaterPerCapita: "1인당 재생가능 담수자원량",
+};
+
+// 한글 단어의 마지막 글자 받침 유무에 따라 조사를 골라줌 (예: "의사 수" → 가, "접근률" → 이)
+function josa(word, withBatchim, withoutBatchim) {
+  const lastChar = (word || "").trim().slice(-1);
+  const code = lastChar.charCodeAt(0);
+  if (code < 0xac00 || code > 0xd7a3) return withoutBatchim; // 한글 음절이 아니면 기본값
+  return (code - 0xac00) % 28 !== 0 ? withBatchim : withoutBatchim;
+}
 
 // 아프리카 평균보다 가장 많이 부족한 인프라 항목 하나를 찾음 (5% 이상 낮은 것 중 가장 큰 격차)
 function biggestInfraGap(c) {
@@ -122,7 +141,7 @@ function buildSummary(c) {
     const level = climateRank.rank <= climateRank.total * 0.3 ? "기후 위험이 큰 편"
       : climateRank.rank <= climateRank.total * 0.6 ? "중간 수준"
       : "비교적 안정적인 편";
-    const lead = `${c.name}는 기후 변화에 취약한 정도가 54개국 중 ${climateRank.rank}위(${c.climateScore}점)로 ${level}에 속`;
+    const lead = `${c.name}${josa(c.name, "은", "는")} 기후 변화에 취약한 정도가 54개국 중 ${climateRank.rank}위(${c.climateScore}점)로 ${level}에 속`;
     if (c.climateReason) {
       sentences.push(`${lead}하며, World Bank 기후 전망에 따르면 ${c.climateReason}`);
     } else if (c.mainClimateIssue) {
@@ -159,7 +178,7 @@ function buildSummary(c) {
   // 4. 인프라 — 눈에 띄는 격차가 있으면 구체적으로, 데이터는 있는데 격차가 없으면 "평균 수준"이라는 것도 정보로 제공
   const gap = biggestInfraGap(c);
   if (gap) {
-    sentences.push(`인프라 면에서는 ${INFRA_LABEL[gap.field]}이 아프리카 평균보다 낮은 수준으로, 이 분야에서 한국이 실질적으로 기여할 수 있는 협력 여지가 있는 것으로 보입니다.`);
+    sentences.push(`인프라 면에서는 ${INFRA_LABEL[gap.field]}${josa(INFRA_LABEL[gap.field], "이", "가")} 아프리카 평균보다 낮은 수준으로, 이 분야에서 한국이 실질적으로 기여할 수 있는 협력 여지가 있는 것으로 보입니다.`);
   } else if (hasInfraData(c)) {
     sentences.push("인프라 지표는 아프리카 평균과 비슷한 수준으로 확인됩니다.");
   }
@@ -188,38 +207,8 @@ function StatItem({ value, label, suffix, yes, rank, rankHint }) {
   );
 }
 
-// 보건 세부 지원 현황 — KOICA ODA 로데이터(144개 세부 사업분야) 기반.
-// 국가 데이터에 c.koicaHealthDetail = { year, sectors: [{ name, percent, amount }] } 형태로
-// 들어온다고 가정(콜랩 파이프라인 반영 전까지는 없는 국가가 많음 → 26/54개국만 존재).
-// 상위 HEALTH_DETAIL_TOP_N개만 개별 막대로, 나머지는 "기타"로 합산.
-const HEALTH_DETAIL_TOP_N = 6;
-function buildHealthDetailRows(healthDetail) {
-  if (!healthDetail || !healthDetail.sectors || healthDetail.sectors.length === 0) return null;
-  const sorted = healthDetail.sectors.slice().sort((a, b) => (b.percent || 0) - (a.percent || 0));
-  if (sorted.length <= HEALTH_DETAIL_TOP_N) return sorted;
-
-  const top = sorted.slice(0, HEALTH_DETAIL_TOP_N);
-  const rest = sorted.slice(HEALTH_DETAIL_TOP_N);
-  const restPercent = rest.reduce((sum, s) => sum + (s.percent || 0), 0);
-  top.push({ name: "기타", percent: restPercent, amount: null, count: rest.length, isOther: true });
-  return top;
-}
-
-// 보건 세부 지원 현황 — 막대 한 줄
-function HealthDetailBar({ name, percent, amount, count, isOther }) {
-  return (
-    <div className="health-bar-row">
-      <div className="health-bar-label">{name}</div>
-      <div className="health-bar-track">
-        <div className="health-bar-fill" style={{ width: `${Math.min(100, percent || 0)}%` }} />
-      </div>
-      <div className="health-bar-pct">{(percent || 0).toFixed(1)}%</div>
-      <div className="health-bar-amt">
-        {isOther ? `세부사업 ${count}개` : (amount || "—")}
-      </div>
-    </div>
-  );
-}
+// 보건 세부 지원 현황·KOICA 분야별 도넛은 정보량이 많아 PDF 보고서 전용으로 옮기고
+// 웹 페이지에서는 더 이상 렌더링하지 않는다 (관련 헬퍼는 CountryInfoPDF.jsx에 독립적으로 존재).
 
 // 표시단계 KRW 정규화: 상위 2개 단위까지만 (예: "약 2,143억 3,500만 원" → "약 2,143억 원")
 function tidyKrw(krw) {
@@ -316,6 +305,98 @@ function EcoItem({ label, v, defaultSource }) {
 }
 
 // 인프라 항목 한 줄 — v: { value, unit, year?, source? }, compare: 아프리카 평균 비교 문구
+// 홈페이지 주소에 프로토콜이 빠진 경우(www.xxx.com, xxx.com 등) https:// 붙여서 링크가 실제로 동작하게 함
+function normalizeUrl(url) {
+  if (!url) return null;
+  return /^https?:\/\//i.test(url) ? url : `https://${url}`;
+}
+
+// 진출 기업 카드 — 개인 연락처(대표자명·이메일·전화번호·상세주소)는 담지 않고
+// 공개된 기업 정보(업종·소재지·재무 수치·홈페이지·소개)만 표시
+function CompanyCard({ c }) {
+  return (
+    <div className="market-card">
+      <div className="market-card-head">
+        <div>
+          <div className="market-card-name">{c.nameKo || c.nameEn || "—"}</div>
+          {c.nameEn && c.nameKo && <div className="market-card-name-en">{c.nameEn}</div>}
+        </div>
+        {c.website && (
+          <a className="market-card-link" href={normalizeUrl(c.website)} target="_blank" rel="noreferrer">홈페이지 ↗</a>
+        )}
+      </div>
+      <div className="market-card-meta">
+        {[c.industry, c.subIndustry].filter(Boolean).join(" · ")}
+        {(c.hq || c.foundedYear) && ` | ${[c.hq, c.foundedYear && `${c.foundedYear}년 설립`].filter(Boolean).join(" · ")}`}
+      </div>
+      {(c.marketCap || c.netProfit || c.employees) && (
+        <div className="market-card-stats">
+          {c.marketCap && (
+            <div className="market-card-stat">
+              <div className="market-card-stat-label">시가총액{c.marketCap.year ? ` (${c.marketCap.year})` : ""}</div>
+              <div className="market-card-stat-val">{c.marketCap.krw}</div>
+            </div>
+          )}
+          {c.netProfit && (
+            <div className="market-card-stat">
+              <div className="market-card-stat-label">순이익{c.netProfit.year ? ` (${c.netProfit.year})` : ""}</div>
+              <div className="market-card-stat-val">{c.netProfit.krw}</div>
+            </div>
+          )}
+          {c.employees && (
+            <div className="market-card-stat">
+              <div className="market-card-stat-label">직원 수</div>
+              <div className="market-card-stat-val">{c.employees}명</div>
+            </div>
+          )}
+        </div>
+      )}
+      {c.highlights && c.highlights.length > 0 && <div className="market-card-desc">{c.highlights[0]}</div>}
+    </div>
+  );
+}
+
+// 진출 스타트업 카드
+function StartupCard({ s }) {
+  return (
+    <div className="market-card">
+      <div className="market-card-head">
+        <div className="market-card-name">{s.nameKo || "—"}</div>
+        {s.website && (
+          <a className="market-card-link" href={normalizeUrl(s.website)} target="_blank" rel="noreferrer">홈페이지 ↗</a>
+        )}
+      </div>
+      <div className="market-card-meta">
+        {s.field}
+        {(s.hq || s.foundedYear) && ` | ${[s.hq, s.foundedYear && `${s.foundedYear}년 창업`].filter(Boolean).join(" · ")}`}
+      </div>
+      {(s.funding || s.fundingStage || s.employees) && (
+        <div className="market-card-stats">
+          {s.funding && (
+            <div className="market-card-stat">
+              <div className="market-card-stat-label">투자유치액</div>
+              <div className="market-card-stat-val">{s.funding.krw}</div>
+            </div>
+          )}
+          {s.fundingStage && (
+            <div className="market-card-stat">
+              <div className="market-card-stat-label">투자 단계</div>
+              <div className="market-card-stat-val">{s.fundingStage}</div>
+            </div>
+          )}
+          {s.employees && (
+            <div className="market-card-stat">
+              <div className="market-card-stat-label">직원 수</div>
+              <div className="market-card-stat-val">{s.employees}</div>
+            </div>
+          )}
+        </div>
+      )}
+      {s.topInvestor && <div className="market-card-desc">최대 투자자: {s.topInvestor}</div>}
+    </div>
+  );
+}
+
 function InfraItem({ label, v, compare, fieldKey }) {
   if (!v) return (
     <div className="eco-item">
@@ -379,19 +460,28 @@ export default function CountryDetail({ id, go, from = "search", isFavorite, tog
   ];
   const hasNet = ecoRows.some(([, v]) => v && v.isNet);
 
-  // 인프라 항목 목록 (라벨 ↔ 데이터 ↔ 평균 비교용 필드키) — 경제/ODA와 성격이 달라 별도 블록으로 분리
-  const infraRows = [
-    ["병상 수", infra.hospitalBeds, "hospitalBeds"],
-    ["의사 수", infra.physicians, "physicians"],
-    ["전력 접근률", infra.electricityAccess, "electricityAccess"],
-    ["인터넷 이용률", infra.internetPenetration, "internetPenetration"],
-  ];
-
-  // 기초 정보 행 (라벨 ↔ 값) — GDP는 우측 '경제 및 ODA'에서 다루므로 제외
-  const infoRows = [
-    ["수도", c.capital || "—"],
-    ["인구", c.population || "—"],
-    ["언어", c.language || "—"],
+  // 인프라 항목 목록 — 경제/ODA와 성격이 달라 별도 블록으로 분리, 12개로 늘어나 4개 카테고리로 서브그룹화
+  // (교통 2종(포장도로·철도)은 결측이 많아 이번엔 화면에서 제외 — 데이터 자체는 infrastructure에 그대로 있음)
+  const infraGroups = [
+    { label: "보건", rows: [
+      ["병상 수", infra.hospitalBeds, "hospitalBeds"],
+      ["의사 수", infra.physicians, "physicians"],
+      ["간호사·조산사 수", infra.nursesMidwives, "nursesMidwives"],
+    ] },
+    { label: "전력·에너지", rows: [
+      ["전력 접근률", infra.electricityAccess, "electricityAccess"],
+      ["재생에너지 발전 비중", infra.renewableEnergyShare, "renewableEnergyShare"],
+      ["청정 취사연료 접근률", infra.cleanCookingAccess, "cleanCookingAccess"],
+    ] },
+    { label: "통신·디지털", rows: [
+      ["인터넷 이용률", infra.internetPenetration, "internetPenetration"],
+      ["이동통신 가입자 수", infra.mobileSubscriptions, "mobileSubscriptions"],
+    ] },
+    { label: "수자원·위생", rows: [
+      ["식수 접근률", infra.basicWater, "basicWater"],
+      ["위생시설 접근률", infra.basicSanitation, "basicSanitation"],
+      ["1인당 재생가능 담수자원량", infra.renewableWaterPerCapita, "renewableWaterPerCapita"],
+    ] },
   ];
 
   // 히어로 스탯 (5칸) — 기후 취약도·외교 친밀도는 54개국 내 상대 순위도 함께 표시
@@ -404,16 +494,9 @@ export default function CountryDetail({ id, go, from = "search", isFavorite, tog
     { value: c.diplomacyScore, suffix: "/100", label: "외교 친밀도", rank: DIPLOMACY_RANK[c.id], rankHint: "1위=가장 친밀" },
   ];
 
-  // KOICA 분기 판정
-  const sectors = ((c.koica && c.koica.sectors) || []).slice().sort((a, b) => b.percent - a.percent);
-  const hasDonut = sectors.length > 0;
-  const cum = c.koicaCumulative || null;
-  const hasCum = !!(cum && cum.total);
-  
-  // 보건 세부 지원 현황 — 데이터 없는 국가(26/54개국만 커버)는 블록 자체를 숨김
-  const healthDetail = c.koicaHealthDetail || null;
-  const healthDetailRows = buildHealthDetailRows(healthDetail);
-  const hasHealthDetail = !!healthDetailRows;
+  // 시장 진입 용이도(marketEntry) — 한아프리카재단 250대기업·스타트업 디렉터리 집계 (23/54개국만 존재)
+  const me = c.marketEntry || null;
+  const hasMarketEntry = !!(me && (me.companyCount > 0 || me.startupCount > 0));
 
   const backLabel = from === "match" ? "추천 결과로" : from === "mypage" ? "내 정보로" : "국가 목록으로";
   const summary = buildSummary(c);
@@ -478,106 +561,93 @@ export default function CountryDetail({ id, go, from = "search", isFavorite, tog
 
       <div className="detail-grid">
         <div>
-          {/* 1. 기초 국가 정보 — "이 나라는 어떤 곳인가" */}
+          {/* 1. 인프라 정보 — 협력 여지를 가장 직접적으로 보여주는 지표라 먼저 배치. 12개로 늘어나 2×2 그리드로 배치 */}
           <div className="info-block">
-            <div className="block-tag">기초 국가 정보</div>
-            {infoRows.map(([k, val]) => (
-              <div className="info-row" key={k}><b>{k}</b><span>{val}</span></div>
-            ))}
-          </div>
-
-          {/* 2. KOICA 지원 규모 — "그동안의 협력" (도넛 위 + 범례 아래) */}
-          <div className="info-block">
-            <div className="block-tag">한국국제협력단(KOICA) 지원 규모</div>
-
-            {!hasDonut && !hasCum ? (
-              <div className="eco-empty">{EMPTY}</div>
-            ) : (
-              <>
-                {hasCum && (
-                  <div className="koica-cum">
-                    <div className="koica-cum-big">{cum.total}</div>
-                    <div className="koica-cum-meta">
-                      {cum.startYear}년 이후 누적 금액
-                      <span className="koica-cum-dot">·</span>
-                      {cum.latestYear}년 기준 한 해 {cum.latest} 지원
-                      <span className="eco-src">({cum.startYear}~{cum.latestYear} · KOICA)</span>
-                    </div>
-                  </div>
-                )}
-
-                {hasDonut ? (
-                  <>
-                    <div className="koica-sub-title">
-                      분야별 지원 비중
-                      <span className="eco-src">(2023 · KOICA)</span>
-                      <span className="koica-sub-desc">통합개발지표 분야별 지원금을 비율로 환산 · 위 누적 총액과는 출처가 다릅니다.</span>
-                    </div>
-                    <div className="koica-wrap">
-                      <DonutChart sectors={sectors} total={c.koica.total} />
-                      <div className="koica-legend">
-                        {sectors.map((s, i) => (
-                          <div className="koica-li" key={s.name}>
-                            <span className="koica-sw" style={{ background: DONUT_COLORS[i % DONUT_COLORS.length] }} />
-                            <span className="koica-nm">{s.name}</span>
-                            <span className="pc">{s.percent}%</span>
-                            <span className="amt">{s.amount}</span>
-                          </div>
-                        ))}
-                        <div className="koica-total"><span>전체</span><span>{c.koica.total}</span></div>
-                      </div>
-                    </div>
-                  </>
-                ) : (
-                  <div className="koica-nodonut">분야별 데이터 없음</div>
-                )}
-              </>
-            )}
+            <div className="block-tag">인프라 현황</div>
+            <div className="info-subgroups-grid">
+              {infraGroups.map((g) => (
+                <div className="info-subgroup" key={g.label}>
+                  <div className="info-subhead">{g.label}</div>
+                  {g.rows.map(([label, v, fieldKey]) => (
+                    <InfraItem
+                      key={label}
+                      label={label}
+                      v={v}
+                      fieldKey={fieldKey}
+                      compare={v ? infraCompareText(fieldKey, v.value) : null}
+                    />
+                  ))}
+                </div>
+              ))}
+            </div>
+            <div className="eco-foot"><div>※ 막대의 주황선은 아프리카 54개국 평균 위치입니다.</div></div>
           </div>
         </div>
 
         <div>
-          {/* 3. 경제 및 ODA 규모 정보 — "이 나라에 필요한 것" */}
+          {/* 2. 경제 및 ODA 규모 정보 — "이 나라에 필요한 것". 인프라 블록과 나란히 2열 그리드로 배치 */}
           <div className="info-block">
-            <div className="block-tag">경제 및 ODA 규모 정보</div>
-            {ecoRows.map(([label, v, defaultSource]) => <EcoItem key={label} label={label} v={v} defaultSource={defaultSource} />)}
+            <div className="block-tag">경제 및 ODA 규모</div>
+            <div className="eco-items-grid">
+              {ecoRows.map(([label, v, defaultSource]) => <EcoItem key={label} label={label} v={v} defaultSource={defaultSource} />)}
+            </div>
 
             <div className="eco-foot">
               {hasNet && <div>※ 상환액이 신규 원조를 초과해 음수로 표시될 수 있습니다.</div>}
               <div>※ 금액은 소수점 반올림 처리된 값입니다.</div>
             </div>
           </div>
-
-          {/* 4. 인프라 정보 — 경제/ODA와 같은 "이 나라에 필요한 것" 질문에 속하지만, 성격이 달라 별도 블록으로 분리 */}
-          <div className="info-block">
-            <div className="block-tag">인프라 정보</div>
-            {infraRows.map(([label, v, fieldKey]) => (
-              <InfraItem
-                key={label}
-                label={label}
-                v={v}
-                fieldKey={fieldKey}
-                compare={v ? infraCompareText(fieldKey, v.value) : null}
-              />
-            ))}
-            <div className="eco-foot"><div>※ 막대의 주황선은 아프리카 54개국 평균 위치입니다.</div></div>
-          </div>
         </div>
       </div>
 
-      {/* 5. 보건 세부 지원 현황 — "그동안의 협력"에 속하는 KOICA ODA 로데이터, 독립된 전체 폭 블록 */}
-      {hasHealthDetail && (
+      {/* 기초 국가 정보(수도·인구·언어)는 국가명 아래 한 줄로, KOICA 지원 규모(누적·분야별 도넛)와
+          보건 세부 지원 현황은 세부 데이터라 웹 화면에서는 생략했습니다 — 스탯 카드의
+          "한국 ODA 이력"·"중점협력국" Yes/No와 요약 카드 문장으로 핵심은 이미 전달되고,
+          전체 내용은 위 "PDF 보고서 다운받기"로 받는 상세 리포트에 그대로 담겨 있습니다. */}
+
+      {/* 3. 진출 현황 — 한아프리카재단 250대기업·스타트업 디렉터리 집계 (데이터 없는 국가는 블록 숨김) */}
+      {hasMarketEntry && (
         <div className="info-block info-block--wide">
-          <div className="block-tag">보건 세부 지원 현황</div>
-          <p className="health-detail-desc">
-            KOICA ODA 세부 사업분야 데이터를 기준으로, 보건 분야 지원이 실제로 어디에 쓰였는지 보여줍니다.
-            {healthDetail.year && <span className="eco-src">({healthDetail.year} · KOICA ODA)</span>}
-          </p>
-          {healthDetailRows.map((row) => <HealthDetailBar key={row.name} {...row} />)}
+          <div className="block-tag">
+            진출 현황
+            <span className="block-tag-field"> · 한아프리카재단 250대기업·스타트업 디렉터리</span>
+          </div>
+
+          {me.companyCount > 0 && (
+            <div className="market-entry-group">
+              <div className="market-entry-label">진출 기업 {me.companyCount}개</div>
+              <div className="market-tag-row">
+                {me.industries.map((ind) => (
+                  <span className="market-tag" key={ind.name}>{ind.name} <b>{ind.count}</b></span>
+                ))}
+              </div>
+              {me.companies && me.companies.length > 0 && (
+                <div className="market-card-grid">
+                  {me.companies.map((comp, i) => <CompanyCard key={comp.nameKo || i} c={comp} />)}
+                </div>
+              )}
+            </div>
+          )}
+
+          {me.startupCount > 0 && (
+            <div className="market-entry-group" style={{ marginTop: me.companyCount > 0 ? 18 : 0 }}>
+              <div className="market-entry-label">스타트업 {me.startupCount}개</div>
+              <div className="market-tag-row">
+                {me.startupFields.map((f) => (
+                  <span className="market-tag" key={f.name}>{f.name} <b>{f.count}</b></span>
+                ))}
+              </div>
+              {me.startups && me.startups.length > 0 && (
+                <div className="market-card-grid">
+                  {me.startups.map((s, i) => <StartupCard key={s.nameKo || i} s={s} />)}
+                </div>
+              )}
+            </div>
+          )}
         </div>
       )}
 
-      {/* 6. 실제 협력 창구 — 재외공관(현지 한국 대사관)은 54개국 전체 존재,
+      {/* 4. 실제 협력 창구 — 재외공관(현지 한국 대사관)은 54개국 전체 존재,
           주한공관(서울)은 19/54개국만 존재 → 없으면 그 칸만 자동으로 숨김 */}
       {c.diplomaticContact && (
         <div className="info-block info-block--wide">
@@ -622,10 +692,14 @@ export default function CountryDetail({ id, go, from = "search", isFavorite, tog
         </div>
       )}
 
+      {/* 5. 이 나라의 현재 상황 — 정치·경제·환경·기업 뉴스. 특히 정세가 불안정하거나
+          최근 이슈를 파악하기 어려운 국가일수록 참고할 수 있도록, 국가 상세 페이지에 상시 노출 */}
+      <CountryNews countryNameEn={c.nameEn} countryNameKo={c.name} />
+
       {/* 데이터 출처 안내 — 전 국가 공통 (각주형) */}
       <p className="source-footnote">
         <span className="source-footnote-mark">출처</span>
-        인구·언어·수도 외교부 「국가(지역)별 일반현황」(2025.12 갱신) · GDP·1인당 GDP 외교부 「국가(지역)별 경제현황」(2025.09 갱신) · ODA 규모(순수원액·수원국·양자·한국) KOICA 「협력국 통합개발지표」(2025.07 갱신) · KOICA 분야별·누적 지원 KOICA 「국가별 지원실적」(2025.11 갱신) · 보건 세부 지원 현황 KOICA 「ODA 실적보고 로데이터」(2025.11 갱신) · 병상 수·의사 수·전력 접근률·인터넷 이용률 World Bank Open Data · 재외공관·주한공관 연락처 외교부 「국가·지역별 재외공관 정보」·「재외공관 홈페이지 관련 정보」·「주한공관정보」. 모든 데이터는 공공데이터포털(data.go.kr) 또는 World Bank 공개 자료이며, 갱신일은 각 포털 기준입니다. 데이터 기준연도는 각 항목에 별도 표기되어 있습니다.
+        인구·언어·수도 외교부 「국가(지역)별 일반현황」(2025.12 갱신) · GDP·1인당 GDP 외교부 「국가(지역)별 경제현황」(2025.09 갱신) · ODA 규모(순수원액·수원국·양자·한국) KOICA 「협력국 통합개발지표」(2025.07 갱신) · KOICA 분야별·누적 지원 KOICA 「국가별 지원실적」(2025.11 갱신) · 보건 세부 지원 현황 KOICA 「ODA 실적보고 로데이터」(2025.11 갱신) · 인프라 지표 11종(병상 수·의사 수·간호사·조산사 수·전력 접근률·재생에너지 발전 비중·청정 취사연료 접근률·인터넷 이용률·이동통신 가입자 수·식수 접근률·위생시설 접근률·1인당 재생가능 담수자원량) World Bank Open Data · 재외공관·주한공관 연락처 외교부 「국가·지역별 재외공관 정보」·「재외공관 홈페이지 관련 정보」·「주한공관정보」. 모든 데이터는 공공데이터포털(data.go.kr) 또는 World Bank 공개 자료이며, 갱신일은 각 포털 기준입니다. 데이터 기준연도는 각 항목에 별도 표기되어 있습니다.
       </p>
       <p className="source-footnote" style={{ marginTop: 10 }}>
         <span className="source-footnote-mark">산정기준</span>
