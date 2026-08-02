@@ -498,12 +498,13 @@ export default function CountryDetail({ id, go, from = "search", isFavorite, tog
     { value: c.diplomacyScore, suffix: "/100", label: "외교 친밀도", rank: DIPLOMACY_RANK[c.id], rankHint: "1위=가장 친밀" },
   ];
 
-  // 시장 진입 용이도(marketEntry) — 한아프리카재단 250대기업·스타트업 디렉터리 집계 (23/54개국만 존재)
+  // 시장 진입 용이도(marketEntry) — 기업: 아프리카대륙 250대기업 / 스타트업: 한아프리카재단_아프리카혁신
+  // 스타트업디렉터리, 서로 다른 두 출처 집계 (23/54개국만 존재)
   const me = c.marketEntry || null;
   const hasMarketEntry = !!(me && (me.companyCount > 0 || me.startupCount > 0));
 
-  // 진출 기업/스타트업 — 업종·분야 필터링 후, 접힌 상태면 6개까지만 노출
-  const MARKET_VISIBLE = 6;
+  // 진출 기업/스타트업 — 업종·분야 필터링 후, 접힌 상태면 MARKET_VISIBLE개까지만 노출
+  const MARKET_VISIBLE = 2;
   const filteredCompanies = me?.companies
     ? (companyFilter ? me.companies.filter((comp) => comp.industry === companyFilter) : me.companies)
     : [];
@@ -596,7 +597,7 @@ export default function CountryDetail({ id, go, from = "search", isFavorite, tog
                 </div>
               ))}
             </div>
-            <div className="eco-foot"><div>※ 막대의 주황선은 아프리카 54개국 평균 위치입니다.</div></div>
+            <div className="eco-foot"><div>※ 막대의 주황선은 아프리카 54개국의 평균 위치입니다.</div></div>
           </div>
         </div>
 
@@ -621,18 +622,19 @@ export default function CountryDetail({ id, go, from = "search", isFavorite, tog
           "한국 ODA 이력"·"중점협력국" Yes/No와 요약 카드 문장으로 핵심은 이미 전달되고,
           전체 내용은 위 "PDF 보고서 다운받기"로 받는 상세 리포트에 그대로 담겨 있습니다. */}
 
-      {/* 3. 진출 현황 — 한아프리카재단 250대기업·스타트업 디렉터리 집계 (데이터 없는 국가는 블록 숨김) */}
+      {/* 3. 진출 현황 — 기업: 아프리카대륙 250대기업 / 스타트업: 한아프리카재단_아프리카혁신
+          스타트업디렉터리, 서로 다른 두 출처 집계 (데이터 없는 국가는 블록 숨김) */}
       {hasMarketEntry && (
         <div className="info-block info-block--wide">
           <div className="block-tag">
             진출 현황
-            <span className="block-tag-field"> · 한아프리카재단 250대기업·스타트업 디렉터리</span>
+            <span className="block-tag-field"> · 아프리카대륙 250대기업 · 한아프리카재단 아프리카혁신 스타트업디렉터리</span>
           </div>
 
           {me.companyCount > 0 && (
             <div className="market-entry-group">
-              <div className="market-entry-label">진출 기업 {me.companyCount}개</div>
-              <p className="market-filter-hint">업종을 누르면 해당 기업만 모아볼 수 있어요.</p>
+              <div className="market-entry-label">아프리카대륙 250대기업 중 진출 기업 {me.companyCount}개</div>
+              <p className="market-filter-hint">업종을 누르면 해당 업종의 기업만 모아볼 수 있습니다.</p>
               <div className="market-tag-row">
                 {me.industries.map((ind) => (
                   <button
@@ -652,7 +654,7 @@ export default function CountryDetail({ id, go, from = "search", isFavorite, tog
                   </div>
                   {filteredCompanies.length > MARKET_VISIBLE && (
                     <button type="button" className="market-more-btn" onClick={() => setCompanyExpanded((e) => !e)}>
-                      {companyExpanded ? "접기" : `전체 ${filteredCompanies.length}개 더보기`}
+                      {companyExpanded ? "접기" : `${filteredCompanies.length - MARKET_VISIBLE}개 더보기`}
                     </button>
                   )}
                 </>
@@ -662,8 +664,8 @@ export default function CountryDetail({ id, go, from = "search", isFavorite, tog
 
           {me.startupCount > 0 && (
             <div className="market-entry-group" style={{ marginTop: me.companyCount > 0 ? 18 : 0 }}>
-              <div className="market-entry-label">스타트업 {me.startupCount}개</div>
-              <p className="market-filter-hint">분야를 누르면 해당 분야의 스타트업만 모아볼 수 있어요.</p>
+              <div className="market-entry-label">진출 스타트업 {me.startupCount}개</div>
+              <p className="market-filter-hint">분야를 누르면 해당 분야의 스타트업만 모아볼 수 있습니다.</p>
               <div className="market-tag-row">
                 {me.startupFields.map((f) => (
                   <button
@@ -683,7 +685,7 @@ export default function CountryDetail({ id, go, from = "search", isFavorite, tog
                   </div>
                   {filteredStartups.length > MARKET_VISIBLE && (
                     <button type="button" className="market-more-btn" onClick={() => setStartupExpanded((e) => !e)}>
-                      {startupExpanded ? "접기" : `전체 ${filteredStartups.length}개 더보기`}
+                      {startupExpanded ? "접기" : `${filteredStartups.length - MARKET_VISIBLE}개 더보기`}
                     </button>
                   )}
                 </>

@@ -87,7 +87,7 @@ export default function CountryNews({ countryNameEn, countryNameKo }) {
         <span className="block-tag-field"> · 정치 · 경제 · 환경 · 기업</span>
       </div>
       <p className="health-detail-desc">
-        최근 3개월 이내 뉴스만 조회한 결과입니다. 한국어 뉴스를 우선 조회하고, 아프리카 전문 매체(AllAfrica)와 프랑스어권 아프리카 보도가 많은 프랑스 매체(RFI·Jeune Afrique 등)도 함께 보여드립니다.
+        최근 3개월 이내 뉴스만 조회한 결과입니다. 한국어 뉴스를 우선 조회하고, 한국 외 미국의 아프리카 전문 매체(AllAfrica)도 함께 보여드립니다.
       </p>
 
       {state === "slow" && <p className="news-status">서버를 깨우는 중입니다. 최대 1분 정도 걸릴 수 있습니다.</p>}

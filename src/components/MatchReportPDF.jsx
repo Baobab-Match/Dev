@@ -45,7 +45,7 @@ const DONUT_COLORS = [C.green900, C.green800, C.green700, C.green600, C.green500
 
 const TIER_COLOR = { strong: C.green800, good: C.green700, fair: C.inkSoft, weak: C.danger };
 const TIER_LABEL = { strong: "매우 적합", good: "적합", fair: "부분 적합", weak: "참고" };
-const TIER_RANGE = { strong: "75점 이상", good: "60~74점", fair: "45~59점", weak: "45점 미만" };
+const TIER_RANGE = { strong: "58.1점 이상", good: "45.6~58.0점", fair: "26.1~45.5점", weak: "26.1점 미만" };
 const TIER_ORDER = ["strong", "good", "fair", "weak"];
 
 // 축별로 hasData:false일 때 보여줄 문구 — 국가 데이터가 아예 없는 축은 "데이터 없음",
@@ -173,7 +173,7 @@ const styles = StyleSheet.create({
   // 공통
   sectionTag: { fontSize: 10.5, fontWeight: 700, letterSpacing: 2, color: C.green500, marginBottom: 6 },
   h2: { fontSize: 19, fontWeight: 800, color: C.green900, marginBottom: 14 },
-  paragraph: { fontSize: 12.5, color: C.inkSoft, lineHeight: 1.75 },
+  paragraph: { fontSize: 12.5, color: C.inkSoft, lineHeight: 1.75, textIndent: 16 },
   bold700: { fontWeight: 700, color: C.green700 },
 
   runHeader: {
@@ -229,7 +229,7 @@ const styles = StyleSheet.create({
   // 목차 안내 박스
   noticeBox: { backgroundColor: C.sage100, borderRadius: 0, padding: 18 },
   noticeTitle: { fontSize: 15, fontWeight: 700, color: C.green800, marginBottom: 7 },
-  noticeDesc: { fontSize: 12.5, color: C.inkSoft, lineHeight: 1.65 },
+  noticeDesc: { fontSize: 12.5, color: C.inkSoft, lineHeight: 1.65, textIndent: 16 },
 
   // 국가 헤더 띠(2면 매칭 페이지용) — 1줄: 순위+국명 / 3줄(선택시): 분야뱃지
   countryHeadRow: { flexDirection: "row", flexWrap: "wrap", alignItems: "flex-end", marginBottom: 6 },
@@ -378,8 +378,8 @@ function todayKo() {
   return `${d.getFullYear()}년 ${d.getMonth() + 1}월 ${d.getDate()}일`;
 }
 function barColor(s) {
-  if (s >= 70) return C.green700;
-  if (s >= 45) return C.green500;
+  if (s >= 58.1) return C.green700;
+  if (s >= 26.1) return C.green500;
   return C.green300;
 }
 
@@ -954,7 +954,7 @@ export default function MatchReportPDF({
               {NOTICE_COPY[reportKind].desc.map((line, idx) => (
                 <Text key={idx}>
                   {line}
-                  {idx < NOTICE_COPY[reportKind].desc.length - 1 ? "\n" : ""}
+                  {idx < NOTICE_COPY[reportKind].desc.length - 1 ? "\n\n" : ""}
                 </Text>
               ))}
             </Text>
