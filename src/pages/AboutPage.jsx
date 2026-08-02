@@ -3,7 +3,7 @@ import { useLocation } from "react-router-dom";
 import introBanner from "../assets/about-intro-banner.jpg";
 import landingBanner from "../assets/about-landing-banner.jpg";
 import fieldsBanner from "../assets/about-fields-banner.png"; // TODO: 11개 분야 소개 섹션용 사진 — 준비되면 이 경로에 파일 추가
-import { CATEGORIES, FIELD_GROUPS } from "../data";
+import { CATEGORIES, FIELD_GROUPS, FIELD_DESCRIPTIONS } from "../data";
 
 const INDENT = { textIndent: "1em" };
 const INDENT_TOP = { textIndent: "1em", marginTop: "1.2em" };
@@ -207,6 +207,7 @@ const FAQ = [
   { q: "개인 회원도 매칭 리포트를 받을 수 있나요?", a: "네, 회원 유형과 관계없이 관심 분야를 입력하면 동일한 방식으로 추천받고 PDF 보고서로 저장할 수 있습니다." },
   { q: "사업자등록번호는 어떻게 확인하나요?", a: "사업자등록번호, 대표자 성명, 개업일자를 입력하시면 국세청 사업자등록정보 진위확인 API를 통해 실시간으로 대조하여 실제 등록된 사업자인지 엄격하게 검증합니다. 입력하신 정보가 국세청 등록 정보와 일치하지 않으면 가입이 제한됩니다." },
   { q: "국가 데이터는 얼마나 자주 업데이트되나요?", a: "공공데이터 갱신 주기에 맞춰 정기적으로 업데이트할 예정입니다." },
+  { q: "관심 분야가 헷갈려요. 각 분야는 어떻게 구분하나요?", fieldGuide: true },
 ];
 
 export function AboutPage({ go }) {
@@ -441,15 +442,37 @@ export function AboutPage({ go }) {
         {tab === "faq" && (
           <section className="about-fade">
             <div className="about-faq">
-              {FAQ.map((f, i) => (
-                <div className="faq-item" key={i}>
-                  <p className="faq-q">Q. {f.q}</p>
-                  <p className="faq-a" style={INDENT}>{f.a}</p>
-                </div>
-              ))}
+              {FAQ.map((f, i) =>
+                f.fieldGuide ? (
+                  <div className="faq-item" key={i}>
+                    <p className="faq-q">Q. {f.q}</p>
+                    <p className="faq-a" style={INDENT}>헷갈리기 쉬운 분야들을 아래에서 하나씩 짚어드릴게요.</p>
+                    <div className="faq-field-guide">
+                      {FIELD_GROUPS.map((g) => (
+                        <div className="faq-field-group" key={g.tag}>
+                          <div className="faq-field-group-tag">{g.tag}</div>
+                          <div className="faq-field-cards">
+                            {g.items.map((field) => (
+                              <div className="faq-field-card" key={field}>
+                                <span className="faq-field-chip">{field}</span>
+                                <p className="faq-field-desc">{FIELD_DESCRIPTIONS[field]}</p>
+                              </div>
+                            ))}
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                ) : (
+                  <div className="faq-item" key={i}>
+                    <p className="faq-q">Q. {f.q}</p>
+                    <p className="faq-a" style={INDENT}>{f.a}</p>
+                  </div>
+                )
+              )}
             </div>
           </section>
-        )}
+        )} 
       </div>
     </main>
   );

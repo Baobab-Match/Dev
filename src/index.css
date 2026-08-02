@@ -986,7 +986,7 @@ textarea.field { resize: vertical; min-height: 64px; }
 .reason-item, .reason-tier { word-break: keep-all; }
 .podium-name { word-break: keep-all; }
 .notice-title, .notice-body p { word-break: keep-all; }
-.about-intro p, .about-subtitle, .about-mission-text, .why-row h3, .why-row p, .how-stage-body h3, .how-stage-body p, .audience-content h3, .audience-content p, .faq-q, .faq-a, .awa-card-label, .awa-card-desc { word-break: keep-all; }
+.about-intro p, .about-subtitle, .about-mission-text, .why-row h3, .why-row p, .how-stage-body h3, .how-stage-body p, .audience-content h3, .audience-content p, .faq-q, .faq-a, .faq-field-desc, .awa-card-label, .awa-card-desc { word-break: keep-all; }
 .hero-sub { word-break: keep-all; }
 .country-row { word-break: keep-all; }
 .confirm-yes, .confirm-no, .form-actions .confirm-yes { word-break: keep-all; }
@@ -1081,3 +1081,68 @@ textarea.field { resize: vertical; min-height: 64px; }
 .mf-reason.active { background: transparent; }
 .mf-reason.active .mf-reason-num { background: var(--green-700); border-color: var(--green-700); color: #fff; }
 .mf-reason.active .mf-reason-label { color: var(--ink); font-weight: 700; }
+/* ── FAQ 탭 — 관심 분야 구분 가이드 (fieldGuide) ── */
+.faq-field-guide { display: flex; flex-direction: column; gap: 28px; margin-top: 10px; }
+
+.faq-field-group {
+  display: flex;
+  align-items: flex-start;
+  gap: 18px;
+  padding-top: 20px;
+  border-top: 1px solid var(--bone-dark);
+}
+.faq-field-group:first-child { padding-top: 0; border-top: none; }
+
+.faq-field-group-tag {
+  flex: none;
+  width: 92px;                /* about-fields-group-tag와 동일한 폭 — 톤 통일 */
+  font-size: var(--fs-sm);
+  font-weight: 800;
+  letter-spacing: 0.02em;
+  color: var(--green-700);
+  padding-top: 9px;           /* 칩 첫 줄과 세로 위치(baseline) 맞춤 */
+}
+
+.faq-field-cards {
+  flex: 1;
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);   /* flex-wrap → 고정 2열 */
+  gap: 20px 40px;
+}
+
+.faq-field-card {
+  display: flex;
+  align-items: baseline;
+  gap: 14px;
+}
+
+.faq-field-chip {
+  flex: none;
+  width: 170px;
+  display: inline-block;
+  padding: 8px 14px;
+  font-size: var(--fs-sm);
+  font-weight: 700;
+  color: var(--green-700);
+  background: var(--paper);
+  border: 1px solid var(--bone-dark);
+  border-radius: 0;
+  white-space: nowrap;
+  text-align: center;
+}
+
+.faq-field-desc {
+  font-size: var(--fs-md);
+  color: var(--ink-soft);
+  line-height: 1.7;
+  margin: 0;
+  word-break: keep-all;
+}
+
+@media (max-width: 768px) {
+  .faq-field-group { flex-direction: column; gap: 10px; }
+  .faq-field-group-tag { width: auto; padding-top: 0; }
+  .faq-field-cards { grid-template-columns: 1fr; gap: 16px; }   /* 2열 → 1열 추가 */
+  .faq-field-card { flex-direction: column; align-items: flex-start; gap: 8px; }
+  .faq-field-chip { width: auto; }
+}

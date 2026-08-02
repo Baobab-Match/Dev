@@ -14,20 +14,46 @@ const SORT_OPTIONS = [
   { key: "climate", label: "필요성 우선" },
 ];
 
-// 종합 매칭 점수 — 외교 0.5 + 필요성 0.5, 중점협력국 +5 보너스, 100 상한
-function matchScore(c) {
-  const dip = Number(c.diplomacyScore) || 0;
-  const cli = Number(c.climateScore) || 0;
-  const base = dip * 0.5 + cli * 0.5;
-  const bonus = c.priorityPartner ? 5 : 0;
-  return Math.min(100, Math.round(base + bonus));
+// ── 관심 국가 목록 전용 "종합 매칭" — AI 서버 호출 없이 즉시 계산 (2026-08 정교화) ──
+// 분야(field)를 지정하지 않은 상태라 AI의 recommend()를 쓸 수 없어서, AI의
+// coop/need/entry 축과 같은 철학이되 fit·export는 뺀 3축 버전을 프론트에서 직접 계산.
+// entry는 marketEntry(기업+스타트업 수, 54개국 중 23개국만 존재) 기반 프록시 —
+// log1p로 완만하게 만든 뒤 전체 국가 최댓값 기준 0~1로 정규화. 데이터 없는 나라는
+// (companyCount·startupCount 둘 다 0으로 취급돼) 자연스럽게 entry=0이 된다.
+const ENTRY_PROXY = (() => {
+  const ids = Object.values(COUNTRIES).map((c) => c.id);
+  const raw = ids.map((id) => {
+    const me = COUNTRIES[id]?.marketEntry || {};
+    return Math.log1p((me.companyCount || 0) + (me.startupCount || 0));
+  });
+  const max = Math.max(...raw, 1);
+  return Object.fromEntries(ids.map((id, i) => [id, raw[i] / max]));
+})();
+
+// AI TABLE_B_USER와 같은 철학(유저 유형별 축 비중) — 분야가 없어 fit·export는 빼고
+// coop(외교)·need(기후취약)·entry(진입용이) 3축만, 합 1.0으로 재배분.
+const OVERVIEW_WEIGHTS = {
+  company: { coop: 0.35, need: 0.30, entry: 0.35 }, // 기업은 진입 용이도 비중을 높게
+  gov:     { coop: 0.40, need: 0.50, entry: 0.10 }, // 공공기관은 지원 필요성 비중을 높게
+  general: { coop: 0.40, need: 0.40, entry: 0.20 },
+};
+
+// 종합 매칭 점수 — profile.type별 가중합 (분야 미지정 3축 버전).
+// (버그 수정: diplomacyScore 자체가 이미 KOICA 중점협력국 가산(+20)을 포함하고 있는데
+// [CountryDetail.jsx 설명 참고] 여기서 +5를 또 더해 이중 가산되고 있었음 — 제거함)
+function matchScore(c, userType = "general") {
+  const w = OVERVIEW_WEIGHTS[userType] || OVERVIEW_WEIGHTS.general;
+  const coop = Number(c.diplomacyScore) || 0;
+  const need = Number(c.climateScore) || 0;
+  const entry = (ENTRY_PROXY[c.id] || 0) * 100;
+  return Math.round(w.coop * coop + w.need * need + w.entry * entry);
 }
 
 // 기준별로 점수를 뽑는 함수
-function scoreFor(c, sortKey) {
+function scoreFor(c, sortKey, userType) {
   if (sortKey === "diplomacy") return Number(c.diplomacyScore) || 0;
   if (sortKey === "climate") return Number(c.climateScore) || 0;
-  return matchScore(c);
+  return matchScore(c, userType);
 }
 
 const SCORE_LABEL = {
@@ -117,12 +143,13 @@ export default function MyPage({ profile, favorites, isFavorite, toggleFavorite,
   const [sortKey, setSortKey] = useState("match"); // 즐겨찾기 정렬 기준
 
   // 즐겨찾기 국가 + 선택된 기준으로 정렬 (점수 높은 순)
+  // profile?.type을 넘겨서 유저 유형별 가중치(OVERVIEW_WEIGHTS)가 반영되도록 함
   const rankedFav = useMemo(() => {
     const list = favorites.map((id) => COUNTRIES[id]).filter(Boolean);
     return list
-      .map((c) => ({ country: c, score: scoreFor(c, sortKey) }))
+      .map((c) => ({ country: c, score: scoreFor(c, sortKey, profile?.type) }))
       .sort((a, b) => b.score - a.score);
-  }, [favorites, sortKey]);
+  }, [favorites, sortKey, profile?.type]);
 
   // 최근 본 국가 (즐겨찾기와 별개, 유효한 것만)
   const recentCountries = useMemo(
@@ -283,10 +310,11 @@ export default function MyPage({ profile, favorites, isFavorite, toggleFavorite,
 
       {rankedFav.length > 0 && (
         <p className="fav-note" style={{ textIndent: "1em" }}>
-          이 순위는 <b>관심 분야는 반영하지 않고</b>, 외교 친밀도와 기후 취약도 고려한 단순 비교 결과입니다.
-          분야 적합도·기후-기술 적합도·기후 시급성·외교 친밀도·개발 필요도·수출 연계성·보유기술
-          적합도까지 총 7개 지표와 함께 회원님이 고른 관심 분야까지
-          반영한 더 자세한 비교를 원한다면{" "}
+          이 순위는 <b>AI 매칭이 아닌 간단 참고용 순위</b>이며, 관심 분야는 반영하지 않고
+          외교 친밀도·기후 취약도·현지 진입 용이도(기업·스타트업 수 기반)를 회원 유형별
+          비중으로 종합한 결과입니다. 분야 적합도·기후-기술 적합도·기후 시급성·외교
+          친밀도·개발 필요도·수출 연계성·보유기술 적합도까지 반영한 AI 기반 정밀 매칭을
+          원한다면{" "}
           <Link className="link-btn" to="/match">맞춤 국가 추천</Link>을 확인해 주세요.
         </p>
       )}
