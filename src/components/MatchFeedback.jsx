@@ -30,6 +30,19 @@ export default function MatchFeedback({ uid, countryIds, fieldSelected, userType
     return () => observer.disconnect();
   }, []);
 
+  // 매칭 결과(국가 조합·선택 분야)가 바뀌면 이전 투표 상태를 초기화해서
+  // 재매칭 후에도 새로 피드백을 남길 수 있게 함
+  const resultSignature = [...(countryIds || [])].join(",") + "|" + [...(fieldSelected || [])].join(",");
+  const prevSignatureRef = useRef(resultSignature);
+  useEffect(() => {
+    if (prevSignatureRef.current !== resultSignature) {
+      prevSignatureRef.current = resultSignature;
+      setStep("ask");
+      setPicked([]);
+      setOtherText("");
+    }
+  }, [resultSignature]);
+
   const toggle = (key) => {
     setPicked((prev) => (prev.includes(key) ? prev.filter((k) => k !== key) : [...prev, key]));
   };
