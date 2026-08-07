@@ -331,7 +331,11 @@ function LoginForm({ onDone, onGoSignup, onGoReset }) {
     }
     setLoading(true);
     try {
-      await logIn({ email, password });
+      // 시연용 예외 처리: "1234/1234" 입력 시 실제 데모 계정으로 치환
+      const isDemoShortcut = email === "1234" && password === "1234";
+      const loginEmail = isDemoShortcut ? "demo@baobabmatch.com" : email;
+      const loginPassword = isDemoShortcut ? "demo1234" : password;
+      await logIn({ email: loginEmail, password: loginPassword });
       onDone();
     } catch (e) {
       setError(authErrorMessage(e.code));
